@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html> 
+<head>
+<title> DB GUI 1 </title>
+<style>
+</style>
+</head>
+
+<body>
+
+<h2>Hallo, willkommen bei unserer Rezepte Datenbank.</h2>
+<h3>Bitte melden sie sich an, um sie zu nutzen.</h3> 
+
+<form>
+<label for="NName">Nutzername:  </label>
+<input id="Nname" name="NName">
+<label for="PWort">Passwort:  </label>
+<input id="PWort" name="PW">
+</form>
+
+</body>
+</html>
