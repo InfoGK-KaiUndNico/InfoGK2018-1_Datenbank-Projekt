@@ -9,16 +9,16 @@
 
 <body>
 
-<h2>Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos. </h2>
+<h2 id="headerHS1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos. </h2>
 
-<form>
-<label for="RSuche">Suche:
-<input id="RSuche" name="RSuche">
+<form id="formHS1">
+<label id ="labelHS1" for="RSuche">Suche:
+<input id="inputHS1" name="RSuche">
 </label>
 </form>
 
-<form action="select.html">
-<label>Zutatensuche:
+<form id="formHS2" action="select.html">
+<label id="labelHS2">Zutatensuche:
 <select name="Zutaten" size="1">
 <option>Salz </option>
 <option>Pfeffer </option>
@@ -28,8 +28,8 @@
 </label>
 </form>
 
-<form action="select.html">
-<label>Suche nach Art:  </label>
+<form id="formHS3" action="select.html">
+<label id="labelHS3">Suche nach Art:  </label>
 <select name="Art" size="1">
 <option>Fleisch </option>
 <option>Obst und Nüsse </option>
@@ -42,10 +42,17 @@
 </select>
 </form>
 
-<p> <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> </p>
+<p id="paragraphHS1"> <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> </p>
 
-<button type="Daten aendern">Nutzerdaten</button>
-<button type="RHinzufuegen">Rezept eintragen</button>
+<button id="buttonHS1" type="button">Nutzerdaten</button>
+<form id="formHS4">
+    <input type="button" id="inputHS2" value="neues Rezept"
+    on click="window.location.href='neuesRezept.html'">
+</form>
 
+<form>
+    <input type="button" id="inputHS3" value="zum Login"
+    on click="window.location.href='index.html'">
+</form>
 </body>
 </html>

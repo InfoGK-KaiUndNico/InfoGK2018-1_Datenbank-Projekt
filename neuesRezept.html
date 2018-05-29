@@ -9,27 +9,27 @@
 
 <body>
 
-<h2> Sie sind bei der Rezepteingabe.</h2>
+<h2 id="headerNR1"> Sie sind bei der Rezepteingabe.</h2>
 
-<form>
-<label for"ZAufwand">Zeitaufwand:
-<input id="ZAufwand" name="ZAufwand">
+<form id="formNR1">
+<label id="labelNR1" for"ZAufwand">Zeitaufwand:
+<input id="inputNR1" name="ZAufwand">
 </label>
 </form>
 
-<form>
-<label for"Zutaten">Zutaten:
-<input id"Zutaten" name"Zutaten">
+<form id="formNR2">
+<label id="labelNR2" for"Zutaten">Zutaten:
+<input id"inputNR2" name"Zutaten">
 </label>
 </form>
 
-<form>
-<input id"Anleitung" name"Anleitung" value="Anleitung:">
+<form id="formNR3">
+<input id"inputNR3" name"Anleitung" value="Anleitung:">
 </label>
 </form>
 
-<form action="select.html">
-<label>Art des Rezepts:  </label>
+<form id="formNR4" action="select.html">
+<labelid="labelNR3">Art des Rezepts:  </label>
 <select name="Art" size="1">
 <option>Fleisch </option>
 <option>Obst und Nüsse </option>
@@ -42,11 +42,15 @@
 </select>
 </form>
 
+<form id="formNR5">
+    <input id="inputNR4" type="button" value="zurück"
+    onclick="window.location.href='hauptseite.html'">
+</form>
 <button type="Posten">Posten</button>
 
-<div>
-<h4>Infos: </h4>
-<p>Dies ist ein Test.</p>
+<div id="divNR1">
+<h4 id="headerNR2">Infos: </h4>
+<p id="paragraphNR2">Dies ist ein Test.</p>
 </div>
 
 </body>
