@@ -1,60 +1,61 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title> RezeptDB </title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-<link rel="stylesheet" href="mainpage.css"/>
-<script src="RezeptDB.js"></script>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-</head>
+    <head>
+        <title> RezeptDB </title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <link rel="stylesheet" href="mainpage.css"/>
+        <script src="RezeptDB.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
+    <body>
+        <div class="container">
+            <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
+            <form id="formHS" action="select.html">
+                <div class="row">
+                    <div class="col-3">
+                        <label>Rezeptsuche</label>
+                        <input class="form-control" placeholder="Suche"/>
+                    </div>
+                    <div class="col-3">
+                        <label>Zutatensuche</label>
+                        <select class="form-control">
+                            <option>Salz</option>
+                            <option>Pfeffer</option>
+                            <option>Zucker</option>
+                            <option>witziger Witz</option>
+                        </select>    
+                    </div>
+                    <div class="col-3">
+                       <label>Suche nach Art</label>
+                       <select class="form-control">
+                            <option>Fleisch </option>
+                            <option>Obst und Nüsse </option>
+                            <option>Gemüse </option>
+                            <option>Gewürz </option>
+                            <option>trocken </option>
+                            <option>Herzhaft </option>
+                            <option>Süß </option>
+                            <option>andere </option>
+                       </select> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        <span class="btn btn-primary mt-3 mb-1 mr-5" onClick="window.location.href='neuesRezept.html'">
+                            Neues Rezept
+                        </span>
+                    </div>
+                    <div class="col-1">
+                        <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5" onClick="window.location.href='Nutzerdaten.html'">
+                            Nutzerdaten
+                        </span>
+                    </div>
 
-<body>
-
-<h2 id="headerHS1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos. </h2>
-
-<form id="formHS1">
-<label id ="labelHS1" for="RSuche">Suche:
-<input id="inputHS1" name="RSuche">
-</label>
-</form>
-
-<form id="formHS2" action="select.html">
-<label id="labelHS2">Zutatensuche:
-<select name="Zutaten" size="1">
-<option>Salz </option>
-<option>Pfeffer </option>
-<option>Zucker </option>
-<option>witziger Witz </option>
-</select>
-</label>
-</form>
-
-<form id="formHS3" action="select.html">
-<label id="labelHS3">Suche nach Art:  </label>
-<select name="Art" size="1">
-<option>Fleisch </option>
-<option>Obst und Nüsse </option>
-<option>Gemüse </option>
-<option>Gewürz </option>
-<option>trocken </option>
-<option>Herzhaft </option>
-<option>Süß </option>
-<option>andere </option>
-</select>
-</form>
-
-<p id="paragraphHS1"> <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> </p>
-
-<button id="buttonHS1" type="button">Nutzerdaten</button>
-<form id="formHS4">
-    <input type="button" id="inputHS2" value="neues Rezept"
-    on click="window.location.href='neuesRezept.html'">
-</form>
-
-<form>
-    <input type="button" id="inputHS3" value="zum Login"
-    on click="window.location.href='index.html'">
-</form>
-</body>
+                </div>
+            </form>
+            <p id="paragraphHS1"> <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> </p>
+        </div>
+    </body>
 </html>
+

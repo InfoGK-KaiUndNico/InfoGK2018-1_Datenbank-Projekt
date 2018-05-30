@@ -10,45 +10,70 @@
 </head>
 
 <body>
+    <div class="container">
+            <h2 class="mt-1"> Sie sind bei der Rezepteingabe.</h2>
+            <form id="formNR" action="select.html">
+                <div class="row">
+                    <div class="col-2">
+                        <label>Zeitaufwand</label>
+                        <input class="form-control" placeholder="Zeit"/>
+                    </div>
+                    <div class="col-2">
+                            <label>Art des Rezepts</label>
+                            <select class="form-control" name="Art">
+                                    <option>Fleisch </option>
+                                    <option>Obst und Nüsse </option>
+                                    <option>Gemüse </option>
+                                    <option>Gewürz </option>
+                                    <option>trocken </option>
+                                    <option>Herzhaft </option>
+                                    <option>Süß </option>
+                                    <option>andere </option>
+                            </select>
+                        </div>   
+                </div>
+                <div class="row">
+                    <div class="col-4 mt-2">
+                        <label>Zutaten</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <label>Anleitung</label>
+                        <textarea class="form-control"></textarea>
+                    </div> 
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span class="btn btn-primary mt-3" onClick="window.location.href='Hauptseite.html'">
+                            Posten
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <h4 class="mt-2 ml-2">Hilfe</h4>
+                </div>
+                <div class="row">
+                    <ol>
+                        <li class="ml-2">Die Arbeit sollte in Arbeitsschritte geteilt werden. Ein Arbeitsschritt zeichnet sich dadurch aus, dass mit einer oder mehreren Zutaten die gleiche oder eine sehr ähnliche Tätigkeit ausgeführt werden.</li>
+                        <li class="ml-2">Die Arbeitsschritte sollten in der Anleitung chronologisch angeordnet sein, wenn mehrere Tätigkeiten parallel ausgeführt werden sollten sie getrennt chronologisch behandelt und mit einer entsprechenden Kennzeichnung (Untertitel) versehen werden.</li>
+                        <li class="ml-2">Für jeden Arbeitsschritt sollte ein Absatz verwendet werden, um die Lesbarkeit zu erleichtern</li>
+                        <li class="ml-2">Ähnliche oder sich widerholende Tätigkeiten müssen nicht immer vollständig beschrieben, sondern können auch zusammengefasst werden.</li>
+                        <li class="ml-2">Grundlegende Fähigkeiten im Kochen werden vorausgesetzt, komplizierte Vorgänge können aber in einem getrennten Absatz näher erläutert werden.</li>
+                    </ol>
+                </div>
+            </form>
+    </div>
+</body>
 
-<h2 id="headerNR1"> Sie sind bei der Rezepteingabe.</h2>
 
-<form id="formNR1">
-<label id="labelNR1" for"ZAufwand">Zeitaufwand:
-<input id="inputNR1" name="ZAufwand">
-</label>
-</form>
 
-<form id="formNR2">
-<label id="labelNR2" for"Zutaten">Zutaten:
-<input id"inputNR2" name"Zutaten">
-</label>
-</form>
 
-<form id="formNR3">
-<input id"inputNR3" name"Anleitung" value="Anleitung:">
-</label>
-</form>
 
-<form id="formNR4" action="select.html">
-<labelid="labelNR3">Art des Rezepts:  </label>
-<select name="Art" size="1">
-<option>Fleisch </option>
-<option>Obst und Nüsse </option>
-<option>Gemüse </option>
-<option>Gewürz </option>
-<option>trocken </option>
-<option>Herzhaft </option>
-<option>Süß </option>
-<option>andere </option>
-</select>
-</form>
 
-<form id="formNR5">
-    <input id="inputNR4" type="button" value="zurück"
-    onclick="window.location.href='hauptseite.html'">
-</form>
-<button type="Posten">Posten</button>
+<!-- 
+
+
+
 
 <div id="divNR1">
 <h4 id="headerNR2">Infos: </h4>
@@ -57,3 +82,4 @@
 
 </body>
 </html>
+-->
