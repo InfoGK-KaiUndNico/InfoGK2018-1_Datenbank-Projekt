@@ -3,6 +3,22 @@
         <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
         <form id="formHS" action="select.html">
             <div class="row">
+                <div class="col-1">
+                    <router-link to="/neues-rezept">
+                        <span class="btn btn-primary mt-3 mb-1 mr-5">
+                            Neues Rezept
+                        </span>
+                    </router-link>
+                </div>
+                <div class="col-1">
+                    <router-link to="/nutzerdaten">
+                        <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5">
+                            Nutzerdaten
+                        </span>
+                    </router-link>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-3">
                     <label>Rezeptsuche</label>
                     <input class="form-control" placeholder="Suche" />
@@ -31,28 +47,28 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-1">
-                    <span class="btn btn-primary mt-3 mb-1 mr-5" onClick="window.location.href='neuesRezept.html'">
-                        Neues Rezept
-                    </span>
+                <div class="col-12">
+                    <p id="paragraphHS1">
+                        <span>
+                            Hier
+                            <br>kannst
+                            <br>du
+                            <br>mit
+                            <br>JS
+                            <br>die
+                            <br>Ausgabe
+                            <br>reinschreiben
+                        </span>
+                    </p>
                 </div>
-                <div class="col-1">
-                    <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5" onClick="window.location.href='Nutzerdaten.html'">
-                        Nutzerdaten
-                    </span>
-                </div>
-
             </div>
         </form>
-        <p id="paragraphHS1">
-            <span>Hier
-                <br>kannst
-                <br>du
-                <br>mit
-                <br>JS
-                <br>die
-                <br>Ausgabe
-                <br>reinschreiben </span>
-        </p>
     </div>
 </template>
+
+<script lang="ts">
+import Vue from "vue";
+
+@Component
+export default class Hauptseite extends Vue {}
+</script>

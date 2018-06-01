@@ -4,12 +4,12 @@
         <form id="formNR" action="select.html">
             <div class="row">
                 <div class="col-2">
-                    <label>Zeitaufwand</label>
-                    <input class="form-control" placeholder="Zeit" />
+                    <label id="labelLaufzeit">Zeitaufwand</label>
+                    <input class="form-control" placeholder="Zeit (HH:MM)" v-model="inputLaufzeit"/>
                 </div>
                 <div class="col-2">
                     <label>Art des Rezepts</label>
-                    <select class="form-control" name="Art">
+                    <select class="form-control" name="Art" v-model="inputArt">
                         <option>Fleisch </option>
                         <option>Obst und Nüsse </option>
                         <option>Gemüse </option>
@@ -23,17 +23,17 @@
             </div>
             <div class="row">
                 <div class="col-4 mt-2">
-                    <label>Zutaten</label>
-                    <textarea class="form-control"></textarea>
+                    <label id="labelZutaten">Zutaten</label>
+                    <textarea class="form-control" v-model="inputZutaten" placeholder="eine Zutat pro Zeile"></textarea>
                 </div>
                 <div class="col-6 mt-2">
                     <label>Anleitung</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea class="form-control" v-model="inputAnleitung"></textarea>
                 </div>
             </div>
             <div class="row">
                 <div class="col-3">
-                    <span class="btn btn-primary mt-3" onClick="window.location.href='Hauptseite.html'">
+                    <span class="btn btn-primary mt-3" @click="checkAnleitung">
                         Posten
                     </span>
                 </div>
@@ -58,3 +58,89 @@
         </form>
     </div>
 </template>
+
+<script lang="ts">
+import Vue from "vue";
+
+@Component
+export default class NewRecipe extends Vue {
+  //TODO request input Name und Label name from kai
+  private inputName: string = "";
+  private inputAnleitung: string = "";
+  private inputZutaten: string = "";
+  private inputArt: string = "";
+  private inputLaufzeit: string = "";
+  //TODO request button zurück from Kai
+  zurueck() {
+    this.$router.push("/hauptseite");
+  }
+  private checkAnleitung(event: MouseEvent) {
+    event.preventDefault();
+    if (this.inputLaufzeit.length > 0) {
+      if (/\d\d:\d\d/.test(this.inputLaufzeit) === false) {
+        const labelLaufzeit: HTMLLabelElement = document.querySelector(
+          "#labelLaufzeit"
+        )!;
+        labelLaufzeit.innerHTML = "Bitte Format beachten (HH:MM)";
+        labelLaufzeit.style.color = "red";
+        return;
+      }
+    }
+    if (this.inputName.length < 1) {
+      const labelName: HTMLLabelElement = document.querySelector("#labelName")!;
+      labelName.innerHTML = "Bitte Name eingeben";
+      labelName.style.color = "red";
+      return;
+    }
+    if (this.inputZutaten.length < 1) {
+      const labelZutaten: HTMLLabelElement = document.querySelector(
+        "#labelZutaten"
+      )!;
+      labelZutaten.innerHTML = "Bitte Zutaten eingeben";
+      labelZutaten.style.color = "red";
+      return;
+    }
+    this.rezeptAnlegen(
+      this.inputName,
+      this.inputAnleitung,
+      this.inputZutaten,
+      this.inputArt,
+      this.inputLaufzeit
+    );
+  }
+  private async rezeptAnlegen(
+    Name: string,
+    Anleitung: string,
+    Zutaten: string,
+    Art: string,
+    Laufzeit: string
+  ) {
+    const userName = localStorage.getItem("userName");
+    const token = localStorage.getItem("token");
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    //send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
+    const response = await fetch("url", {
+      body: JSON.stringify({
+        userName,
+        token,
+        Name,
+        Anleitung,
+        Zutaten,
+        Art,
+        Laufzeit
+      }),
+      headers,
+      method: "POST",
+      mode: "cors"
+    });
+    //Handle Errors, request from Kai <p id="uploadFail"></p>
+    const uploadFail: HTMLLabelElement = document.querySelector("#uploadFail")!;
+    if (!response.ok) {
+      uploadFail.innerHTML = "Fehler beim Hochladen";
+    } else {
+      uploadFail.innerHTML = "Daten erfolgreich hochgeladen!";
+    }
+  }
+}
+</script>

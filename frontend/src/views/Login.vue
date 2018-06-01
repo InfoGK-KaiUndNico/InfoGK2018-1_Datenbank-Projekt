@@ -10,12 +10,13 @@
                         </div>
                         <div class="col-3 mt-3">
                             <label id="labelPasswort">Passwort</label>
-                            <input @keypress.enter="check" id="inputPassword" type="password" class="form-control" v-model="password" />
+                            <input @keypress.enter="checkLogin" id="inputPassword" type="password" class="form-control" v-model="password" />
                         </div>
                         <div class="col-3 mt-5">
-                            <button @click="check" class="btn btn-primary">
+                            <button @click="checkLogin" class="btn btn-primary">
                               Log In
                             </button>
+                            <p id="loginFail"></p>
                         </div>
                     </div>
                 </form>
@@ -37,22 +38,22 @@ export default class Login extends Vue {
     inputPassword.focus();
   }
 
-  private check(event: MouseEvent) {
+  private checkLogin(event: MouseEvent) {
     event.preventDefault();
-
+    //check if input is empty or has whitespaces
     if (/\s+/.test(this.userName) === true || this.userName.length < 1) {
       const labelNutzername: HTMLLabelElement = document.querySelector(
         "#labelNutzername"
-      );
+      )!;
       labelNutzername.innerHTML = "Bitte Nutzername eingeben";
       labelNutzername.style.color = "red";
       return;
     }
-
+    //check if input is empty
     if (this.password.length < 1) {
       const labelPasswort: HTMLLabelElement = document.querySelector(
         "#labelPasswort"
-      );
+      )!;
       labelPasswort.innerHTML = "Bitte Passwort eingeben";
       labelPasswort.style.color = "red";
       return;
@@ -60,9 +61,37 @@ export default class Login extends Vue {
 
     this.login(this.userName, this.password);
   }
+  //Request from Kai button "Registrieren" @click="neuerAccount" Request from Kai Registrierseite
+  private neuerAccout() {
+    this.$router.push("/registrieren");
+  }
+  private async login(userName: string, password: string) {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
 
-  private login(userName: string, password: string) {
-    alert("doing login");
+    // Send login request to backend
+    const response = await fetch("url", {
+      body: JSON.stringify({ userName, password }),
+      headers,
+      method: "POST",
+      mode: "cors"
+    });
+
+    // Handle errors
+    if (!response.ok) {
+      const loginFail: HTMLLabelElement = document.querySelector("#loginFail")!;
+      loginFail.innerHTML = "Anmeldung fehlgeschlagen!";
+      return;
+    }
+
+    const { token } = await response.json();
+
+    // Add auth token and userName to localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("userName", userName);
+
+    // Redirect
+    this.$router.push("/hauptseite");
   }
 }
 </script>
