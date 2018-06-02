@@ -61,13 +61,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 import checkUserdata from '../lib/util/checkUserInput';
-import getCommonHeaders from '../lib/util/getCommonHeaders'
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 import RezeptListElement from '../components/RezeptListElement.vue';
 
 @Component({components: { RezeptListElement }})
 export default class Hauptseite extends Vue {
-	private Rezeptsuche: string = "";
+	private Rezeptsuche: string = '';
 
 	private rezeptArten: any[] = [
 		{ name: '---', value: 'none' },
@@ -81,8 +81,8 @@ export default class Hauptseite extends Vue {
 		{ name: 'andere', value: 'andere' }
 	];
 
-    private selectedArt: any = this.rezeptArten[0];
-    private selectedZutat: any = this.rezeptArten[0];
+	private selectedArt: any = this.rezeptArten[0];
+	private selectedZutat: any = this.rezeptArten[0];
 
 	private Zutaten: any[] = [];
 	private gefundeneRezepte: any[] = [];
@@ -103,41 +103,45 @@ export default class Hauptseite extends Vue {
 
 		// output data
 		const { zutaten }: { zutaten: string[] } = await response.json();
-        this.Zutaten = [{ name: '---', value: 'none'}, ...zutaten.map((zutat: string) => ({ name: zutat, value: zutat}))];
+		const normalizedZutaten = zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
+		this.Zutaten = [{ name: '---', value: 'none'}, ...normalizedZutaten];
 	}
 
 	// suche (check input + ausgabe)
 	private async OutputSearch(event: MouseEvent) {
 		event.preventDefault();
-		
+
 		// search zutat
 		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedArt.value === 'none') {
-		const response = await fetch('url', {
-			body: JSON.stringify({
-				selectedZutat: this.selectedZutat.value,
-			}),
-			headers: getCommonHeaders(),
-			method: 'POST',
-			mode: 'cors'
+			const response = await fetch('url', {
+				body: JSON.stringify({
+					selectedZutat: this.selectedZutat.value,
+				}),
+				headers: getCommonHeaders(),
+				method: 'POST',
+				mode: 'cors'
 			});
+
 			if (!response.ok) {
-			this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+				this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
 			}
+
 			return;
-		}	
+		}
 
 		// search art
 		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedZutat.value === 'none') {
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					selectedArt: this.selectedArt.value,
-			}),
-			headers: getCommonHeaders(),
-			method: 'POST',
-			mode: 'cors'
+				}),
+				headers: getCommonHeaders(),
+				method: 'POST',
+				mode: 'cors'
 			});
+
 			if (!response.ok) {
-			this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+				this.gefundeneRezepte[0] = {message: 'Suche fehlgeschlagen', value: 'error'};
 			}
 			return;
 		}
@@ -147,18 +151,20 @@ export default class Hauptseite extends Vue {
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					Rezeptsuche: this.Rezeptsuche,
-			}),
-			headers: getCommonHeaders(),
-			method: 'POST',
-			mode: 'cors'
+				}),
+				headers: getCommonHeaders(),
+				method: 'POST',
+				mode: 'cors'
 			});
+
 			if (!response.ok) {
-				this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+				this.gefundeneRezepte[0] = {message: 'Suche fehlgeschlagen', value: 'error'};
 			}
+
 			return;
 		}
 
-		this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen, bitte nur nach einem Wert suchen', value:'ErrordoubleInput'};
+		this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen, bitte nur nach einem Wert suchen', value: 'ErrordoubleInput' };
 	}
 }
 </script>

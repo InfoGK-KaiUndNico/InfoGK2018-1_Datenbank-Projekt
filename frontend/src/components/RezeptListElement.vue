@@ -25,7 +25,7 @@ export default class RezeptListElement extends Vue {
 	private review: string;
 
 	private shouldReview: boolean = localStorage.getItem('userRang') === 'Admin' && this.review === null;
-	private isReviewed: boolean = this.review === null
+	private isReviewed: boolean = this.review === null;
 }
 </script>
 

@@ -24,7 +24,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
-import getCommonHeaders from '../lib/util/getCommonHeaders'
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 @Component
 export default class Nutzerdaten extends Vue {
@@ -35,7 +35,7 @@ export default class Nutzerdaten extends Vue {
 	private updateFail = document.querySelector('#updateFail')!;
 	// showUserData
 	private async showUserData() {
-		
+
 		// send token and username to backend to veryfy identity and get data
 		const response = await fetch('url', {
 			headers: getCommonHeaders(),
