@@ -10,14 +10,14 @@
     </head>
     <body>
         <div class="container">
-            <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
+            <h2 class="mt-2">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
             <form id="formHS" action="select.html">
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-3 mt-3">
                         <label>Rezeptsuche</label>
                         <input class="form-control" placeholder="Suche"/>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 mt-3">
                         <label>Zutatensuche</label>
                         <select class="form-control">
                             <option>Salz</option>
@@ -26,7 +26,7 @@
                             <option>witziger Witz</option>
                         </select>    
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 mt-3">
                        <label>Suche nach Art</label>
                        <select class="form-control">
                             <option>Fleisch </option>
@@ -38,6 +38,11 @@
                             <option>Süß </option>
                             <option>andere </option>
                        </select> 
+                    </div>
+                    <div class="col-1 mt-5">
+                        <span class="btn btn-primary">
+                            Suchen
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -53,8 +58,21 @@
                     </div>
 
                 </div>
+                <div class="row">
+                    <div class="col-2">
+                        <p id="paragraphHS1"> 
+                            <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> 
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <span class="btn btn-primary" onClick="window.location.href='Rezeptanzeige.html'" >
+                            Rezept anzeigen
+                        </span>
+                    </div>
+                </div>
             </form>
-            <p id="paragraphHS1"> <span>Hier <br>kannst <br>du <br>mit <br>JS <br>die <br>Ausgabe <br>reinschreiben </span> </p>
         </div>
     </body>
 </html>
