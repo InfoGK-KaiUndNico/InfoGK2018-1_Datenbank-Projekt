@@ -22,88 +22,71 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from 'vue-property-decorator';
+import checkUserdata from '../lib/util/checkUserInput';
+import getCommonHeaders from '../lib/util/getCommonHeaders'
 
 @Component
 export default class Nutzerdaten extends Vue {
-  private inputChangeUsername: string = "";
-  private inputChangePassword: string = "";
-  private inputUsername: HTMLInputElement = document.querySelector(
-    "#inputChangeUsername"
-  );
-  private inputPassword: HTMLInputElement = document.querySelector(
-    "#inputChangePassword"
-  );
-  //showUserData
-  private async showUserData() {
-    const userName = localStorage.getItem("userName");
-    const token = localStorage.getItem("token");
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    //send token and username to backend to veryfy identity and get data
-    const response = await fetch("url", {
-      body: JSON.stringify({ userName, token }),
-      headers,
-      method: "POST",
-      mode: "cors"
-    });
-    if (!response.ok) {
-      this.inputUsername.innerHTML = "Fehler beim Laden der Daten";
-      this.inputPassword.innerHTML = "Fehler beim Laden der Daten";
-      return;
-    }
-    //output data
-    const { responseUsername, responsePassword } = await response.json();
-    this.inputUsername.innerHTML = responseUsername;
-    this.inputPassword.innerHTML = responsePassword;
-  }
-  private zurueck() {
-    this.$router.push("/hauptseite");
-  }
-  private checkUserdata(event: MouseEvent) {
-    event.preventDefault();
-    if (
-      /\s+/.test(this.inputChangeUsername) === true ||
-      this.inputChangeUsername.length < 1
-    ) {
-      this.inputUsername.innerHTML = "Nutzername muss min. 1 Zeichen enthalten";
-      this.inputUsername.style.color = "red";
-      this.showUserData();
-      return;
-    }
-    if (this.inputChangePassword.length < 1) {
-      this.inputPassword.innerHTML = "Passwort muss min. 1 Zeichen enthalten";
-      this.inputPassword.style.color = "red";
-      this.showUserData();
-      return;
-    }
-    this.updateUser(this.inputChangeUsername, this.inputChangePassword);
-  }
-  //TODO update Data !Request Button from Kai (@click="updateUser"), <p id="loginFail"></p>
-  private async updateUser(currentUsername: string, currentPassword: string) {
-    const userName = localStorage.getItem("userName");
-    const token = localStorage.getItem("token");
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    //send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
-    const response = await fetch("url", {
-      body: JSON.stringify({
-        userName,
-        token,
-        currentPassword,
-        currentUsername
-      }),
-      headers,
-      method: "POST",
-      mode: "cors"
-    });
-    //Handle Errors
-    const updateFail: HTMLLabelElement = document.querySelector("#updateFail")!;
-    if (!response.ok) {
-      updateFail.innerHTML = "Fehler beim Hochladen";
-    } else {
-      updateFail.innerHTML = "Daten erfolgreich hochgeladen!";
-    }
-  }
+	private inputChangeUsername: string = '';
+	private inputChangePassword: string = '';
+	private inputUsername = document.querySelector('#inputChangeUsername')!;
+	private inputPassword = document.querySelector('#inputChangePassword')!;
+	private updateFail = document.querySelector('#updateFail')!;
+	// showUserData
+	private async showUserData() {
+		
+		// send token and username to backend to veryfy identity and get data
+		const response = await fetch('url', {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+		if (!response.ok) {
+			this.inputUsername.innerHTML = 'Fehler beim Laden der Daten';
+			this.inputPassword.innerHTML = 'Fehler beim Laden der Daten';
+			return;
+		}
+		// output data
+		const { responseUsername, responsePassword } = await response.json();
+		this.inputUsername.innerHTML = responseUsername;
+		this.inputPassword.innerHTML = responsePassword;
+	}
+	private zurueck() {
+		this.$router.push('/hauptseite');
+	}
+
+	private async updateUser(event: MouseEvent) {
+		event.preventDefault();
+		if (checkUserdata(this.inputChangeUsername, 30, { checkWhitespace: true, checkLength: true }) === false) {
+			this.inputUsername.innerHTML = 'Nutzername muss min. 1 Zeichen enthalten und darf keine Leer- und Sonderzeichen enthalten';
+			// this.inputUsername.style.color = 'red';
+			this.showUserData();
+			return;
+		}
+		if (checkUserdata(this.inputChangePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
+			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
+			// this.inputPassword.style.color = 'red';
+			this.showUserData();
+			return;
+		}
+
+		// send token and username to backend
+		const response = await fetch('url', {
+			body: JSON.stringify({
+				currentPassword: this.inputChangePassword,
+				currentUsername: this.inputChangeUsername
+			}),
+			headers: getCommonHeaders(),
+			method: 'POST',
+			mode: 'cors'
+		});
+		// Handle Errors
+		if (!response.ok) {
+			this.updateFail.innerHTML = 'Fehler beim Hochladen';
+		} else {
+			this.updateFail.innerHTML = 'Daten erfolgreich hochgeladen!';
+		}
+	}
 }
 </script>

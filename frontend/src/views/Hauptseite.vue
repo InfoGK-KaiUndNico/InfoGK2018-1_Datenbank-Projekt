@@ -21,28 +21,22 @@
             <div class="row">
                 <div class="col-3">
                     <label>Rezeptsuche</label>
-                    <input class="form-control" placeholder="Suche" />
+                    <input class="form-control" placeholder="Suche" v-model="Rezeptsuche"/>
                 </div>
                 <div class="col-3">
                     <label>Zutatensuche</label>
-                    <select class="form-control">
-                        <option>Salz</option>
-                        <option>Pfeffer</option>
-                        <option>Zucker</option>
-                        <option>witziger Witz</option>
+                    <select v-model="selectedZutat" class="form-control">
+                        <option v-for="option in Zutaten" v-bind:key="option.name" v-bind:value="option.value">
+                                {{ option.name }}
+                        </option>
                     </select>
                 </div>
                 <div class="col-3">
                     <label>Suche nach Art</label>
-                    <select class="form-control">
-                        <option>Fleisch </option>
-                        <option>Obst und Nüsse </option>
-                        <option>Gemüse </option>
-                        <option>Gewürz </option>
-                        <option>trocken </option>
-                        <option>Herzhaft </option>
-                        <option>Süß </option>
-                        <option>andere </option>
+                    <select v-model="selectedArt" class="form-control">
+                        <option v-for="option in rezeptArten" v-bind:key="option.name" v-bind:value="option.value">
+                                {{ option.name }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -50,14 +44,11 @@
                 <div class="col-12">
                     <p id="paragraphHS1">
                         <span>
-                            Hier
-                            <br>kannst
-                            <br>du
-                            <br>mit
-                            <br>JS
-                            <br>die
-                            <br>Ausgabe
-                            <br>reinschreiben
+                            <ul>
+  								<li v-for="rezept in gefundeneRezepte" v-bind:key="rezept.name">
+									<RezeptListElement v-bind="rezept"/>
+  								</li>
+							</ul>
                         </span>
                     </p>
                 </div>
@@ -67,8 +58,107 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from 'vue-property-decorator';
 
-@Component
-export default class Hauptseite extends Vue {}
+import checkUserdata from '../lib/util/checkUserInput';
+import getCommonHeaders from '../lib/util/getCommonHeaders'
+
+import RezeptListElement from '../components/RezeptListElement.vue';
+
+@Component({components: { RezeptListElement }})
+export default class Hauptseite extends Vue {
+	private Rezeptsuche: string = "";
+
+	private rezeptArten: any[] = [
+		{ name: '---', value: 'none' },
+		{ name: 'Fleisch', value: 'Fleisch' },
+		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
+		{ name: 'Gemüse', value: 'Gemuese' },
+		{ name: 'Gewürz', value: 'Gewuerz' },
+		{ name: 'trocken', value: 'trocken' },
+		{ name: 'Herzhaft', value: 'Herzhaft' },
+		{ name: 'Süß', value: 'Suess' },
+		{ name: 'andere', value: 'andere' }
+	];
+
+    private selectedArt: any = this.rezeptArten[0];
+    private selectedZutat: any = this.rezeptArten[0];
+
+	private Zutaten: any[] = [];
+	private gefundeneRezepte: any[] = [];
+
+	private async loadZutaten() {
+
+		// get all ingredients
+		const response = await fetch('url', {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			this.Zutaten[0] = { name: 'Fehler beim Laden der Daten', value: 'error' };
+			return;
+		}
+
+		// output data
+		const { zutaten }: { zutaten: string[] } = await response.json();
+        this.Zutaten = [{ name: '---', value: 'none'}, ...zutaten.map((zutat: string) => ({ name: zutat, value: zutat}))];
+	}
+
+	// suche (check input + ausgabe)
+	private async OutputSearch(event: MouseEvent) {
+		event.preventDefault();
+		
+		// search zutat
+		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedArt.value === 'none') {
+		const response = await fetch('url', {
+			body: JSON.stringify({
+				selectedZutat: this.selectedZutat.value,
+			}),
+			headers: getCommonHeaders(),
+			method: 'POST',
+			mode: 'cors'
+			});
+			if (!response.ok) {
+			this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+			}
+			return;
+		}	
+
+		// search art
+		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedZutat.value === 'none') {
+			const response = await fetch('url', {
+				body: JSON.stringify({
+					selectedArt: this.selectedArt.value,
+			}),
+			headers: getCommonHeaders(),
+			method: 'POST',
+			mode: 'cors'
+			});
+			if (!response.ok) {
+			this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+			}
+			return;
+		}
+
+		// search rezept
+		if (this.selectedZutat.value === 'none' && this.selectedArt.value === 'none') {
+			const response = await fetch('url', {
+				body: JSON.stringify({
+					Rezeptsuche: this.Rezeptsuche,
+			}),
+			headers: getCommonHeaders(),
+			method: 'POST',
+			mode: 'cors'
+			});
+			if (!response.ok) {
+				this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen', value:'error'};
+			}
+			return;
+		}
+
+		this.gefundeneRezepte[0] = {message:'Suche fehlgeschlagen, bitte nur nach einem Wert suchen', value:'ErrordoubleInput'};
+	}
+}
 </script>

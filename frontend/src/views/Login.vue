@@ -10,10 +10,10 @@
                         </div>
                         <div class="col-3 mt-3">
                             <label id="labelPasswort">Passwort</label>
-                            <input @keypress.enter="checkLogin" id="inputPassword" type="password" class="form-control" v-model="password" />
+                            <input @keypress.enter="login" id="inputPassword" type="password" class="form-control" v-model="password" />
                         </div>
                         <div class="col-3 mt-5">
-                            <button @click="checkLogin" class="btn btn-primary">
+                            <button @click="login" class="btn btn-primary">
                               Log In
                             </button>
                             <p id="loginFail"></p>
@@ -24,75 +24,68 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
+import checkUserdata from '../lib/util/checkUserInput';
+import jwt_decode from 'jwt-decode';
 
 @Component
 export default class Login extends Vue {
-  private userName: string = "";
-  private password: string = "";
+	private userName: string = '';
+	private password: string = '';
 
-  private moveFocus() {
-    const inputPassword: HTMLInputElement = document.querySelector(
-      "#inputPassword"
-    );
-    inputPassword.focus();
-  }
+	/* private moveFocus() {
+		const inputPassword = document.querySelector('#inputPassword')!;
+		inputPassword.focus();
+	} */
 
-  private checkLogin(event: MouseEvent) {
-    event.preventDefault();
-    //check if input is empty or has whitespaces
-    if (/\s+/.test(this.userName) === true || this.userName.length < 1) {
-      const labelNutzername: HTMLLabelElement = document.querySelector(
-        "#labelNutzername"
-      )!;
-      labelNutzername.innerHTML = "Bitte Nutzername eingeben";
-      labelNutzername.style.color = "red";
-      return;
-    }
-    //check if input is empty
-    if (this.password.length < 1) {
-      const labelPasswort: HTMLLabelElement = document.querySelector(
-        "#labelPasswort"
-      )!;
-      labelPasswort.innerHTML = "Bitte Passwort eingeben";
-      labelPasswort.style.color = "red";
-      return;
-    }
+	// Request from Kai button "Registrieren" @click="neuerAccount" Request from Kai Registrierseite
+	private neuerAccout() {
+		this.$router.push('/registrieren');
+	}
 
-    this.login(this.userName, this.password);
-  }
-  //Request from Kai button "Registrieren" @click="neuerAccount" Request from Kai Registrierseite
-  private neuerAccout() {
-    this.$router.push("/registrieren");
-  }
-  private async login(userName: string, password: string) {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+	private async login(event: MouseEvent) {
+		event.preventDefault();
+		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true }) === false) {
+			const inputUsername = document.querySelector('#labelNutzername')!;
+			inputUsername.innerHTML = 'Bitte Nutzername eingeben';
+			// this.inputUsername.style.color = 'red';
+			return;
+		} else if (checkUserdata(this.password, 40, { checkWhitespace: true, checkLength: true }) === false) {
+			const labelPasswort = document.querySelector('#labelPasswort')!;
+			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
+			// this.inputPassword.style.color = 'red';
+			return;
+		} else {
+		const headers = new Headers();
+		headers.append('Content-Type', 'application/json');
 
-    // Send login request to backend
-    const response = await fetch("url", {
-      body: JSON.stringify({ userName, password }),
-      headers,
-      method: "POST",
-      mode: "cors"
-    });
+		// Send login request to backend
+		const response = await fetch('url', {
+			body: JSON.stringify({ userName: this.userName, password: this.password }),
+			headers,
+			method: 'POST',
+			mode: 'cors'
+		});
 
-    // Handle errors
-    if (!response.ok) {
-      const loginFail: HTMLLabelElement = document.querySelector("#loginFail")!;
-      loginFail.innerHTML = "Anmeldung fehlgeschlagen!";
-      return;
-    }
+		// Handle errors
+		if (!response.ok) {
+			const loginFail = document.querySelector('#loginFail')!;
+			loginFail.innerHTML = 'Anmeldung fehlgeschlagen!';
+			return;
+		}
 
-    const { token } = await response.json();
+		const { token } = await response.json();
+		const { rang } = jwt_decode(token);
 
-    // Add auth token and userName to localStorage
-    localStorage.setItem("token", token);
-    localStorage.setItem("userName", userName);
+		// Add auth token and userName to localStorage
+		localStorage.setItem('token', token);
+		localStorage.setItem('userName', this.userName);
+		localStorage.setItem('userRang', rang);
 
-    // Redirect
-    this.$router.push("/hauptseite");
-  }
+		// Redirect
+		this.$router.push('/hauptseite');
+		}
+	}
 }
 </script>
 

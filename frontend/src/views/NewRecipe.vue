@@ -9,16 +9,11 @@
                 </div>
                 <div class="col-2">
                     <label>Art des Rezepts</label>
-                    <select class="form-control" name="Art" v-model="inputArt">
-                        <option>Fleisch </option>
-                        <option>Obst und Nüsse </option>
-                        <option>Gemüse </option>
-                        <option>Gewürz </option>
-                        <option>trocken </option>
-                        <option>Herzhaft </option>
-                        <option>Süß </option>
-                        <option>andere </option>
-                    </select>
+                        <select class="form-control" name="Art" v-model="inputArt">
+                            <option v-for="option in rezeptArten" v-bind:key="option.name" v-bind:value="option.value">
+                                {{ option.name }}
+                            </option>
+                        </select>
                 </div>
             </div>
             <div class="row">
@@ -27,13 +22,13 @@
                     <textarea class="form-control" v-model="inputZutaten" placeholder="eine Zutat pro Zeile"></textarea>
                 </div>
                 <div class="col-6 mt-2">
-                    <label>Anleitung</label>
+                    <label id="labelAnleitung">Anleitung</label>
                     <textarea class="form-control" v-model="inputAnleitung"></textarea>
                 </div>
             </div>
             <div class="row">
                 <div class="col-3">
-                    <span class="btn btn-primary mt-3" @click="checkAnleitung">
+                    <span class="btn btn-primary mt-3" @click="rezeptAnlegen">
                         Posten
                     </span>
                 </div>
@@ -60,87 +55,104 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from 'vue-property-decorator';
+import checkUserdata from '../lib/util/checkUserInput';
+import getCommonHeaders from '../lib/util/getCommonHeaders'
+
 
 @Component
 export default class NewRecipe extends Vue {
-  //TODO request input Name und Label name from kai
-  private inputName: string = "";
-  private inputAnleitung: string = "";
-  private inputZutaten: string = "";
-  private inputArt: string = "";
-  private inputLaufzeit: string = "";
-  //TODO request button zurück from Kai
-  zurueck() {
-    this.$router.push("/hauptseite");
-  }
-  private checkAnleitung(event: MouseEvent) {
-    event.preventDefault();
-    if (this.inputLaufzeit.length > 0) {
-      if (/\d\d:\d\d/.test(this.inputLaufzeit) === false) {
-        const labelLaufzeit: HTMLLabelElement = document.querySelector(
-          "#labelLaufzeit"
-        )!;
-        labelLaufzeit.innerHTML = "Bitte Format beachten (HH:MM)";
-        labelLaufzeit.style.color = "red";
-        return;
-      }
-    }
-    if (this.inputName.length < 1) {
-      const labelName: HTMLLabelElement = document.querySelector("#labelName")!;
-      labelName.innerHTML = "Bitte Name eingeben";
-      labelName.style.color = "red";
-      return;
-    }
-    if (this.inputZutaten.length < 1) {
-      const labelZutaten: HTMLLabelElement = document.querySelector(
-        "#labelZutaten"
-      )!;
-      labelZutaten.innerHTML = "Bitte Zutaten eingeben";
-      labelZutaten.style.color = "red";
-      return;
-    }
-    this.rezeptAnlegen(
-      this.inputName,
-      this.inputAnleitung,
-      this.inputZutaten,
-      this.inputArt,
-      this.inputLaufzeit
-    );
-  }
-  private async rezeptAnlegen(
-    Name: string,
-    Anleitung: string,
-    Zutaten: string,
-    Art: string,
-    Laufzeit: string
-  ) {
-    const userName = localStorage.getItem("userName");
-    const token = localStorage.getItem("token");
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    //send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
-    const response = await fetch("url", {
-      body: JSON.stringify({
-        userName,
-        token,
-        Name,
-        Anleitung,
-        Zutaten,
-        Art,
-        Laufzeit
-      }),
-      headers,
-      method: "POST",
-      mode: "cors"
-    });
-    //Handle Errors, request from Kai <p id="uploadFail"></p>
-    const uploadFail: HTMLLabelElement = document.querySelector("#uploadFail")!;
-    if (!response.ok) {
-      uploadFail.innerHTML = "Fehler beim Hochladen";
-    } else {
-      uploadFail.innerHTML = "Daten erfolgreich hochgeladen!";
-    }
-  }
+	// TODO request input Name und Label name from kai
+	private inputName: string = '';
+	private inputAnleitung: string = '';
+	private inputZutaten: string = '';
+	private inputArt: string = '';
+	private inputLaufzeit: string = '';
+	private rezeptArten: any[] = [
+		{ name: 'art1', value: 'art1' },
+		{ name: 'Fleisch', value: 'Fleisch' },
+		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
+		{ name: 'Gemüse', value: 'Gemuese' },
+		{ name: 'Gewürz', value: 'Gewuerz' },
+		{ name: 'trocken', value: 'trocken' },
+		{ name: 'Herzhaft', value: 'Herzhaft' },
+		{ name: 'Süß', value: 'Suess' },
+		{ name: 'andere', value: 'andere' }
+	];
+
+	// TODO request button zurück from Kai
+	private zurueck() {
+		this.$router.push('/hauptseite');
+		alert(this.inputArt);
+	}
+
+	private async rezeptAnlegen(event: MouseEvent) {
+		event.preventDefault();
+		if (/\d\d:\d\d/.test(this.inputLaufzeit) === false) {
+			const labelLaufzeit = document.querySelector('#labelLaufzeit')!;
+			labelLaufzeit.innerHTML = 'Bitte Format beachten (HH:MM)';
+			// labelLaufzeit.style.color = 'red';
+			return;
+		}
+
+		if (
+			checkUserdata(this.inputZutaten, 65538, {
+				checkWhitespace: false,
+				checkLength: true
+			}) === false
+		) {
+			const labelZutaten = document.querySelector('#labelZutaten')!;
+			labelZutaten.innerHTML = 'Bitte Zutaten eingeben (keine Sonderzeichen)';
+			// labelZutaten.style.color = 'red';
+			return;
+		}
+
+		if (
+			checkUserdata(this.inputName, 100, {
+				checkWhitespace: false,
+				checkLength: true
+			}) === false
+		) {
+			const labelName = document.querySelector('#labelName')!;
+			labelName.innerHTML = 'Bitte Name eingeben (keine Sonderzeichen)';
+			// labelName.style.color = 'red';
+			return;
+		}
+
+		if (
+			checkUserdata(this.inputAnleitung, 65538, {
+				checkWhitespace: false,
+				checkLength: true
+			}) === false
+		) {
+			const labelName = document.querySelector('#labelAnleitung')!;
+			labelName.innerHTML = 'Bitte Anleitung eingeben';
+			// labelName.style.color = 'red';
+			return;
+		}
+
+		// Send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
+		const response = await fetch('url', {
+			body: JSON.stringify({
+				inputName: this.inputName,
+				inputAnleitung: this.inputAnleitung,
+				inputZutaten: this.inputZutaten,
+				inputArt: this.inputArt,
+				inputLaufzeit: this.inputLaufzeit
+			}),
+			headers: getCommonHeaders(),
+			method: 'POST',
+			mode: 'cors'
+		});
+
+		// Handle Errors, request from Kai <p id="uploadFail"></p>
+		const uploadFail = document.querySelector('#uploadFail')!;
+		if (!response.ok) {
+			uploadFail.innerHTML = 'Fehler beim Hochladen';
+			return;
+		}
+
+		uploadFail.innerHTML = 'Daten erfolgreich hochgeladen!';
+	}
 }
 </script>
