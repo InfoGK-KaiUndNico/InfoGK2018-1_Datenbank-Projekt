@@ -44,24 +44,31 @@ export default class Login extends Vue {
 	}
 
 	private async login(event: MouseEvent) {
+
 		event.preventDefault();
+
+		// Validate username
 		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputUsername = document.querySelector('#labelNutzername')!;
 			inputUsername.innerHTML = 'Bitte Nutzername eingeben';
 			// this.inputUsername.style.color = 'red';
 			return;
-		} else if (checkUserdata(this.password, 40, { checkWhitespace: true, checkLength: true }) === false) {
+		}
+
+		// Validate password
+		if (checkUserdata(this.password, 40, { checkWhitespace: true, checkLength: true }) === false) {
 			const labelPasswort = document.querySelector('#labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
 			// this.inputPassword.style.color = 'red';
 			return;
-		} else {
+		}
+
 		const headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
 		// Send login request to backend
-		const response = await fetch('url', {
-			body: JSON.stringify({ userName: this.userName, password: this.password }),
+		const response = await fetch(`${process.env.API_BASE_URL}/auth`, {
+			body: JSON.stringify({ name: this.userName, passwort: this.password }),
 			headers,
 			method: 'POST',
 			mode: 'cors'
@@ -84,7 +91,6 @@ export default class Login extends Vue {
 
 		// Redirect
 		this.$router.push('/hauptseite');
-		}
 	}
 }
 </script>

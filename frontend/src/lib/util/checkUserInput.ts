@@ -15,9 +15,10 @@ export default function checkUserdata(
 	if (checkLength && input.length < 1) {
 		return false;
 	}
+
 	if (input.length > maxLength) {
 		return false;
 	}
 
-	return !validator.isAlphanumeric(input);
+	return validator.isAlphanumeric(input);
 }

@@ -101,9 +101,10 @@ export default class Hauptseite extends Vue {
 			return;
 		}
 
-		// output data
+		// transform and handle response data
 		const { zutaten }: { zutaten: string[] } = await response.json();
 		const normalizedZutaten = zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
+
 		this.Zutaten = [{ name: '---', value: 'none'}, ...normalizedZutaten];
 	}
 
