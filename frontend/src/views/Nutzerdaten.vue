@@ -11,6 +11,10 @@
                     <label>Passwort</label>
                     <input id="inputChangePassword" class="form-control" v-model="changePassword"/>
                 </div>
+				<div class="col-3 mt-3">
+                    <label>EMail</label>
+                    <input class="form-control" id="inputChangeEmail" v-model="changeEmail"/>
+                </div>
                 <div class="col-2 mt-5">
                     <span class="btn btn-primary " @click="zurueck">
                         zurück
@@ -24,48 +28,68 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
+
 import getCommonHeaders from '../lib/util/getCommonHeaders'
+import validator from 'validator';
 
 @Component
 export default class Nutzerdaten extends Vue {
 	private inputChangeUsername: string = '';
 	private inputChangePassword: string = '';
+	private inputChangeEmail: string = '';
 	private inputUsername = document.querySelector('#inputChangeUsername')!;
 	private inputPassword = document.querySelector('#inputChangePassword')!;
+	private inputEmail = document.querySelector('#inputChangeEmail')!;
 	private updateFail = document.querySelector('#updateFail')!;
+
 	// showUserData
+	private showUserData();
+
 	private async showUserData() {
-		
+
 		// send token and username to backend to veryfy identity and get data
 		const response = await fetch('url', {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
 		});
+
 		if (!response.ok) {
 			this.inputUsername.innerHTML = 'Fehler beim Laden der Daten';
 			this.inputPassword.innerHTML = 'Fehler beim Laden der Daten';
+			this.inputEmail.innerHTML = 'Fehler beim Laden der Daten';
 			return;
 		}
+
 		// output data
-		const { responseUsername, responsePassword } = await response.json();
+		const { responseUsername, responsePassword, responseEmail } = await response.json();
 		this.inputUsername.innerHTML = responseUsername;
 		this.inputPassword.innerHTML = responsePassword;
+		this.inputEmail.innerHTML = responseEmail;
 	}
+
 	private zurueck() {
 		this.$router.push('/hauptseite');
 	}
 
 	private async updateUser(event: MouseEvent) {
 		event.preventDefault();
+
 		if (checkUserdata(this.inputChangeUsername, 30, { checkWhitespace: true, checkLength: true }) === false) {
 			this.inputUsername.innerHTML = 'Nutzername muss min. 1 Zeichen enthalten und darf keine Leer- und Sonderzeichen enthalten';
 			// this.inputUsername.style.color = 'red';
 			this.showUserData();
 			return;
 		}
+
 		if (checkUserdata(this.inputChangePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
 			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
+			// this.inputPassword.style.color = 'red';
+			this.showUserData();
+			return;
+		}
+		if (checkUserdata(this.inputChangeEmail, 40, { checkWhitespace: true, checkLength: true }) === false || validator.isEmail(this.inputChangeEmail) === false) {
+			this.inputPassword.innerHTML = 'keine gültige Email-Adresse';
 			// this.inputPassword.style.color = 'red';
 			this.showUserData();
 			return;
@@ -75,18 +99,21 @@ export default class Nutzerdaten extends Vue {
 		const response = await fetch('url', {
 			body: JSON.stringify({
 				currentPassword: this.inputChangePassword,
-				currentUsername: this.inputChangeUsername
+				currentUsername: this.inputChangeUsername,
+				currentEmail: this.inputChangeEmail
 			}),
 			headers: getCommonHeaders(),
 			method: 'POST',
 			mode: 'cors'
 		});
+
 		// Handle Errors
 		if (!response.ok) {
 			this.updateFail.innerHTML = 'Fehler beim Hochladen';
-		} else {
-			this.updateFail.innerHTML = 'Daten erfolgreich hochgeladen!';
+			return;
 		}
+
+		this.updateFail.innerHTML = 'Daten erfolgreich hochgeladen!';
 	}
 }
 </script>

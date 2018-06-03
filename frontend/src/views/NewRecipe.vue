@@ -57,8 +57,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
-import getCommonHeaders from '../lib/util/getCommonHeaders'
-
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 @Component
 export default class NewRecipe extends Vue {
