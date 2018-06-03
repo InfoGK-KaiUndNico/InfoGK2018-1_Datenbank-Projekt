@@ -10,6 +10,13 @@
                         </span>
                     </router-link>
                 </div>
+				<div class="col-2"> 
+					<router-link to="/neue-zutat">
+                        <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5"> 
+                            Neue Zutat 
+                        </span> 
+					</router-link>
+                </div> 
                 <div class="col-1">
                     <router-link to="/nutzerdaten">
                         <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5">
@@ -26,19 +33,24 @@
                 <div class="col-3">
                     <label>Zutatensuche</label>
                     <select v-model="selectedZutat" class="form-control">
-                        <option v-for="option in Zutaten" v-bind:key="option.name" v-bind:value="option.value">
-                                {{ option.name }}
+                        <option v-for="option in Zutaten" v-bind:key="option.name">
+							{{ option.name }}
                         </option>
                     </select>
                 </div>
                 <div class="col-3">
                     <label>Suche nach Art</label>
                     <select v-model="selectedArt" class="form-control">
-                        <option v-for="option in rezeptArten" v-bind:key="option.name" v-bind:value="option.value">
-                                {{ option.name }}
+                        <option v-for="option in rezeptArten" v-bind:key="option.name">
+							{{ option.name }}
                         </option>
                     </select>
                 </div>
+				<div class="col-1 mt-5">
+                        <span class="btn btn-primary">
+                            Suchen
+                        </span>
+                    </div>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -62,6 +74,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import loadZutaten from '../lib/util/loadZutaten';
 
 import RezeptListElement from '../components/RezeptListElement.vue';
 
@@ -69,8 +82,8 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 export default class Hauptseite extends Vue {
 	private Rezeptsuche: string = '';
 
+	private Zutaten = [];
 	private rezeptArten: any[] = [
-		{ name: '---', value: 'none' },
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
 		{ name: 'Gemüse', value: 'Gemuese' },
@@ -84,36 +97,20 @@ export default class Hauptseite extends Vue {
 	private selectedArt: any = this.rezeptArten[0];
 	private selectedZutat: any = this.rezeptArten[0];
 
-	private Zutaten: any[] = [];
 	private gefundeneRezepte: any[] = [];
 
-	private async loadZutaten() {
-
-		// get all ingredients
-		const response = await fetch('url', {
-			headers: getCommonHeaders(),
-			method: 'GET',
-			mode: 'cors'
-		});
-
-		if (!response.ok) {
-			this.Zutaten[0] = { name: 'Fehler beim Laden der Daten', value: 'error' };
-			return;
-		}
-
-		// transform and handle response data
-		const { zutaten }: { zutaten: string[] } = await response.json();
-		const normalizedZutaten = zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
-
-		this.Zutaten = [{ name: '---', value: 'none'}, ...normalizedZutaten];
+	private async mounted() {
+		const zutaten = await loadZutaten();
+		this.Zutaten = zutaten;
 	}
 
 	// suche (check input + ausgabe)
 	private async OutputSearch(event: MouseEvent) {
 		event.preventDefault();
 
-		// search zutat
-		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedArt.value === 'none') {
+		// search zutat if rezeptsuche and Art empty
+		if (this.Rezeptsuche.length < 1 && typeof this.selectedArt.value === 'undefined') {
+			
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					selectedZutat: this.selectedZutat.value,
@@ -125,13 +122,14 @@ export default class Hauptseite extends Vue {
 
 			if (!response.ok) {
 				this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+				return;
 			}
-
+			// TODO output search
 			return;
 		}
 
-		// search art
-		if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === false && this.selectedZutat.value === 'none') {
+		// search art if Rezeptsuche and Zutat empty
+		if (this.Rezeptsuche.length < 1 && typeof this.selectedZutat.value === 'undefined') {
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					selectedArt: this.selectedArt.value,
@@ -143,28 +141,36 @@ export default class Hauptseite extends Vue {
 
 			if (!response.ok) {
 				this.gefundeneRezepte[0] = {message: 'Suche fehlgeschlagen', value: 'error'};
+				return;
 			}
-			return;
-		}
-
-		// search rezept
-		if (this.selectedZutat.value === 'none' && this.selectedArt.value === 'none') {
-			const response = await fetch('url', {
-				body: JSON.stringify({
-					Rezeptsuche: this.Rezeptsuche,
-				}),
-				headers: getCommonHeaders(),
-				method: 'POST',
-				mode: 'cors'
-			});
-
-			if (!response.ok) {
-				this.gefundeneRezepte[0] = {message: 'Suche fehlgeschlagen', value: 'error'};
-			}
+			// TODO output search
 
 			return;
 		}
 
+		// search rezept if Zutat and Art empty
+		if (typeof this.selectedZutat.value === 'undefined' && typeof this.selectedArt.value === 'undefined') {
+			
+			// check input and search
+			if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === true) {
+				const response = await fetch('url', {
+					body: JSON.stringify({
+						Rezeptsuche: this.Rezeptsuche,
+					}),
+					headers: getCommonHeaders(),
+					method: 'POST',
+					mode: 'cors'
+				});
+
+				if (!response.ok) {
+					this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+					return;
+				}
+				// TODO output search
+
+				return;
+			}
+		}
 		this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen, bitte nur nach einem Wert suchen', value: 'ErrordoubleInput' };
 	}
 }

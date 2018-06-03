@@ -16,8 +16,15 @@
                             <button @click="login" class="btn btn-primary">
                               Log In
                             </button>
-                            <p id="loginFail"></p>
                         </div>
+						<div class="col-1 mt-5 mr-5">
+							<router-link to="/registrieren">
+								<span class="btn btn-primary">
+									Registrieren
+								</span>
+							</router-link>
+                		</div>
+                        <p id="loginFail"></p>
                     </div>
                 </form>
             </div>

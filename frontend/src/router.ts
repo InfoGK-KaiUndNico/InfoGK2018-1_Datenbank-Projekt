@@ -4,6 +4,9 @@ import NewRecipe from './views/NewRecipe.vue';
 import Login from './views/Login.vue';
 import Nutzerdaten from './views/Nutzerdaten.vue';
 import Hauptseite from './views/Hauptseite.vue';
+import Registrieren from './views/Registrieren.vue';
+import Rezeptanzeige from './views/Rezeptanzeige.vue';
+import NeueZutat from './views/NeueZutat.vue';
 
 Vue.use(Router);
 
@@ -17,8 +20,18 @@ export default new Router({
 		},
 		{
 			path: '/hauptseite',
-			name: 'newrecipe',
+			name: 'mainpage',
 			component: Hauptseite
+		},
+		{
+			path: '/registrieren',
+			name: 'register',
+			component: Registrieren
+		},
+		{
+			path: '/rezept/:id',
+			name: 'recipe',
+			component: Rezeptanzeige
 		},
 		{
 			path: '/neues-rezept',
@@ -26,8 +39,13 @@ export default new Router({
 			component: NewRecipe
 		},
 		{
+			path: '/neue-zutat',
+			name: 'newzutat',
+			component: NeueZutat
+		},
+		{
 			path: '/nutzerdaten',
-			name: 'nutzerdaten',
+			name: 'userdata',
 			component: Nutzerdaten
 		}
 	]

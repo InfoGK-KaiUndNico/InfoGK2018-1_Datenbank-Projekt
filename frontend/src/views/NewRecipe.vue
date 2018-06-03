@@ -1,36 +1,69 @@
 <template>
     <div class="container">
-        <h2 class="mt-1"> Sie sind bei der Rezepteingabe.</h2>
+        <h2 class="mt-2"> Sie sind bei der Rezepteingabe.</h2>
         <form id="formNR" action="select.html">
             <div class="row">
-                <div class="col-2">
+				<div class="col-3">
+                    <label id="labelName">Name</label>
+                    <input class="form-control" placeholder="Name" v-model="inputName"/>
+                </div>
+                <div class="col-2 ml-5" >
                     <label id="labelLaufzeit">Zeitaufwand</label>
                     <input class="form-control" placeholder="Zeit (HH:MM)" v-model="inputLaufzeit"/>
                 </div>
                 <div class="col-2">
                     <label>Art des Rezepts</label>
-                        <select class="form-control" name="Art" v-model="inputArt">
-                            <option v-for="option in rezeptArten" v-bind:key="option.name" v-bind:value="option.value">
-                                {{ option.name }}
-                            </option>
+					<select class="form-control" name="Art" v-model="inputArt">
+						<option v-for="option in rezeptArten" v-bind:key="option.name">
+							{{ option.name }}
+						</option>
+					</select>
+                </div>
+				<div class="row">
+                    <div class="col-2 mt-2">
+                        <label>Zutat für Rezept</label>
+                        <select class="form-control" v-model="inputZutat">
+                            <option v-for="option in Zutaten" v-bind:key="option.name" >
+								{{ option.name }}
+							</option>
                         </select>
+                    </div> 
+                    <div class="col-2 mt-3">
+                        <input class="form-control mt-4" placeholder="Menge in Gramm" v-model="inputMenge"/>
+                    </div>
+                    <div class="col-3 mt-3">
+                        <span class="btn btn-primary mt-4" @click="addZutat">
+                            Zutat zum Rezept hinzufügen
+                        </span>
+                    </div>
+                    <div class="col-4 mt-2">
+                        <label class="mt-1">Zutaten im Rezept</label>
+                        <ul>
+							<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
+								{{ingredient.name}}{{ingredient.menge}}
+							</li>
+						</ul>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-4 mt-2">
-                    <label id="labelZutaten">Zutaten</label>
-                    <textarea class="form-control" v-model="inputZutaten" placeholder="eine Zutat pro Zeile"></textarea>
-                </div>
                 <div class="col-6 mt-2">
                     <label id="labelAnleitung">Anleitung</label>
                     <textarea class="form-control" v-model="inputAnleitung"></textarea>
                 </div>
             </div>
             <div class="row">
-                <div class="col-3">
+                <div class="col-1">
                     <span class="btn btn-primary mt-3" @click="rezeptAnlegen">
                         Posten
                     </span>
+                </div>
+				<div class="col-1 ml-5">
+                    <router-link to="/hauptseite">
+						<span class="btn btn-primary mt-3">
+							zurück
+						</span>
+                    </router-link>
                 </div>
             </div>
             <div class="row">
@@ -51,6 +84,7 @@
                 </ol>
             </div>
         </form>
+		<p id="updateFail"></p>
     </div>
 </template>
 
@@ -58,17 +92,21 @@
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import loadZutaten from '../lib/util/loadZutaten';
 
 @Component
 export default class NewRecipe extends Vue {
 	// TODO request input Name und Label name from kai
 	private inputName: string = '';
 	private inputAnleitung: string = '';
-	private inputZutaten: string = '';
 	private inputArt: string = '';
+	private inputZutat: string = '';
+	private inputMenge: string = '';
 	private inputLaufzeit: string = '';
+	private verwendeteZutaten: any[] = [];
+
+	private Zutaten = [];
 	private rezeptArten: any[] = [
-		{ name: 'art1', value: 'art1' },
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
 		{ name: 'Gemüse', value: 'Gemuese' },
@@ -78,11 +116,13 @@ export default class NewRecipe extends Vue {
 		{ name: 'Süß', value: 'Suess' },
 		{ name: 'andere', value: 'andere' }
 	];
+	private async mounted() {
+		const zutaten = await loadZutaten();
+		this.Zutaten = zutaten;
+	}
 
-	// TODO request button zurück from Kai
-	private zurueck() {
-		this.$router.push('/hauptseite');
-		alert(this.inputArt);
+	private addZutat() {
+		this.verwendeteZutaten.push({ name: this.inputZutat, menge: this.inputMenge });
 	}
 
 	private async rezeptAnlegen(event: MouseEvent) {
@@ -91,18 +131,6 @@ export default class NewRecipe extends Vue {
 			const labelLaufzeit = document.querySelector('#labelLaufzeit')!;
 			labelLaufzeit.innerHTML = 'Bitte Format beachten (HH:MM)';
 			// labelLaufzeit.style.color = 'red';
-			return;
-		}
-
-		if (
-			checkUserdata(this.inputZutaten, 65538, {
-				checkWhitespace: false,
-				checkLength: true
-			}) === false
-		) {
-			const labelZutaten = document.querySelector('#labelZutaten')!;
-			labelZutaten.innerHTML = 'Bitte Zutaten eingeben (keine Sonderzeichen)';
-			// labelZutaten.style.color = 'red';
 			return;
 		}
 
@@ -135,7 +163,7 @@ export default class NewRecipe extends Vue {
 			body: JSON.stringify({
 				inputName: this.inputName,
 				inputAnleitung: this.inputAnleitung,
-				inputZutaten: this.inputZutaten,
+				verwendeteZutaten: this.verwendeteZutaten,
 				inputArt: this.inputArt,
 				inputLaufzeit: this.inputLaufzeit
 			}),

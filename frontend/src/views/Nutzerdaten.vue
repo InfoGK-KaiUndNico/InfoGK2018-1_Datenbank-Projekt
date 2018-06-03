@@ -1,25 +1,44 @@
 <template>
     <div class="container">
-        <h2 class="mt-1">Hier sehen sie ihre Nutzerdaten</h2>
+        <h2 class="mt-2">Hier sehen sie ihre Nutzerdaten und können sie ändern</h2>
         <form id="formND" action="select.html">
             <div class="row">
                 <div class="col-3 mt-3">
                     <label>Nutzername</label>
-                    <input id="inputChangeUsername" class="form-control" v-model="changeUsername"/>
+                    <p id="AnzeigeUsername" class="form-control"></p>
                 </div>
                 <div class="col-3 mt-3">
-                    <label>Passwort</label>
+                    <label>Passwort ändern</label>
                     <input id="inputChangePassword" class="form-control" v-model="changePassword"/>
                 </div>
 				<div class="col-3 mt-3">
-                    <label>EMail</label>
+                    <label>EMail ändern</label>
                     <input class="form-control" id="inputChangeEmail" v-model="changeEmail"/>
                 </div>
-                <div class="col-2 mt-5">
-                    <span class="btn btn-primary " @click="zurueck">
-                        zurück
-                    </span>
-                </div>
+                <div class="row">  
+					<div class="col-1 mt-2">
+						<router-link to="/hauptseite">
+							<span class="btn btn-primary">
+								zurück
+							</span>
+						</router-link>
+					</div>
+					<div class="col-1 mt-2">
+						<span class="btn btn-primary" @click="updateUser">
+							ändern
+						</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-6 mt-2">
+						<label>Lieblingsrezepte</label>
+						<textarea class="form-control"></textarea>
+					</div>
+					<div class="col-6 mt-2">
+						<label>gemerkte Rezepte</label>
+						<textarea class="form-control"></textarea>
+					</div>
+            	</div>
             </div>
         </form>
     </div>
@@ -29,21 +48,22 @@
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 
-import getCommonHeaders from '../lib/util/getCommonHeaders'
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 import validator from 'validator';
 
-@Component
+@Component({})
 export default class Nutzerdaten extends Vue {
-	private inputChangeUsername: string = '';
+
 	private inputChangePassword: string = '';
 	private inputChangeEmail: string = '';
-	private inputUsername = document.querySelector('#inputChangeUsername')!;
+	private anzeigeUsername = document.querySelector('#AnzeigeUsername')!;
 	private inputPassword = document.querySelector('#inputChangePassword')!;
 	private inputEmail = document.querySelector('#inputChangeEmail')!;
 	private updateFail = document.querySelector('#updateFail')!;
 
-	// showUserData
-	private showUserData();
+	private mounted() {
+		this.showUserData();
+	}
 
 	private async showUserData() {
 
@@ -55,32 +75,21 @@ export default class Nutzerdaten extends Vue {
 		});
 
 		if (!response.ok) {
-			this.inputUsername.innerHTML = 'Fehler beim Laden der Daten';
+			this.anzeigeUsername.innerHTML = 'Fehler beim Laden der Daten';
 			this.inputPassword.innerHTML = 'Fehler beim Laden der Daten';
 			this.inputEmail.innerHTML = 'Fehler beim Laden der Daten';
 			return;
 		}
 
 		// output data
-		const { responseUsername, responsePassword, responseEmail } = await response.json();
-		this.inputUsername.innerHTML = responseUsername;
-		this.inputPassword.innerHTML = responsePassword;
-		this.inputEmail.innerHTML = responseEmail;
-	}
-
-	private zurueck() {
-		this.$router.push('/hauptseite');
+		const { name, email } = await response.json();
+		this.anzeigeUsername.innerHTML = name;
+		this.inputPassword.innerHTML = '';
+		this.inputEmail.innerHTML = email;
 	}
 
 	private async updateUser(event: MouseEvent) {
 		event.preventDefault();
-
-		if (checkUserdata(this.inputChangeUsername, 30, { checkWhitespace: true, checkLength: true }) === false) {
-			this.inputUsername.innerHTML = 'Nutzername muss min. 1 Zeichen enthalten und darf keine Leer- und Sonderzeichen enthalten';
-			// this.inputUsername.style.color = 'red';
-			this.showUserData();
-			return;
-		}
 
 		if (checkUserdata(this.inputChangePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
 			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
@@ -99,7 +108,6 @@ export default class Nutzerdaten extends Vue {
 		const response = await fetch('url', {
 			body: JSON.stringify({
 				currentPassword: this.inputChangePassword,
-				currentUsername: this.inputChangeUsername,
 				currentEmail: this.inputChangeEmail
 			}),
 			headers: getCommonHeaders(),
