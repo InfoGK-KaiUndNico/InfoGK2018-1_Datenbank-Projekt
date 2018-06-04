@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-3 mt-3">
                     <label>Nutzername</label>
-                    <p id="AnzeigeUsername" class="form-control"></p>
+                    <input id="AnzeigeUsername" class="form-control" readonly/>
                 </div>
                 <div class="col-3 mt-3">
                     <label>Passwort ändern</label>
@@ -13,33 +13,38 @@
                 </div>
 				<div class="col-3 mt-3">
                     <label>EMail ändern</label>
-                    <input class="form-control" id="inputChangeEmail" v-model="changeEmail"/>
+                    <input id="inputChangeEmail" class="form-control"  v-model="changeEmail"/>
                 </div>
-                <div class="row">  
-					<div class="col-1 mt-2">
-						<router-link to="/hauptseite">
-							<span class="btn btn-primary">
-								zurück
-							</span>
-						</router-link>
-					</div>
-					<div class="col-1 mt-2">
-						<span class="btn btn-primary" @click="updateUser">
-							ändern
+			</div>
+			<div class="row">  
+				<div class="col-1 mt-2">
+					<router-link to="/hauptseite">
+						<span class="btn btn-primary">
+							zurück
 						</span>
-					</div>
+					</router-link>
 				</div>
-				<div class="row">
-					<div class="col-6 mt-2">
-						<label>Lieblingsrezepte</label>
-						<textarea class="form-control"></textarea>
-					</div>
-					<div class="col-6 mt-2">
-						<label>gemerkte Rezepte</label>
-						<textarea class="form-control"></textarea>
-					</div>
-            	</div>
-            </div>
+				<div class="col-1 mt-2">
+					<span class="btn btn-primary" @click="updateUser">
+						ändern
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<p id="updateFail"></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6 mt-2">
+					<label>Lieblingsrezepte</label>
+					<textarea class="form-control"></textarea>
+				</div>
+				<div class="col-6 mt-2">
+					<label>gemerkte Rezepte</label>
+					<textarea class="form-control"></textarea>
+				</div>
+			</div>
         </form>
     </div>
 </template>
@@ -54,21 +59,50 @@ import validator from 'validator';
 @Component({})
 export default class Nutzerdaten extends Vue {
 
-	private inputChangePassword: string = '';
-	private inputChangeEmail: string = '';
-	private anzeigeUsername = document.querySelector('#AnzeigeUsername')!;
-	private inputPassword = document.querySelector('#inputChangePassword')!;
-	private inputEmail = document.querySelector('#inputChangeEmail')!;
-	private updateFail = document.querySelector('#updateFail')!;
+	private changePassword: string = '';
+	private changeEmail: string = '';
+
+	private anzeigeUsername: Element;
+	private inputPassword: Element;
+	private inputEmail: Element;
+	private updateFail: Element;
 
 	private mounted() {
+		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
+		if (!anzeigeUsername) {
+			return;
+		}
+		this.anzeigeUsername = anzeigeUsername;
+
+		const inputPassword = document.querySelector('#inputChangePassword');
+		if (!inputPassword) {
+			return;
+		}
+		this.inputPassword = inputPassword;
+
+		const inputEmail = document.querySelector('#inputChangeEmail');
+		if (!inputEmail) {
+			return;
+		}
+		this.inputEmail = inputEmail;
+
+		const updateFail = document.querySelector('#updateFail');
+		if (!updateFail) {
+			return;
+		}
+		this.updateFail = updateFail;
+
 		this.showUserData();
 	}
 
 	private async showUserData() {
+		const userName = localStorage.getItem('userName');
+		if (!userName) {
+			return;
+		}
 
 		// send token and username to backend to veryfy identity and get data
-		const response = await fetch('url', {
+		const response = await fetch(`http://localhost:4000/users/${userName}`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
@@ -91,27 +125,32 @@ export default class Nutzerdaten extends Vue {
 	private async updateUser(event: MouseEvent) {
 		event.preventDefault();
 
-		if (checkUserdata(this.inputChangePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
-			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
+		const userName = localStorage.getItem('userName');
+		if (!userName) {
+			return;
+		}
+
+		if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
+			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
 			// this.inputPassword.style.color = 'red';
 			this.showUserData();
 			return;
 		}
-		if (checkUserdata(this.inputChangeEmail, 40, { checkWhitespace: true, checkLength: true }) === false || validator.isEmail(this.inputChangeEmail) === false) {
+		if (validator.isEmail(this.changeEmail) === false) {
 			this.inputPassword.innerHTML = 'keine gültige Email-Adresse';
 			// this.inputPassword.style.color = 'red';
 			this.showUserData();
 			return;
 		}
 
-		// send token and username to backend
-		const response = await fetch('url', {
+		// send changes to backend
+		const response = await fetch(`http://localhost:4000/users/${userName}`, {
 			body: JSON.stringify({
-				currentPassword: this.inputChangePassword,
-				currentEmail: this.inputChangeEmail
+				passwort: this.changePassword,
+				email: this.changeEmail
 			}),
 			headers: getCommonHeaders(),
-			method: 'POST',
+			method: 'PATCH',
 			mode: 'cors'
 		});
 
