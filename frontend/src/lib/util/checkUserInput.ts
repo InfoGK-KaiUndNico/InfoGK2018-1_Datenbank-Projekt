@@ -3,7 +3,7 @@ import validator from 'validator';
 export default function checkUserdata(
 	input: string,
 	maxLength: number,
-	{checkWhitespace, checkLength, checkAlphanumeric }: { checkWhitespace: boolean; checkLength: boolean; checkAlphanumeric: boolean } = {
+	{checkWhitespace, checkLength, checkAlphanumeric }: { checkWhitespace?: boolean; checkLength?: boolean; checkAlphanumeric?: boolean } = {
 		checkWhitespace: true,
 		checkLength: true,
 		checkAlphanumeric: true

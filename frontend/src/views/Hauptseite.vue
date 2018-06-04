@@ -82,7 +82,7 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 export default class Hauptseite extends Vue {
 	private Rezeptsuche: string = '';
 
-	private Zutaten = [];
+	private Zutaten: any[] = [];
 	private rezeptArten: any[] = [
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
@@ -101,6 +101,11 @@ export default class Hauptseite extends Vue {
 
 	private async mounted() {
 		const zutaten = await loadZutaten();
+
+		if (typeof zutaten === 'undefined') {
+			return;
+		}
+
 		this.Zutaten = zutaten;
 	}
 
@@ -110,7 +115,7 @@ export default class Hauptseite extends Vue {
 
 		// search zutat if rezeptsuche and Art empty
 		if (this.Rezeptsuche.length < 1 && typeof this.selectedArt.value === 'undefined') {
-			
+
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					selectedZutat: this.selectedZutat.value,
@@ -150,7 +155,7 @@ export default class Hauptseite extends Vue {
 
 		// search rezept if Zutat and Art empty
 		if (typeof this.selectedZutat.value === 'undefined' && typeof this.selectedArt.value === 'undefined') {
-			
+
 			// check input and search
 			if (checkUserdata(this.Rezeptsuche, 100, { checkWhitespace: false, checkLength: true }) === true) {
 				const response = await fetch('url', {
