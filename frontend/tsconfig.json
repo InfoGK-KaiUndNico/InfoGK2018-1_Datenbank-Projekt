@@ -23,7 +23,8 @@
       "es2015",
       "dom",
       "dom.iterable",
-      "scripthost"
+	  "scripthost",
+	  "es2016"
     ]
   },
   "include": [

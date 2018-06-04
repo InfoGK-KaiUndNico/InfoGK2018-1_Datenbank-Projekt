@@ -7,11 +7,11 @@
                     <label id="labelName">Name</label>
                     <input class="form-control" placeholder="Name" v-model="inputName"/>
                 </div>
-                <div class="col-2 ml-5" >
+                <div class="col-3" >
                     <label id="labelLaufzeit">Zeitaufwand</label>
                     <input class="form-control" placeholder="Zeit (HH:MM)" v-model="inputLaufzeit"/>
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                     <label>Art des Rezepts</label>
 					<select class="form-control" name="Art" v-model="inputArt">
 						<option v-for="option in rezeptArten" v-bind:key="option.name">
@@ -19,8 +19,9 @@
 						</option>
 					</select>
                 </div>
-				<div class="row">
-                    <div class="col-2 mt-2">
+			</div>
+			<div class="row mt-2">
+                    <div class="col-4">
                         <label>Zutat für Rezept</label>
                         <select class="form-control" v-model="inputZutat">
                             <option v-for="option in Zutaten" v-bind:key="option.name" >
@@ -28,60 +29,64 @@
 							</option>
                         </select>
                     </div> 
-                    <div class="col-2 mt-3">
-                        <input class="form-control mt-4" placeholder="Menge in Gramm" v-model="inputMenge"/>
+                    <div class="col-3">
+						<label>Menge der Zutat</label>
+                        <input class="form-control" placeholder="Menge in Gramm" v-model="inputMenge"/>
                     </div>
-                    <div class="col-3 mt-3">
-                        <span class="btn btn-primary mt-4" @click="addZutat">
-                            Zutat zum Rezept hinzufügen
-                        </span>
+                    <div class="col-3">
+						<label>Zutat zum Rezept hinzufügen</label>
+                        <button class="btn btn-primary" @click="addZutat" :disabled="inputZutat.length < 1 || inputMenge.length < 1">
+                            Hinzufügen
+                        </button>
                     </div>
-                    <div class="col-4 mt-2">
-                        <label class="mt-1">Zutaten im Rezept</label>
-                        <ul>
-							<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
-								{{ingredient.name}}{{ingredient.menge}}
-							</li>
-						</ul>
-                    </div>
-                </div>
             </div>
-            <div class="row">
-                <div class="col-6 mt-2">
+			<div class="row">
+				<div class="col-4">
+					<label>Zutaten im Rezept</label>
+					<ul>
+						<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
+							{{ingredient.name}}{{ingredient.menge}}
+						</li>
+					</ul>
+					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>
+				</div>
+			</div>
+            <div class="row mt-2">
+                <div class="col-6">
                     <label id="labelAnleitung">Anleitung</label>
                     <textarea class="form-control" v-model="inputAnleitung"></textarea>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-1">
-                    <span class="btn btn-primary mt-3" @click="rezeptAnlegen">
+            <div class="row mt-3">
+                <div class="col-1 mr-1">
+                    <span class="btn btn-primary" @click="rezeptAnlegen">
                         Posten
                     </span>
                 </div>
-				<div class="col-1 ml-5">
+				<div class="col-1">
                     <router-link to="/hauptseite">
-						<span class="btn btn-primary mt-3">
+						<span class="btn btn-primary">
 							zurück
 						</span>
                     </router-link>
                 </div>
             </div>
-            <div class="row">
-                <h4 class="mt-2 ml-2">Hilfe</h4>
-            </div>
-            <div class="row">
-                <ol>
-                    <li class="ml-2">Die Arbeit sollte in Arbeitsschritte geteilt werden. Ein Arbeitsschritt zeichnet sich dadurch aus, dass
-                        mit einer oder mehreren Zutaten die gleiche oder eine sehr ähnliche Tätigkeit ausgeführt werden.</li>
-                    <li class="ml-2">Die Arbeitsschritte sollten in der Anleitung chronologisch angeordnet sein, wenn mehrere Tätigkeiten
-                        parallel ausgeführt werden sollten sie getrennt chronologisch behandelt und mit einer entsprechenden
-                        Kennzeichnung (Untertitel) versehen werden.</li>
-                    <li class="ml-2">Für jeden Arbeitsschritt sollte ein Absatz verwendet werden, um die Lesbarkeit zu erleichtern</li>
-                    <li class="ml-2">Ähnliche oder sich widerholende Tätigkeiten müssen nicht immer vollständig beschrieben, sondern können
-                        auch zusammengefasst werden.</li>
-                    <li class="ml-2">Grundlegende Fähigkeiten im Kochen werden vorausgesetzt, komplizierte Vorgänge können aber in einem getrennten
-                        Absatz näher erläutert werden.</li>
-                </ol>
+            <div class="row mt-2">
+                <div class="col-12">
+					<h4 class="ml-2">Hilfe</h4>
+					<ol>
+						<li class="ml-2">Die Arbeit sollte in Arbeitsschritte geteilt werden. Ein Arbeitsschritt zeichnet sich dadurch aus, dass
+							mit einer oder mehreren Zutaten die gleiche oder eine sehr ähnliche Tätigkeit ausgeführt werden.</li>
+						<li class="ml-2">Die Arbeitsschritte sollten in der Anleitung chronologisch angeordnet sein, wenn mehrere Tätigkeiten
+							parallel ausgeführt werden sollten sie getrennt chronologisch behandelt und mit einer entsprechenden
+							Kennzeichnung (Untertitel) versehen werden.</li>
+						<li class="ml-2">Für jeden Arbeitsschritt sollte ein Absatz verwendet werden, um die Lesbarkeit zu erleichtern</li>
+						<li class="ml-2">Ähnliche oder sich widerholende Tätigkeiten müssen nicht immer vollständig beschrieben, sondern können
+							auch zusammengefasst werden.</li>
+						<li class="ml-2">Grundlegende Fähigkeiten im Kochen werden vorausgesetzt, komplizierte Vorgänge können aber in einem getrennten
+							Absatz näher erläutert werden.</li>
+					</ol>
+				</div>
             </div>
         </form>
 		<p id="updateFail"></p>
@@ -97,15 +102,20 @@ import loadZutaten from '../lib/util/loadZutaten';
 @Component
 export default class NewRecipe extends Vue {
 	// TODO request input Name und Label name from kai
+
+	// General recipe information bindings
 	private inputName: string = '';
 	private inputAnleitung: string = '';
 	private inputArt: string = '';
+	private inputLaufzeit: string = '';
+
+	// Ingredient addition
 	private inputZutat: string = '';
 	private inputMenge: string = '';
-	private inputLaufzeit: string = '';
+
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten = [];
+	private Zutaten: any[] = [];
 	private rezeptArten: any[] = [
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
@@ -117,8 +127,13 @@ export default class NewRecipe extends Vue {
 		{ name: 'andere', value: 'andere' }
 	];
 	private async mounted() {
-		const zutaten = await loadZutaten();
-		this.Zutaten = zutaten;
+		try {
+			const zutaten = await loadZutaten();
+			this.Zutaten = zutaten;
+		} catch (err) {
+			// Handle errors
+			return;
+		}
 	}
 
 	private addZutat() {

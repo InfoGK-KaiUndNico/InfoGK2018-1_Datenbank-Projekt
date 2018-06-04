@@ -10,10 +10,10 @@
 					<p id="AnzeigeUsername"></p>
 				</div>
 				<div class="col-3">
-					<input class="form-control" placeholder="Passwort" v-model="inputPassword"/>
+					<input class="form-control" placeholder="Passwort" type="password" v-model="inputPassword"/>
 					<p id="AnzeigePassword"></p>
 				</div>
-				<div class="col-3"> 
+				<div class="col-3">
 					<input class="form-control" placeholder="eMail" v-model="inputEmail"/>
 					<p id="AnzeigeEmail"></p>
 				</div>
@@ -30,47 +30,80 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import validator from 'validator';
+import jwt_decode from 'jwt-decode';
+
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
-import validator from 'validator';
 
 @Component({})
 export default class Registrieren extends Vue {
 	private inputPassword: string = '';
 	private inputEmail: string = '';
 	private inputUsername: string = '';
-	private anzeigeUsername = document.querySelector('#AnzeigeUsername')!;
-	private anzeigePassword = document.querySelector('#AnzeigePassword')!;
-	private anzeigeEmail = document.querySelector('#AnzeigeEmail')!;
-	private registerFail = document.querySelector('#registerFail')!;
+
+	private anzeigeUsername: Element;
+	private anzeigePassword: Element;
+	private anzeigeEmail: Element;
+	private registerFail: Element;
+
+	private mounted() {
+		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
+		if (!anzeigeUsername) {
+			return;
+		}
+		this.anzeigeUsername = anzeigeUsername;
+
+		const anzeigePassword = document.querySelector('#AnzeigePassword');
+		if (!anzeigePassword) {
+			return;
+		}
+		this.anzeigePassword = anzeigePassword;
+
+		const anzeigeEmail = document.querySelector('#AnzeigeEmail');
+		if (!anzeigeEmail) {
+			return;
+		}
+		this.anzeigeEmail = anzeigeEmail;
+
+		const registerFail = document.querySelector('#RegisterFail');
+		if (!registerFail) {
+			return;
+		}
+		this.registerFail = registerFail;
+	}
 
 	private async register(event: MouseEvent) {
 		event.preventDefault();
 
-		if (checkUserdata(this.inputPassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
-			this.anzeigePassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
+		const name = this.inputUsername;
+		const passwort = this.inputPassword;
+		const email = this.inputEmail;
+
+		if (checkUserdata(name, 30, { checkWhitespace: true, checkLength: true }) === false) {
+			this.anzeigeUsername.innerHTML = 'Name muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
 			// this.inputPassword.style.color = 'red';
 			return;
 		}
 
-		if (checkUserdata(this.inputUsername, 30, { checkWhitespace: true, checkLength: true }) === false) {
-			this.anzeigePassword.innerHTML = 'Passwort muss min. 1 Zeichen enthalten keine Leer- und Sonderzeichen enthalten';
+		if (checkUserdata(passwort, 40, { checkWhitespace: true, checkLength: true }) === false) {
+			this.anzeigePassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
 			// this.inputPassword.style.color = 'red';
 			return;
 		}
 
-		if (checkUserdata(this.inputEmail, 40, { checkWhitespace: true, checkLength: true }) === false || validator.isEmail(this.inputEmail) === false) {
-			this.anzeigePassword.innerHTML = 'keine gültige Email-Adresse';
+		if (validator.isEmail(email) === false) {
+			this.anzeigeEmail.innerHTML = 'keine gültige Email-Adresse';
 			// this.inputPassword.style.color = 'red';
 			return;
 		}
 
-		// send token and username to backend
-		const response = await fetch('url', {
+		// send user data to backend
+		const response = await fetch('http://localhost:4000/auth/signup', {
 			body: JSON.stringify({
-				passwort: this.inputPassword,
-				email: this.inputEmail,
-				name: this.inputUsername
+				name,
+				email,
+				passwort
 			}),
 			headers: getCommonHeaders(),
 			method: 'POST',
@@ -82,6 +115,14 @@ export default class Registrieren extends Vue {
 			this.registerFail.innerHTML = 'Fehler beim Hochladen';
 			return;
 		}
+
+		const { token } = await response.json();
+		const { rang } = jwt_decode(token);
+
+		// Add auth token and userName to localStorage
+		localStorage.setItem('token', token);
+		localStorage.setItem('userName', this.inputUsername);
+		localStorage.setItem('userRang', rang);
 
 		this.$router.push('/hauptseite');
 	}

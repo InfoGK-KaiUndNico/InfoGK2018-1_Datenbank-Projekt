@@ -2,24 +2,20 @@
     <div class="container">
         <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
         <form id="formHS" action="select.html">
-            <div class="row">
-                <div class="col-1">
+            <div class="row mt-3">
+                <div class="col-12">
                     <router-link to="/neues-rezept">
-                        <span class="btn btn-primary mt-3 mb-1 mr-5">
+                        <span class="btn btn-primary mb-1 mr-1">
                             Neues Rezept
                         </span>
                     </router-link>
-                </div>
-				<div class="col-2"> 
 					<router-link to="/neue-zutat">
-                        <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5"> 
+                        <span class="btn btn-primary mb-1 mr-1"> 
                             Neue Zutat 
                         </span> 
 					</router-link>
-                </div> 
-                <div class="col-1">
-                    <router-link to="/nutzerdaten">
-                        <span class="btn btn-primary mt-3 mb-1 ml-5 mr-5">
+					 <router-link to="/nutzerdaten">
+                        <span class="btn btn-primary mb-1">
                             Nutzerdaten
                         </span>
                     </router-link>
@@ -46,12 +42,14 @@
                         </option>
                     </select>
                 </div>
-				<div class="col-1 mt-5">
+            </div>
+			<div class="row">
+				<div class="col-1 mt-3">
                         <span class="btn btn-primary">
                             Suchen
                         </span>
-                    </div>
-            </div>
+				</div>
+			</div>
             <div class="row">
                 <div class="col-12">
                     <p id="paragraphHS1">
@@ -83,7 +81,7 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 export default class Hauptseite extends Vue {
 	private Rezeptsuche: string = '';
 
-	private Zutaten = [];
+	private Zutaten: any[] = [];
 	private rezeptArten: any[] = [
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
@@ -101,8 +99,13 @@ export default class Hauptseite extends Vue {
 	private gefundeneRezepte: any[] = [];
 
 	private async mounted() {
-		const zutaten = await loadZutaten();
-		this.Zutaten = zutaten;
+		try {
+			const zutaten = await loadZutaten();
+			this.Zutaten = zutaten;
+		} catch (err) {
+			// Handle errors
+			return;
+		}
 	}
 
 	// suche (check input + ausgabe)
