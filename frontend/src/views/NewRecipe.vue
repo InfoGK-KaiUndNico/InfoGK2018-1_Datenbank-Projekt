@@ -45,7 +45,7 @@
 					<label>Zutaten im Rezept</label>
 					<ul>
 						<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
-							{{ingredient.name}}{{ingredient.menge}}
+							{{ingredient.menge}}g {{ingredient.name}}
 						</li>
 					</ul>
 					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>
@@ -115,7 +115,7 @@ export default class NewRecipe extends Vue {
 
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten: any[] = [];
+	private Zutaten: any[] = [{ value: 'Lauch', name: 'Lauch'}];
 	private rezeptArten: any[] = [
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
@@ -136,8 +136,21 @@ export default class NewRecipe extends Vue {
 		}
 	}
 
-	private addZutat() {
-		this.verwendeteZutaten.push({ name: this.inputZutat, menge: this.inputMenge });
+	private addZutat(event: MouseEvent) {
+		event.preventDefault();
+
+		// Check if menge is valid
+		if (isNaN(parseInt(this.inputMenge))) {
+			return;
+		}
+
+		const existingZutat = this.verwendeteZutaten.find((zutat) => zutat.name === this.inputZutat);
+		if (typeof existingZutat !== 'undefined') {
+			existingZutat.menge+=parseInt(this.inputMenge);
+			return;
+		}
+
+		this.verwendeteZutaten.push({ name: this.inputZutat, menge: parseInt(this.inputMenge) });
 	}
 
 	private async rezeptAnlegen(event: MouseEvent) {
