@@ -12,7 +12,7 @@ export default async function loadZutaten() {
 
 	if (!response.ok) {
 		Zutaten[0] = { name: 'Fehler beim Laden der Daten', value: 'error' };
-		return;
+		return Zutaten;
 	}
 
 	// transform and handle response data

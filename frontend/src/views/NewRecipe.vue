@@ -105,7 +105,7 @@ export default class NewRecipe extends Vue {
 	private inputLaufzeit: string = '';
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten = [];
+	private Zutaten: any[] = [];
 	private rezeptArten: any[] = [
 		{ name: 'Fleisch', value: 'Fleisch' },
 		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
@@ -118,6 +118,11 @@ export default class NewRecipe extends Vue {
 	];
 	private async mounted() {
 		const zutaten = await loadZutaten();
+
+		if (typeof zutaten === 'undefined') {
+			return;
+		}
+
 		this.Zutaten = zutaten;
 	}
 

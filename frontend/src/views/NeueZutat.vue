@@ -39,14 +39,19 @@ export default class NeueZutat extends Vue {
 	private inputName: string = "";
 	private inputNaehrwerte: string = "";
 	private labelZutatHinzufügen = document.querySelector('#labelZutatHinzufügen')
-	private Zutaten = [];
+	private Zutaten: Array<{ name: string, value: string }> = [];
 
 private async mounted() {
 		const zutaten = await loadZutaten();
+
+		if (typeof zutaten === 'undefined') {
+			return;
+		}
+
 		this.Zutaten = zutaten;
 	}
 
-	private hinzufügen() {
+	private async hinzufügen() {
 		if(checkUserdata(this.inputName, 20, {checkWhitespace: true, checkLength: true}) === false){
 			const inputZutatname = document.querySelector('#inputZutatname')!;
 			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
@@ -59,7 +64,7 @@ private async mounted() {
             return;
 		}
 
-		if(this.Zutaten.includes(this.inputName)){
+		if(typeof this.Zutaten.find((zutat) => zutat.name === this.inputName) !== 'undefined'){
 			this.labelZutatHinzufügen.innerHTML = 'Zutat schon vorhanden';
 			return;
 		}

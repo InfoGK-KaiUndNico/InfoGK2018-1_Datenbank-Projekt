@@ -3,9 +3,10 @@ import validator from 'validator';
 export default function checkUserdata(
 	input: string,
 	maxLength: number,
-	{checkWhitespace, checkLength,  }: { checkWhitespace: boolean; checkLength: boolean;  } = {
+	{checkWhitespace, checkLength, checkAlphanumeric }: { checkWhitespace: boolean; checkLength: boolean; checkAlphanumeric: boolean } = {
 		checkWhitespace: true,
-		checkLength: true
+		checkLength: true,
+		checkAlphanumeric: true
 	}
 ) {
 	if (checkWhitespace && /\s+/.test(input) === true) {
@@ -20,5 +21,9 @@ export default function checkUserdata(
 		return false;
 	}
 
-	return validator.isAlphanumeric(input);
+	if (checkAlphanumeric && !validator.isAlphanumeric(input)) {
+		return false;
+	}
+
+	return true;
 }
