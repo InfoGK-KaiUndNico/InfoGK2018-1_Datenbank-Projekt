@@ -48,6 +48,7 @@
 							{{ingredient.name}}{{ingredient.menge}}
 						</li>
 					</ul>
+					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>
 				</div>
 			</div>
             <div class="row mt-2">

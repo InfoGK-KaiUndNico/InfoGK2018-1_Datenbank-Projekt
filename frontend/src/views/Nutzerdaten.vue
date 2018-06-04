@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-3 mt-3">
                     <label>Passwort ändern</label>
-                    <input id="inputChangePassword" class="form-control" v-model="changePassword"/>
+                    <input id="inputChangePassword" class="form-control" type="password" v-model="changePassword"/>
                 </div>
 				<div class="col-3 mt-3">
                     <label>EMail ändern</label>
@@ -131,25 +131,33 @@ export default class Nutzerdaten extends Vue {
 			return;
 		}
 
-		if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
-			this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
-			// this.inputPassword.style.color = 'red';
-			this.showUserData();
-			return;
+		if (this.changePassword.length > 0) {
+			if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
+				this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
+				this.showUserData();
+				return;
+			}
 		}
-		if (validator.isEmail(this.changeEmail) === false) {
-			this.inputPassword.innerHTML = 'keine gültige Email-Adresse';
-			// this.inputPassword.style.color = 'red';
-			this.showUserData();
+
+		if (this.changeEmail.length > 0) {
+			if (validator.isEmail(this.changeEmail) === false) {
+				this.inputPassword.innerHTML = 'keine gültige Email-Adresse';
+				this.showUserData();
+				return;
+			}
+		}
+
+		// Check for changes
+		if (this.changePassword.length < 1 && this.changeEmail.length < 1) {
 			return;
 		}
 
+		const passwordChanges = this.changePassword.length > 0 ? { passwort: this.changePassword } : {};
+		const emailChanges = this.changeEmail.length > 0 ? { email: this.changeEmail} : {};
+
 		// send changes to backend
 		const response = await fetch(`http://localhost:4000/users/${userName}`, {
-			body: JSON.stringify({
-				passwort: this.changePassword,
-				email: this.changeEmail
-			}),
+			body: JSON.stringify({ ...passwordChanges, ...emailChanges }),
 			headers: getCommonHeaders(),
 			method: 'PATCH',
 			mode: 'cors'
