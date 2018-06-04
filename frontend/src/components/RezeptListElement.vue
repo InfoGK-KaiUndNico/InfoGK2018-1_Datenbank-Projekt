@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div @click="rezeptOeffnen">
 		<p>{{name}}</p>
 		<p>{{erstelltVon}}</p>
 		<p v-if="isReviewed">reviewed</p>
@@ -26,6 +26,10 @@ export default class RezeptListElement extends Vue {
 
 	private shouldReview: boolean = localStorage.getItem('userRang') === 'Admin' && this.review === null;
 	private isReviewed: boolean = this.review === null;
+	
+	private rezeptOeffnen() {
+		this.$router.push(`/rezept/${this.name}`)
+	}
 }
 </script>
 

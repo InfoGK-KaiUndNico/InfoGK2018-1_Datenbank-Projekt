@@ -46,20 +46,20 @@ private async mounted() {
 		this.Zutaten = zutaten;
 	}
 
-	private hinzufügen() {
-		if(checkUserdata(this.inputName, 20, {checkWhitespace: true, checkLength: true}) === false){
+	private async hinzufügen() {
+		if (checkUserdata(this.inputName, 20, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputZutatname = document.querySelector('#inputZutatname')!;
 			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
             return;
 		}
 
-		if(checkUserdata(this.inputNaehrwerte, 20, {checkWhitespace: false, checkLength: true}) === false){
+		if (checkUserdata(this.inputNaehrwerte, 20, { checkWhitespace: false, checkLength: true }) === false) {
 			const inputNaehrwerteLabel = document.querySelector('#inputNaehrwerteLabel')!;
 			inputNaehrwerteLabel.innerHTML = 'keine Leer und Sonderzeichen in den Nährwerten';
             return;
 		}
 
-		if(this.Zutaten.includes(this.inputName)){
+		if (this.Zutaten.includes(this.inputName)) {
 			this.labelZutatHinzufügen.innerHTML = 'Zutat schon vorhanden';
 			return;
 		}
