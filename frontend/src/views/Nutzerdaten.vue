@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-3 mt-3">
                     <label>Nutzername</label>
-                    <input id="AnzeigeUsername" class="form-control" readonly/>
+                    <input id="AnzeigeUsername" class="form-control" v-model="showUserName" readonly/>
                 </div>
                 <div class="col-3 mt-3">
                     <label>Passwort ändern</label>
@@ -59,6 +59,7 @@ import validator from 'validator';
 @Component({})
 export default class Nutzerdaten extends Vue {
 
+	private showUserName: string = '';
 	private changePassword: string = '';
 	private changeEmail: string = '';
 
@@ -117,7 +118,7 @@ export default class Nutzerdaten extends Vue {
 
 		// output data
 		const { name, email } = await response.json();
-		this.anzeigeUsername.innerHTML = name;
+		this.showUserName = name;
 		this.inputPassword.innerHTML = '';
 		this.inputEmail.innerHTML = email;
 	}
