@@ -47,13 +47,13 @@ export default class NeueZutat extends Vue {
 		}
 		this.labelZutatHinzufügen = labelZutatHinzufügen;
 
-		const zutaten = await loadZutaten();
-
-		if (typeof zutaten === 'undefined') {
+		try {
+			const zutaten = await loadZutaten();
+			this.Zutaten = zutaten;
+		} catch (err) {
+			// Handle errors
 			return;
 		}
-
-		this.Zutaten = zutaten;
 	}
 
 	private async hinzufügen() {
