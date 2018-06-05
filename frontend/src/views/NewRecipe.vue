@@ -119,8 +119,8 @@ export default class NewRecipe extends Vue {
 
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten: any[] = [{ value: 'Lauch', name: 'Lauch'}];
-	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat}));
+	private Zutaten: any[] = [{ value: 'Lauch', name: 'Lauch' }];
+	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
 	private async mounted() {
 		try {
 			const zutaten = await loadZutaten();
@@ -145,7 +145,7 @@ export default class NewRecipe extends Vue {
 			return;
 		}
 
-		this.verwendeteZutaten.push({ name: this.inputZutat, menge: parseInt(this.inputMenge) });
+		this.verwendeteZutaten.push({ zutat: this.inputZutat, menge: parseInt(this.inputMenge) });
 	}
 
 	private async rezeptAnlegen(event: MouseEvent) {
@@ -186,7 +186,7 @@ export default class NewRecipe extends Vue {
 			body: JSON.stringify({
 				name: this.inputName,
 				anleitung: this.inputAnleitung,
-				zutaten: this.verwendeteZutaten.map((zutat) => zutat.name),
+				zutaten: this.verwendeteZutaten,
 				art: this.inputArt,
 				laufzeit: parseInt(this.inputLaufzeit),
 				privat: false,
@@ -206,7 +206,7 @@ export default class NewRecipe extends Vue {
 
 		const { id } = await response.json();
 
-		this.$router.push(`/rezept/${id}`)
+		this.$router.push(`/rezept/${id}`);
 	}
 }
 </script>

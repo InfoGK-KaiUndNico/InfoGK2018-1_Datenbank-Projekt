@@ -1,5 +1,5 @@
 {
-	"arrowParens": true,
+	"arrowParens": "always",
 	"useTabs": true,
 	"trailingComma": "none",
 	"printWidth": 180,

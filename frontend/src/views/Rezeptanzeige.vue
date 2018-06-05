@@ -5,35 +5,37 @@
                 <div class="row">
                     <div class="col-3">
                         <label>Name</label>
-                        <p id="anzeigeName"></p>
+                        <p>{{name}}</p>
                     </div>
                     <div class="col-3">
                         <label>Zeitaufwand</label>
-                        <p id="anzeigeLaufzeit"></p>
+                        <p>{{laufzeitBerechnen()}}</p>
                     </div>
                     <div class="col-3">
                         <label>Art des Rezepts</label>
-                        <p id="anzeigeArt"></p>
+                        <p>{{art}}</p>
                     </div>
                 </div>
                 <div class="row">                
-                    <div class="col-3">
+                    <div class="col-12">
                         <label>Zutaten</label>
                         <ul>
-							<li v-for="zutat in verwendeteZutaten" v-bind:key="zutat.name">
-								{{zutat.menge}}g{{zutat.name}}
+							<li v-for="zutat in zutaten" v-bind:key="zutat.name">
+								{{zutat.menge}}g {{zutat.name}}
 							</li>
 						</ul>
-                    </div>                
-                    <div class="col-5">
-                        <label>Anleitung</label>
-                        <p id="anzeigeAnleitung"></p>
                     </div>
-					<div class="col-4"> 
-                		<label>Nährwerte</label> 
-                        <p id="anzeigeNaehrwerte"></p> 
-                    </div> 
                 </div>
+				<div class="row">
+					<div class="col-6">
+                        <label>Anleitung</label>
+                        <p>{{anleitung}}</p>
+                    </div>
+					<div class="col-6"> 
+                		<label>Nährwerte</label> 
+                        <p>To be added</p> 
+                    </div>
+				</div>
             </form>
         </div>
 </template>
@@ -44,42 +46,51 @@ import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 @Component({})
 export default class Rezeptanzeige extends Vue {
-	private rezeptId: string;
-	private anzeigeName = document.querySelector('#anzeigeName');
-	private anzeigeLaufzeit = document.querySelector('#anzeigeLaufzeit');
-	private anzeigeArt = document.querySelector('#anzeigeArt');
-	private anzeigeZutaten = document.querySelector('#anzeigZutaten');
-	private anzeigeAnleitung = document.querySelector('#anzeigAnleitung');
+	private rezeptId: string = '';
+	private name: string = '';
+	private laufzeit: number = 0;
+	private art: string = '';
+	private zutaten: any[] = [];
+	private anleitung: string = '';
 
 	private mounted() {
 		this.rezeptId = this.$route.params.id;
 		this.loadRezeptData();
-		this.loadZutatenData();
-		// this.loadNaehrwerteData();
+	}
+
+	private laufzeitBerechnen() {
+		if (this.laufzeit > 60) {
+			return `${this.laufzeit / 60}h`;
+		}
+
+		return `${this.laufzeit} min.`;
 	}
 
 	private async loadRezeptData() {
-		const response = await fetch('http://localhost:4000/recipes/${rezeptId}', {
-		headers: getCommonHeaders(),
-		method: 'GET',
-		mode: 'cors'
+		const response = await fetch(`http://localhost:4000/recipes/${this.rezeptId}`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
 		});
-		const { name, laufzeit, art, anleitung } = await response.json();
-		this.anzeigeName = name;
-		this.anzeigeLaufzeit = laufzeit;
-		this.anzeigeArt = art;
-		this.anzeigeAnleitung = anleitung;
+
+		const { name, laufzeit, art, anleitung, zutaten } = await response.json();
+
+		this.name = name;
+		this.laufzeit = laufzeit;
+		this.art = art;
+		this.anleitung = anleitung;
+		this.zutaten = zutaten;
 	}
 
 	private async loadZutatenData() {
-		const response = await fetch('http://localhost:4000/recipes/${rezeptId}', {
-		headers: getCommonHeaders(),
-		method: 'GET',
-		mode: 'cors'
+		const response = await fetch(`http://localhost:4000/recipes/${this.rezeptId}`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
 		});
 		let verwendeteZutaten: any[] = [];
-		const {verwendung}: { verwendung: string[] } = await response.json();
-		verwendeteZutaten = verwendung.map((verwendet: string) => ({ name: verwendet, menge: verwendet}));
+		const { verwendung }: { verwendung: string[] } = await response.json();
+		verwendeteZutaten = verwendung.map((verwendet: string) => ({ name: verwendet, menge: verwendet }));
 	}
 
 	/* private async loadNaehrwerteData() {

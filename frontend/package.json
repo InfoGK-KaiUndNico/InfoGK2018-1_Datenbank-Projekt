@@ -11,10 +11,10 @@
   "dependencies": {
     "@types/validator": "^9.4.1",
     "jwt-decode": "^2.2.0",
-    "validator": "^10.2.0",
+    "validator": "^10.3.0",
     "vue": "^2.5.16",
-    "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^6.0.0",
+    "vue-class-component": "^6.2.0",
+    "vue-property-decorator": "^6.1.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
