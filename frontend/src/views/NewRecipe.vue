@@ -8,8 +8,8 @@
                     <input class="form-control" placeholder="Name" v-model="inputName"/>
                 </div>
                 <div class="col-3" >
-                    <label id="labelLaufzeit">Zeitaufwand</label>
-                    <input class="form-control" placeholder="Zeit (HH:MM)" v-model="inputLaufzeit"/>
+                    <label id="labelLaufzeit">Zeitaufwand in Minuten</label>
+                    <input class="form-control" placeholder="Zeit in min." v-model="inputLaufzeit"/>
                 </div>
                 <div class="col-3">
                     <label>Art des Rezepts</label>
@@ -45,7 +45,7 @@
 					<label>Zutaten im Rezept</label>
 					<ul>
 						<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
-							{{ingredient.menge}}g{{ingredient.name}}
+							{{ingredient.menge}}g {{ingredient.name}}
 						</li>
 					</ul>
 					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>
@@ -71,6 +71,11 @@
                     </router-link>
                 </div>
             </div>
+			<div class="row">
+				<div class="col-12">
+					<p id="uploadFail"></p>
+				</div>
+			</div>
             <div class="row mt-2">
                 <div class="col-12">
 					<h4 class="ml-2">Hilfe</h4>
@@ -89,7 +94,6 @@
 				</div>
             </div>
         </form>
-		<p id="updateFail"></p>
     </div>
 </template>
 
@@ -115,17 +119,8 @@ export default class NewRecipe extends Vue {
 
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten: any[] = [];
-	private rezeptArten: any[] = [
-		{ name: 'Fleisch', value: 'Fleisch' },
-		{ name: 'Obst und Nüsse', value: 'ObstUndNuesse' },
-		{ name: 'Gemüse', value: 'Gemuese' },
-		{ name: 'Gewürz', value: 'Gewuerz' },
-		{ name: 'trocken', value: 'trocken' },
-		{ name: 'Herzhaft', value: 'Herzhaft' },
-		{ name: 'Süß', value: 'Suess' },
-		{ name: 'andere', value: 'andere' }
-	];
+	private Zutaten: any[] = [{ value: 'Lauch', name: 'Lauch'}];
+	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat}));
 	private async mounted() {
 		try {
 			const zutaten = await loadZutaten();
@@ -136,15 +131,28 @@ export default class NewRecipe extends Vue {
 		}
 	}
 
-	private addZutat() {
-		this.verwendeteZutaten.push({ name: this.inputZutat, menge: this.inputMenge });
+	private addZutat(event: MouseEvent) {
+		event.preventDefault();
+
+		// Check if menge is valid
+		if (isNaN(parseInt(this.inputMenge))) {
+			return;
+		}
+
+		const existingZutat = this.verwendeteZutaten.find((zutat) => zutat.name === this.inputZutat);
+		if (typeof existingZutat !== 'undefined') {
+			existingZutat.menge += parseInt(this.inputMenge);
+			return;
+		}
+
+		this.verwendeteZutaten.push({ name: this.inputZutat, menge: parseInt(this.inputMenge) });
 	}
 
 	private async rezeptAnlegen(event: MouseEvent) {
 		event.preventDefault();
-		if (/\d\d:\d\d/.test(this.inputLaufzeit) === false) {
+		if (isNaN(parseInt(this.inputLaufzeit))) {
 			const labelLaufzeit = document.querySelector('#labelLaufzeit')!;
-			labelLaufzeit.innerHTML = 'Bitte Format beachten (HH:MM)';
+			labelLaufzeit.innerHTML = 'Bitte eine Zahl eingeben';
 			// labelLaufzeit.style.color = 'red';
 			return;
 		}
@@ -174,13 +182,15 @@ export default class NewRecipe extends Vue {
 		}
 
 		// Send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
-		const response = await fetch('url', {
+		const response = await fetch('http://localhost:4000/recipes', {
 			body: JSON.stringify({
-				inputName: this.inputName,
-				inputAnleitung: this.inputAnleitung,
-				verwendeteZutaten: this.verwendeteZutaten,
-				inputArt: this.inputArt,
-				inputLaufzeit: this.inputLaufzeit
+				name: this.inputName,
+				anleitung: this.inputAnleitung,
+				zutaten: this.verwendeteZutaten.map((zutat) => zutat.name),
+				art: this.inputArt,
+				laufzeit: parseInt(this.inputLaufzeit),
+				privat: false,
+				portion: 1
 			}),
 			headers: getCommonHeaders(),
 			method: 'POST',
@@ -194,7 +204,9 @@ export default class NewRecipe extends Vue {
 			return;
 		}
 
-		uploadFail.innerHTML = 'Daten erfolgreich hochgeladen!';
+		const { id } = await response.json();
+
+		this.$router.push(`/rezept/${id}`)
 	}
 }
 </script>
