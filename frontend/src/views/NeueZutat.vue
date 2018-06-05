@@ -2,29 +2,45 @@
 	<div class="container"> 
 			<h2 class="mt-2"> Sie sind bei der Zutateingabe.</h2> 
 			<form id="formNZ" action="select.html"> 
-				<div class="row"> 
-					<div class="col-2 mt-3"> 
+				<div class="row mt-3"> 
+					<div class="col-6 "> 
 						<label id="inputZutatname">Zutatname</label> 
 						<input class="form-control" v-model="inputName"/> 
-					</div> 
-					<div class="col-4 mt-3"> 
-						<label id="inputNaehrwerteLabel">Nährwerte</label> 
-						<input class="form-control" v-model="inputNaehrwerte"/> 
 					</div>
-					<div class="col-2 mt-5"> 
-						<span class="btn btn-primary" @click="hinzufügen"> 
+				</div>
+				<div class="row mt-3">
+					<div class="col-6 "> 
+						<label id="inputNaehrwerteLabel">Nährwerte</label> 
+						<textarea class="form-control" v-model="inputNaehrwerte"></textarea> 
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-6">
+                        <label>Zutat für Rezept</label>
+                        <select class="form-control" v-model="inputArt">
+                            <option v-for="option in ZutatArten" :value="option.value" :key="option.name" >
+								{{ option.name }}
+							</option>
+                        </select>
+                    </div>
+				</div>
+				<div class="row mt-5">
+					<div class="col-12"> 
+						<span class="btn btn-primary mr-3" @click="addZutat"> 
 							Hinzufügen  
 						</span>
-						<p id="labelZutatHinzufügen"></p>
-					</div>  
-					<div class="col-2 mt-5"> 
 						<router-link to="unbetätigt">
 							<span class="btn btn-primary"> 
 								Überprüfen 
 							</span>
 						</router-link>
-					</div> 
-				</div> 
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<span id="labelZutatHinzufügen"></span>
+					</div>
+				</div>
 			</form> 
 		</div> 
 </template>
@@ -39,45 +55,41 @@ import getCommonHeaders from '../lib/util/getCommonHeaders';
 export default class NeueZutat extends Vue {
 	private inputName: string = '';
 	private inputNaehrwerte: string = '';
+	private inputArt: string = '';
+
 	private labelZutatHinzufügen: Element;
-	private Zutaten: Array<{ name: string, value: string }> = [];
+
+	private erlaubteZutatenArten = ['Fleisch', 'Gemüse', 'Obst und Nüsse', 'Gewürz', 'trocken', 'andere'];
+	private ZutatArten = this.erlaubteZutatenArten.map((name: string) => ({ name, value: name }));
 
 	private async mounted() {
 		const labelZutatHinzufügen = document.querySelector('#labelZutatHinzufügen');
 		if (!labelZutatHinzufügen) {
 			return;
 		}
-		this.labelZutatHinzufügen = labelZutatHinzufügen;
 
-		try {
-			const zutaten = await loadZutaten();
-			this.Zutaten = zutaten;
-		} catch (err) {
-			// Handle errors
-			return;
-		}
+		this.labelZutatHinzufügen = labelZutatHinzufügen;
 	}
 
-	private async hinzufügen() {
-		if (checkUserdata(this.inputName, 20, {checkWhitespace: true, checkLength: true}) === false) {
+	private async addZutat() {
+		if (checkUserdata(this.inputName, 20, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputZutatname = document.querySelector('#inputZutatname')!;
 			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
 			return;
 		}
 
-		if (checkUserdata(this.inputNaehrwerte, 20, {checkWhitespace: false, checkLength: true}) === false) {
+		if (checkUserdata(this.inputNaehrwerte, 20, { checkWhitespace: false, checkLength: true }) === false) {
 			const inputNaehrwerteLabel = document.querySelector('#inputNaehrwerteLabel')!;
 			inputNaehrwerteLabel.innerHTML = 'keine Leer und Sonderzeichen in den Nährwerten';
 			return;
 		}
 
-		if (typeof this.Zutaten.find((zutat) => zutat.name === this.inputName) !== 'undefined') {
-			this.labelZutatHinzufügen.innerHTML = 'Zutat schon vorhanden';
+		if (!this.erlaubteZutatenArten.includes(this.inputArt)) {
 			return;
 		}
 
-		const response = await fetch(`http://localhost:4000/auth`, {
-			body: JSON.stringify({ ZutatName: this.inputName, Naehrwerte: this.inputNaehrwerte }),
+		const response = await fetch(`http://localhost:4000/ingredients`, {
+			body: JSON.stringify({ name: this.inputName, naehrwerte: this.inputNaehrwerte, art: this.inputArt }),
 			headers: getCommonHeaders(),
 			method: 'POST',
 			mode: 'cors'

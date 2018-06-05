@@ -24,7 +24,8 @@
       "dom",
       "dom.iterable",
 	  "scripthost",
-	  "es2016"
+	  "es2016",
+	  "es2016.array.include"
     ]
   },
   "include": [
