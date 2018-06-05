@@ -37,6 +37,17 @@
 			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
+					<button class="accordion" @click="showEigeneRezepte">EigeneRezepte</button>
+					<div id="listEigeneRezepte" class="panel">
+						<ul display: none;>
+						<li v-for="rezept in EigeneRezepte" v-bind:key="rezept.name">
+							<RezeptListElement v-bind="rezept"/>
+						</li>
+					</ul>
+					</div>
+				</div>
+			<div class="row">
+				<div class="col-6 mt-2">
 					<button class="accordion" @click="showLieblingsrezepte">Lieblingsrezepte</button>
 					<div id="listLieblingsrezepte" class="panel">
 						<ul display: none;>
@@ -85,6 +96,7 @@ export default class Nutzerdaten extends Vue {
 
 	private Lieblingsrezepte: any[] = [];
 	private GemerkteRezepte: any[] = [];
+	private EigeneRezepte: any[] = [];
 
 	private mounted() {
 		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
@@ -241,6 +253,32 @@ export default class Nutzerdaten extends Vue {
 
 		// Load full recipe data by ids
 		this.GemerkteRezepte = await loadRecipesByIds(recipes);
+		return;
+	}
+	private async showEigeneRezepte() {
+		const panelEigeneRezepte = document.getElementById('#listEigeneRezepte')!;
+		if (panelEigeneRezepte.style.display === 'block') {
+			panelEigeneRezepte.style.display = 'none';
+			return;
+		}
+
+		panelEigeneRezepte.style.display = 'block';
+
+		const response = await fetch(`http://localhost:4000/recipes`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			this.EigeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+			return;
+		}
+
+		const { recipes }: { recipes: string[] } = await response.json();
+
+		// Load full recipe data by ids
+		this.EigeneRezepte = await loadRecipesByIds(recipes);
 		return;
 	}
 }
