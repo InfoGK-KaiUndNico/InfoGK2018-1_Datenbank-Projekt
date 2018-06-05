@@ -18,9 +18,11 @@
 						<p id="labelZutatHinzufügen"></p>
 					</div>  
 					<div class="col-2 mt-5"> 
-						<span class="btn btn-primary"> 
-							Überprüfen 
-						</span>  
+						<router-link to="unbetätigt">
+							<span class="btn btn-primary"> 
+								Überprüfen 
+							</span>
+						</router-link>
 					</div> 
 				</div> 
 			</form> 

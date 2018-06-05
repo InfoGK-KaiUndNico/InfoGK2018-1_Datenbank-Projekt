@@ -7,6 +7,7 @@ import Hauptseite from './views/Hauptseite.vue';
 import Registrieren from './views/Registrieren.vue';
 import Rezeptanzeige from './views/Rezeptanzeige.vue';
 import NeueZutat from './views/NeueZutat.vue';
+import ZuUeberpruefen from './views/ZuUeberpruefen.vue';
 
 Vue.use(Router);
 
@@ -22,6 +23,11 @@ export default new Router({
 			path: '/hauptseite',
 			name: 'mainpage',
 			component: Hauptseite
+		},
+		{
+			path: '/unbestätigt',
+			name: 'unconfirmed',
+			component: ZuUeberpruefen
 		},
 		{
 			path: '/registrieren',
