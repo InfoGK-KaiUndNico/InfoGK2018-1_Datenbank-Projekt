@@ -73,8 +73,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
-import loadRecipesByIds from '../lib/util/loadRecipesByIds'
-
+import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import RezeptListElement from '../components/RezeptListElement.vue';
 
 @Component({components: { RezeptListElement }})
@@ -114,7 +113,7 @@ export default class Hauptseite extends Vue {
 
 		// search zutat if rezeptsuche and Art empty
 		if (this.Rezeptsuche.length < 1 && typeof this.selectedArt === 'undefined') {
-			
+
 			const response = await fetch('url', {
 				body: JSON.stringify({
 					selectedZutat: this.selectedZutat,
@@ -129,6 +128,10 @@ export default class Hauptseite extends Vue {
 				return;
 			}
 			// TODO output search
+			const { recipes }: { recipes: string[] } = await response.json();
+
+			// Load full recipe data by ids
+			this.gefundeneRezepte = await loadRecipesByIds(recipes);
 			return;
 		}
 
@@ -168,7 +171,7 @@ export default class Hauptseite extends Vue {
 					this.gefundeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
 					return;
 				}
-				
+
 				const { recipes }: { recipes: string[] } = await response.json();
 
 				// Load full recipe data by ids

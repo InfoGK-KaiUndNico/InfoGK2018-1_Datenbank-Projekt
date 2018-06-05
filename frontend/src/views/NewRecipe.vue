@@ -45,7 +45,7 @@
 					<label>Zutaten im Rezept</label>
 					<ul>
 						<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
-							{{ingredient.name}}{{ingredient.menge}}
+							{{ingredient.menge}}g{{ingredient.name}}
 						</li>
 					</ul>
 					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>

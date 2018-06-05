@@ -37,12 +37,24 @@
 			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
-					<label>Lieblingsrezepte</label>
-					<textarea class="form-control"></textarea>
+					<button class="accordion" @click="showLieblingsrezepte">Lieblingsrezepte</button>
+					<div id="listLieblingsrezepte" class="panel">
+						<ul display: none;>
+						<li v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.name">
+							<RezeptListElement v-bind="rezept"/>
+						</li>
+					</ul>
+					</div>
 				</div>
 				<div class="col-6 mt-2">
-					<label>gemerkte Rezepte</label>
-					<textarea class="form-control"></textarea>
+					<button class="accordion" @click="showGemerkteRezepte">Gemerkte Rezepte</button>
+					<div id="listGemerkteRezepte" class="panel">
+						<ul display: none;>
+							<li v-for="rezept in gefundeneRezepte" v-bind:key="rezept.name">
+								<RezeptListElement v-bind="rezept"/>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
         </form>
@@ -51,9 +63,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import checkUserdata from '../lib/util/checkUserInput';
 
+import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import RezeptListElement from '../components/RezeptListElement.vue';
+import loadRecipesByIds from '../lib/util/loadRecipesByIds';
+
 import validator from 'validator';
 
 @Component({})
@@ -67,6 +82,9 @@ export default class Nutzerdaten extends Vue {
 	private inputPassword: Element;
 	private inputEmail: Element;
 	private updateFail: Element;
+
+	private Lieblingsrezepte: any[] = [];
+	private GemerkteRezepte: any[] = [];
 
 	private mounted() {
 		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
@@ -170,6 +188,60 @@ export default class Nutzerdaten extends Vue {
 		}
 
 		this.updateFail.innerHTML = 'Daten erfolgreich hochgeladen!';
+	}
+
+	private async showLieblingsrezepte() {
+		const panelLieblingsrezepte = document.getElementById('#listLieblingsrezepte')!;
+		if (panelLieblingsrezepte.style.display === 'block') {
+			panelLieblingsrezepte.style.display = 'none';
+			return;
+		}
+
+		panelLieblingsrezepte.style.display = 'block';
+
+		const response = await fetch(`http://localhost:4000/recipes`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			this.Lieblingsrezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+			return;
+		}
+
+		const { recipes }: { recipes: string[] } = await response.json();
+
+		// Load full recipe data by ids
+		this.Lieblingsrezepte = await loadRecipesByIds(recipes);
+		return;
+	}
+
+	private async showGemerkteRezepte() {
+		const panelGemerkteRezepte = document.getElementById('#listGemerkteRezepte')!;
+		if (panelGemerkteRezepte.style.display === 'block') {
+			panelGemerkteRezepte.style.display = 'none';
+			return;
+		}
+
+		panelGemerkteRezepte.style.display = 'block';
+
+		const response = await fetch(`http://localhost:4000/recipes`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			this.GemerkteRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+			return;
+		}
+
+		const { recipes }: { recipes: string[] } = await response.json();
+
+		// Load full recipe data by ids
+		this.GemerkteRezepte = await loadRecipesByIds(recipes);
+		return;
 	}
 }
 </script>
