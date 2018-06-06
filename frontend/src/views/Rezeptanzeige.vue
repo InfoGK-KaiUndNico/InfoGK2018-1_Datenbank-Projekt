@@ -20,8 +20,8 @@
                     <div class="col-12">
                         <label>Zutaten</label>
                         <ul>
-							<li v-for="zutat in zutaten" v-bind:key="zutat.name">
-								{{zutat.menge}}g {{zutat.name}}
+							<li v-for="zutat in zutaten" v-bind:key="zutat.zutat">
+								{{zutat.menge}}g {{zutat.zutat}}
 							</li>
 						</ul>
                     </div>
