@@ -21,6 +21,16 @@
 						<p v-else>✔️</p>
 					</div>
                 </div>
+				<div class="row">
+					<div class="col-3">
+						<label>Erstellt von</label>
+						<p><b>{{erstelltVon}}</b></p>
+					</div>
+					<div class="col-3">
+						<label>Erstellt</label>
+						<p><b>{{erstellungsDatumBerechnen()}}</b></p>
+					</div>
+				</div>
                 <div class="row mt-3">                
                     <div class="col-12">
                         <label>Zutaten</label>
@@ -67,6 +77,8 @@ export default class Rezeptanzeige extends Vue {
 	private zutaten: any[] = [];
 	private anleitung: string = '';
 	private review: any = null;
+	private erstelltVon: string = '';
+	private erstellt: string = new Date().toISOString();
 
 	private mounted() {
 		this.rezeptId = this.$route.params.id;
@@ -81,6 +93,11 @@ export default class Rezeptanzeige extends Vue {
 		return `${this.laufzeit} min.`;
 	}
 
+	private erstellungsDatumBerechnen() {
+		const date = new Date(this.erstellt);
+		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+	}
+
 	private async loadRezeptData() {
 		const response = await fetch(`http://localhost:4000/recipes/${this.rezeptId}`, {
 			headers: getCommonHeaders(),
@@ -88,7 +105,7 @@ export default class Rezeptanzeige extends Vue {
 			mode: 'cors'
 		});
 
-		const { name, laufzeit, art, anleitung, zutaten, review } = await response.json();
+		const { name, laufzeit, art, anleitung, zutaten, review, erstelltVon, erstellt } = await response.json();
 
 		this.name = name;
 		this.laufzeit = laufzeit;
@@ -96,6 +113,8 @@ export default class Rezeptanzeige extends Vue {
 		this.anleitung = anleitung;
 		this.zutaten = zutaten;
 		this.review = review;
+		this.erstelltVon = erstelltVon;
+		this.erstellt = erstellt;
 	}
 
 	private async loadZutatenData() {
