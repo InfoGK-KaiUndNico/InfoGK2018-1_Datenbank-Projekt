@@ -5,6 +5,7 @@
 			<div class="row">
 				<div class="col-6 mt-2">
 					<div id="unueberpruefteRezepte" class="panel">
+						<p v-show="Rezepte.length < 1">Keine Rezepte zu überprüfen!</p>
 						<ul class="list-group">
 							<li class="list-group-item" v-for="rezept in Rezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
@@ -14,6 +15,7 @@
 				</div>
 				<div class="col-6 mt-2">
 					<div id="unueberpruefteZutaten" class="panel">
+						<p v-show="Zutaten.length < 1">Keine Zutaten zu überprüfen!</p>
 						<ul class="list-group">
 							<li class="list-group-item" v-for="zutat in Zutaten" v-bind:key="zutat.name">
 								<ZutatListElement v-bind:zutat="zutat"/>
@@ -73,9 +75,7 @@ export default class ZuUeberpruefen extends Vue {
 
 		// Load full recipe data by ids
 		const unfilteredRezepte = await loadRecipesByIds(recipes);
-		console.log(unfilteredRezepte);
 		this.Rezepte = unfilteredRezepte.filter((rezept) => rezept.review === null);
-		console.log(this.Rezepte);
 		return;
 	}
 
@@ -101,7 +101,8 @@ export default class ZuUeberpruefen extends Vue {
 
 		const { zutaten }: { zutaten: string[] } = await response.json();
 
-		this.Zutaten = await loadZutatenByIds(zutaten);
+		const unfilteredIngredients = await loadZutatenByIds(zutaten);
+		this.Zutaten = unfilteredIngredients.filter((zutat) => zutat.review === null);
 		return;
 	}
 }
