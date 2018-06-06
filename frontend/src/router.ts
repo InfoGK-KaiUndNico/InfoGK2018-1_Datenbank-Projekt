@@ -25,7 +25,7 @@ export default new Router({
 			component: Hauptseite
 		},
 		{
-			path: '/unbestätigt',
+			path: '/unbestaetigt',
 			name: 'unconfirmed',
 			component: ZuUeberpruefen
 		},

@@ -65,7 +65,7 @@ export default class ZuUeberpruefen extends Vue {
 		});
 
 		if (!response.ok) {
-			this.Rezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+			// TODO Handle error
 			return;
 		}
 
@@ -73,7 +73,9 @@ export default class ZuUeberpruefen extends Vue {
 
 		// Load full recipe data by ids
 		const unfilteredRezepte = await loadRecipesByIds(recipes);
+		console.log(unfilteredRezepte);
 		this.Rezepte = unfilteredRezepte.filter((rezept) => rezept.review === null);
+		console.log(this.Rezepte);
 		return;
 	}
 
@@ -93,7 +95,7 @@ export default class ZuUeberpruefen extends Vue {
 		});
 
 		if (!response.ok) {
-			this.Zutaten[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
+			// TODO Handle error
 			return;
 		}
 

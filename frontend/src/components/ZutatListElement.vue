@@ -23,7 +23,7 @@ export default class ZutatListElement extends Vue {
 
 	private mounted() {
 		this.shouldReview = localStorage.getItem('userRang') === 'Admin';
-		this.isReviewed = this.zutat.review === null;
+		this.isReviewed = this.zutat.review !== null;
 	}
 
 	private async review(event: MouseEvent) {

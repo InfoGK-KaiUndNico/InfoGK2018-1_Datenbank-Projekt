@@ -29,7 +29,7 @@
 						<span class="btn btn-primary mr-3" @click="addZutat"> 
 							Hinzufügen  
 						</span>
-						<router-link to="unbestätigt">
+						<router-link to="unbestaetigt">
 							<span class="btn btn-primary"> 
 								Überprüfen 
 							</span>
