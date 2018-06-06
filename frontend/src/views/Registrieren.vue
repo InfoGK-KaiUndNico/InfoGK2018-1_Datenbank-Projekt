@@ -2,29 +2,34 @@
 	<div>
 		<div class="container">
 			<h2 class="mt-2">Hier können sie sich einen Nutzeraccount erstellen.</h2>
+			<form id="formReg" action="select.html">
+				<div class="row mt-3">
+					<div class="col-3">
+						<input class="form-control" placeholder="Nutzername" v-model="inputUsername"/>
+						<p id="AnzeigeUsername"></p>
+					</div>
+					<div class="col-3">
+						<input class="form-control" placeholder="Passwort" type="password" v-model="inputPassword"/>
+						<p id="AnzeigePassword"></p>
+					</div>
+					<div class="col-3">
+						<input class="form-control" placeholder="eMail" v-model="inputEmail"/>
+						<p id="AnzeigeEmail"></p>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-12">
+						<span class="btn btn-primary mr-3" @click="register">
+							Registrieren
+						</span>
+						<router-link to="/anmeldung">
+							<span class="btn btn-outline-secondary">Zur Anmeldung</span>
+						</router-link>
+						<p id="registerFail"></p>
+					</div>
+				</div>
+			</form>
 		</div>
-		<form id="formReg" action="select.html">
-			<div class="row">
-				<div class="col-3 ml-3">
-					<input class="form-control" placeholder="Nutzername" v-model="inputUsername"/>
-					<p id="AnzeigeUsername"></p>
-				</div>
-				<div class="col-3">
-					<input class="form-control" placeholder="Passwort" type="password" v-model="inputPassword"/>
-					<p id="AnzeigePassword"></p>
-				</div>
-				<div class="col-3">
-					<input class="form-control" placeholder="eMail" v-model="inputEmail"/>
-					<p id="AnzeigeEmail"></p>
-				</div>
-				<div class="col-1">
-					<span class="btn btn-primary" @click="register">
-						Registrieren
-					</span>
-					<p id="registerFail"></p>
-				</div>
-			</div>
-		</form>
 	</div>
 </template>
 

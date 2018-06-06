@@ -65,8 +65,8 @@
                 </div>
 				<div class="col-1">
                     <router-link to="/hauptseite">
-						<span class="btn btn-primary">
-							zurück
+						<span class="btn btn-outline-secondary">
+							Zurück
 						</span>
                     </router-link>
                 </div>

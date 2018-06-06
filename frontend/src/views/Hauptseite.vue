@@ -4,24 +4,30 @@
         <form id="formHS" action="select.html">
             <div class="row mt-3">
               	<div class="col-12">
+					<span class="mr-3">Shortcuts</span>
                     <router-link to="/neues-rezept">
-                        <span class="btn btn-primary mb-1 mr-1">
+                        <span class="btn btn-primary mr-1">
                             Neues Rezept
                         </span>
                     </router-link>
 					<router-link to="/neue-zutat">
-                        <span class="btn btn-primary mb-1 mr-1"> 
+                        <span class="btn btn-primary ml-1 mr-1"> 
                             Neue Zutat 
                         </span> 
 					</router-link>
-					 <router-link to="/nutzerdaten">
-                        <span class="btn btn-primary mb-1">
+					<router-link to="/nutzerdaten">
+                        <span class="btn btn-primary ml-1 mr-1">
                             Nutzerdaten
                         </span>
                     </router-link>
+					<router-link to="/unbestaetigt">
+						<span v-show="canReview" class="btn btn-primary ml-1">
+							Überprüfen
+						</span>
+					</router-link>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-3">
                     <label>Rezeptsuche</label>
                     <input class="form-control" placeholder="Suche" v-model="selectedName"/>
@@ -48,7 +54,7 @@
 					<button class="btn btn-primary mr-3" @click="OutputSearch">
 						Suchen
 					</button>
-					<button class="btn btn-secondary" @click="clearInputs">
+					<button class="btn btn-outline-secondary" @click="clearInputs">
 						Clear
 					</button>
 				</div>
@@ -92,6 +98,8 @@ export default class Hauptseite extends Vue {
 
 	private gefundeneRezepte: any[] = [];
 
+	private canReview: boolean = false;
+
 	private async mounted() {
 		try {
 			const zutaten = await loadZutaten();
@@ -100,6 +108,8 @@ export default class Hauptseite extends Vue {
 			// Handle errors
 			return;
 		}
+
+		this.canReview = localStorage.getItem('userRang') === 'Admin';
 	}
 
 	private clearInputs(event: MouseEvent) {

@@ -29,9 +29,9 @@
 						<span class="btn btn-primary mr-3" @click="addZutat"> 
 							Hinzufügen  
 						</span>
-						<router-link to="unbestaetigt">
-							<span class="btn btn-primary"> 
-								Überprüfen 
+						<router-link to="/hauptseite">
+							<span class="btn btn-outline-secondary"> 
+								Zurück 
 							</span>
 						</router-link>
 					</div>

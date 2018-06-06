@@ -3,29 +3,33 @@
                 <h2 class="mt-2">Hallo, willkommen bei unserer Rezepte Datenbank.</h2>
                 <h3>Bitte melden sie sich an, um sie zu nutzen.</h3>
                 <form id="formIndex1" action="select.html">
-                    <div class="row">
-                        <div class="col-3 mt-3">
+                    <div class="row mt-3">
+                        <div class="col-3">
                             <label id="labelNutzername">Nutzername</label>
                             <input @keypress.enter="moveFocus" id="inputUsername" class="form-control" v-model="userName" />
                         </div>
-                        <div class="col-3 mt-3">
+                        <div class="col-3">
                             <label id="labelPasswort">Passwort</label>
                             <input @keypress.enter="login" id="inputPassword" type="password" class="form-control" v-model="password" />
                         </div>
-                        <div class="col-3 mt-5">
-                            <button @click="login" class="btn btn-primary">
+                    </div>
+					<div class="row mt-3">
+                        <div class="col-3">
+                            <button @click="login" class="btn btn-primary mr-3">
                               Log In
                             </button>
-                        </div>
-						<div class="col-1 mt-5 mr-5">
 							<router-link to="/registrieren">
-								<span class="btn btn-primary">
+								<span class="btn btn-outline-success">
 									Registrieren
 								</span>
 							</router-link>
-                		</div>
-                        <p id="loginFail"></p>
-                    </div>
+                        </div>
+					</div>
+                    <div class="row">
+						<div class="col-12">
+							<p id="loginFail"></p>
+						</div>
+					</div>
                 </form>
             </div>
 </template>
@@ -51,7 +55,6 @@ export default class Login extends Vue {
 	}
 
 	private async login(event: MouseEvent) {
-
 		event.preventDefault();
 
 		// Validate username
