@@ -45,10 +45,10 @@ export default class Login extends Vue {
 	private userName: string = '';
 	private password: string = '';
 
-	/* private moveFocus() {
-		const inputPassword = document.querySelector('#inputPassword')!;
+	private moveFocus() {
+		const inputPassword = document.getElementById('inputPassword')!;
 		inputPassword.focus();
-	} */
+	}
 
 	// redirect to registration form
 	private neuerAccout() {

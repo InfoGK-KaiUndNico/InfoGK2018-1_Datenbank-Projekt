@@ -89,7 +89,7 @@ import loadZutaten from '../lib/util/loadZutaten';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import RezeptListElement from '../components/RezeptListElement.vue';
 
-@Component({components: { RezeptListElement }})
+@Component({ components: { RezeptListElement } })
 export default class Hauptseite extends Vue {
 	private Zutaten: any[] = [];
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
@@ -118,7 +118,7 @@ export default class Hauptseite extends Vue {
 	private clearInputs(event: MouseEvent) {
 		event.preventDefault();
 
-		//clear inputs after search
+		// clear inputs after search
 		this.selectedArten = [];
 		this.selectedZutaten = [];
 		this.selectedName = '';
@@ -129,7 +129,6 @@ export default class Hauptseite extends Vue {
 
 		// search zutat if rezeptsuche and Art empty
 		if (this.selectedName.length < 1 && this.selectedArten.length < 1) {
-			
 			// get array with ids of recipes matching search from backend
 			const response = await fetch(`http://localhost:4000/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
 				headers: getCommonHeaders(),
@@ -151,7 +150,6 @@ export default class Hauptseite extends Vue {
 
 		// search art if Rezeptsuche and Zutat empty
 		if (this.selectedName.length < 1 && this.selectedZutaten.length < 1) {
-
 			// get array with ids of recipes matching search from backend
 			const response = await fetch(`http://localhost:4000/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
 				headers: getCommonHeaders(),
@@ -173,10 +171,8 @@ export default class Hauptseite extends Vue {
 
 		// search rezept if Zutat and Art empty
 		if (this.selectedZutaten.length < 1 && this.selectedArten.length < 1) {
-
 			// check input and search
 			if (checkUserdata(this.selectedName, 100, { checkWhitespace: false, checkLength: true }) === true) {
-		
 				// get array with ids of recipes matching search from backend
 				const response = await fetch(`http://localhost:4000/recipes?name=${encodeURIComponent(this.selectedName)}`, {
 					headers: getCommonHeaders(),

@@ -40,6 +40,7 @@
 					<p>Meine eigenen Rezepte</p>
 					<!--<button class="btn btn-primary" @click="showRezepte('eigene')">EigeneRezepte</button>-->
 					<div id="listEigeneRezepte" class="panel">
+						<p v-show="EigeneRezepte.length < 1">Noch keine eigenen Rezepte. <router-link to="/neues-rezept"><span>Füge doch eines hinzu!</span></router-link></p>						
 						<ul class="list-group">
 							<li class="list-group-item" v-for="rezept in EigeneRezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
@@ -88,9 +89,8 @@ import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 
 import validator from 'validator';
 
-@Component({ components: { RezeptListElement }})
+@Component({ components: { RezeptListElement } })
 export default class Nutzerdaten extends Vue {
-
 	private showUserName: string = '';
 	private changePassword: string = '';
 	private changeEmail: string = '';
@@ -163,7 +163,7 @@ export default class Nutzerdaten extends Vue {
 
 		this.showUserName = name;
 		this.inputPassword.innerHTML = '';
-		this.inputEmail.innerHTML = email;
+		this.changeEmail = email;
 
 		this.LieblingsrezeptIds = favoriten;
 		this.EigeneRezeptIds = rezepte;
@@ -236,7 +236,7 @@ export default class Nutzerdaten extends Vue {
 		}
 
 		const passwordChanges = this.changePassword.length > 0 ? { passwort: this.changePassword } : {};
-		const emailChanges = this.changeEmail.length > 0 ? { email: this.changeEmail} : {};
+		const emailChanges = this.changeEmail.length > 0 ? { email: this.changeEmail } : {};
 
 		// send changes to backend
 		const response = await fetch(`http://localhost:4000/users/${userName}`, {

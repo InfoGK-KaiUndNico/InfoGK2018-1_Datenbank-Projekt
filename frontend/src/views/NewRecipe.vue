@@ -28,7 +28,7 @@
 								{{ option.name }}
 							</option>
                         </select>
-                    </div> 
+                    </div>
                     <div class="col-3">
 						<label>Menge der Zutat</label>
                         <input class="form-control" placeholder="Menge in Gramm" v-model="inputMenge"/>
