@@ -12,6 +12,7 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 @Component({})
 export default class RezeptListElement extends Vue {
@@ -30,8 +31,13 @@ export default class RezeptListElement extends Vue {
 		this.$router.push(`/rezept/${this.rezept.id}`);
 	}
 
-	private createReview() {
-		// TODO
+	private async createReview() {
+		const response = await fetch(`http://localhost:4000/reviews`, {
+			headers: getCommonHeaders(),
+			body: JSON.stringify({ type: 'zutat', subject: this.rezept.id, annotations: '' }),
+			method: 'POST',
+			mode: 'cors'
+		});
 	}
 }
 </script>

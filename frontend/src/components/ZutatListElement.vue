@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<p>{{name}}</p>
-		<p>{{naehrwerte}}</p>
-		<button @click="review" v-if="shouldReview" class="btn btn-primary">
+		<p>{{zutat.name}}</p>
+		<p>{{zutat.naehrwerte}}</p>
+		<button @click="review" v-show="!isReviewed && shouldReview" class="btn btn-primary">
             Zutat bestätigen
         </button>
 	</div>
@@ -11,20 +11,27 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import getCommonHeaders from '../lib/util/getCommonHeaders';
 
 @Component({})
-export default class RezeptListElement extends Vue {
-	@Prop({ default: '' })
-	private name: string;
+export default class ZutatListElement extends Vue {
+	@Prop({ default: {}})
+	private zutat: any;
 
-	@Prop({ default: '' })
-	private erstelltVon: string;
+	private shouldReview: boolean = false;
+	private isReviewed: boolean = true;
 
-	@Prop({ default: null })
-	private review: string;
+	private mounted() {
+		this.shouldReview = localStorage.getItem('userRang') === 'Admin';
+	}
 
-	private shouldReview: boolean = localStorage.getItem('userRang') === 'Admin' && this.review === null;
-	private isReviewed: boolean = this.review === null;
-
+	private async review() {
+		const response = await fetch(`http://localhost:4000/reviews`, {
+			headers: getCommonHeaders(),
+			body: JSON.stringify({ type: 'zutat', subject: this.zutat.name, annotations: '' }),
+			method: 'POST',
+			mode: 'cors'
+		});
+	}
 }
 </script>

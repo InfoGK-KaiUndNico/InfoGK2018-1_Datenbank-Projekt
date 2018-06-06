@@ -4,21 +4,19 @@
         <form id="formND" action="select.html">
 			<div class="row">
 				<div class="col-6 mt-2">
-					<button class="accordion" @click="showRezepte">Unüberprüfte Rezepte</button>
 					<div id="unueberpruefteRezepte" class="panel">
-						<ul display="none">
-							<li v-for="rezept in Rezepte" v-bind:key="rezept.name">
+						<ul class="list-group">
+							<li class="list-group-name" v-for="rezept in Rezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="col-6 mt-2">
-					<button class="accordion" @click="showZutaten">Unüberprüfte Zutaten</button>
 					<div id="unueberpruefteZutaten" class="panel">
-						<ul display="none">
-							<li v-for="rezept in Zutaten" v-bind:key="rezept.name">
-								<ZutatListElement v-bind="rezept"/>
+						<ul class="list-group">
+							<li class="list-group-item" v-for="zutat in Zutaten" v-bind:key="zutat.name">
+								<ZutatListElement v-bind:zutat="zutat"/>
 							</li>
 						</ul>
 					</div>
@@ -36,23 +34,29 @@ import getCommonHeaders from '../lib/util/getCommonHeaders';
 import RezeptListElement from '../components/RezeptListElement.vue';
 import ZutatListElement from '../components/ZutatListElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
+import loadZutatenByIds from '../lib/util/loadZutatenByIds';
 
 import validator from 'validator';
 
-@Component({})
-export default class Nutzerdaten extends Vue {
+@Component({ components: { ZutatListElement } })
+export default class ZuUeberpruefen extends Vue {
 
 	private Rezepte: any[] = [];
 	private Zutaten: any[] = [];
 
+	private mounted() {
+		this.showRezepte();
+		this.showZutaten();
+	}
+
 	private async showRezepte() {
-		const unueberpruefteRezepte = document.getElementById('#unueberpruefteRezepte')!;
+		/*const unueberpruefteRezepte = document.getElementById('#unueberpruefteRezepte')!;
 		if (unueberpruefteRezepte.style.display === 'block') {
 			unueberpruefteRezepte.style.display = 'none';
 			return;
 		}
 
-		unueberpruefteRezepte.style.display = 'block';
+		unueberpruefteRezepte.style.display = 'block';*/
 
 		const response = await fetch(`http://localhost:4000/recipes`, {
 			headers: getCommonHeaders(),
@@ -68,20 +72,21 @@ export default class Nutzerdaten extends Vue {
 		const { recipes }: { recipes: string[] } = await response.json();
 
 		// Load full recipe data by ids
-		this.Rezepte = await loadRecipesByIds(recipes);
+		const unfilteredRezepte = await loadRecipesByIds(recipes);
+		this.Rezepte = unfilteredRezepte.filter((rezept) => rezept.review === null);
 		return;
 	}
 
 	private async showZutaten() {
-		const unueberpruefteZutaten = document.getElementById('#unueberpruefteZutaten')!;
+		/*const unueberpruefteZutaten = document.getElementById('#unueberpruefteZutaten')!;
 		if (unueberpruefteZutaten.style.display === 'block') {
 			unueberpruefteZutaten.style.display = 'none';
 			return;
 		}
 
-		unueberpruefteZutaten.style.display = 'block';
+		unueberpruefteZutaten.style.display = 'block';*/
 
-		const response = await fetch(`http://localhost:4000/recipes`, {
+		const response = await fetch(`http://localhost:4000/ingredients?nofilter=true`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
@@ -92,10 +97,9 @@ export default class Nutzerdaten extends Vue {
 			return;
 		}
 
-		const { recipes }: { recipes: string[] } = await response.json();
+		const { zutaten }: { zutaten: string[] } = await response.json();
 
-		// Load full recipe data by ids
-		this.Zutaten = await loadRecipesByIds(recipes);
+		this.Zutaten = await loadZutatenByIds(zutaten);
 		return;
 	}
 }
