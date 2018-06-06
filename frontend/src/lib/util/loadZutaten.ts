@@ -1,8 +1,6 @@
 import getCommonHeaders from './getCommonHeaders';
 
 export default async function loadZutaten() {
-	let Zutaten: any[] = [];
-
 	// get all ingredients
 	const response = await fetch('http://localhost:4000/ingredients', {
 		headers: getCommonHeaders(),
@@ -16,5 +14,5 @@ export default async function loadZutaten() {
 
 	// transform and handle response data
 	const { zutaten }: { zutaten: string[] } = await response.json();
-	return Zutaten = zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
+	return zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
 }

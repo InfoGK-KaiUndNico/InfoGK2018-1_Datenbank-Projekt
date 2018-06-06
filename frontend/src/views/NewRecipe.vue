@@ -45,7 +45,7 @@
 					<label>Zutaten im Rezept</label>
 					<ul>
 						<li v-for="ingredient in verwendeteZutaten" v-bind:key="ingredient.name">
-							{{ingredient.menge}}g {{ingredient.name}}
+							{{ingredient.menge}}g {{ingredient.zutat}}
 						</li>
 					</ul>
 					<p v-show="verwendeteZutaten.length < 1">Noch keine Zutaten hinzugefügt!</p>
@@ -119,8 +119,9 @@ export default class NewRecipe extends Vue {
 
 	private verwendeteZutaten: any[] = [];
 
-	private Zutaten: any[] = [{ value: 'Lauch', name: 'Lauch' }];
+	private Zutaten: any[] = [];
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
+
 	private async mounted() {
 		try {
 			const zutaten = await loadZutaten();
@@ -139,7 +140,7 @@ export default class NewRecipe extends Vue {
 			return;
 		}
 
-		const existingZutat = this.verwendeteZutaten.find((zutat) => zutat.name === this.inputZutat);
+		const existingZutat = this.verwendeteZutaten.find((zutat) => zutat.zutat === this.inputZutat);
 		if (typeof existingZutat !== 'undefined') {
 			existingZutat.menge += parseInt(this.inputMenge);
 			return;

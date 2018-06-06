@@ -23,15 +23,25 @@ export default class ZutatListElement extends Vue {
 
 	private mounted() {
 		this.shouldReview = localStorage.getItem('userRang') === 'Admin';
+		this.isReviewed = this.zutat.review === null;
 	}
 
-	private async review() {
+	private async review(event: MouseEvent) {
+		event.preventDefault();
+
 		const response = await fetch(`http://localhost:4000/reviews`, {
 			headers: getCommonHeaders(),
 			body: JSON.stringify({ type: 'zutat', subject: this.zutat.name, annotations: '' }),
 			method: 'POST',
 			mode: 'cors'
 		});
+
+		if (!response.ok) {
+			// TODO Handle errors
+			return;
+		}
+
+		// TODO Remove review button after review
 	}
 }
 </script>
