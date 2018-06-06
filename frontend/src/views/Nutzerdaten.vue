@@ -36,11 +36,12 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-6 mt-2">
+				<div class="col-12 mt-2">
+					<p>Meine eigenen Rezepte</p>
 					<!--<button class="btn btn-primary" @click="showRezepte('eigene')">EigeneRezepte</button>-->
 					<div id="listEigeneRezepte" class="panel">
-						<ul>
-							<li v-for="rezept in EigeneRezepte" v-bind:key="rezept.name">
+						<ul class="list-group">
+							<li class="list-group-item" v-for="rezept in EigeneRezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
@@ -48,21 +49,25 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-6 mt-2">
+				<div class="col-12 mt-2">
+					<p>Meine Lieblingsrezepte</p>
 					<!--<button class="btn btn-primary" @click="showRezepte('favoriten')">Lieblingsrezepte</button>-->
 					<div id="listLieblingsrezepte" class="panel">
-						<ul>
-							<li v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.name">
+						<p v-show="Lieblingsrezepte.length < 1">Noch keine Lieblingsrezepte!</p>						
+						<ul class="list-group">
+							<li class="list-group-item" v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
 					</div>
 				</div>
-				<div class="col-6 mt-2">
+				<div class="col-12 mt-2">
+					<p>Meine gemerkten Rezepte</p>
 					<!--<button class="btn btn-primary" @click="showRezepte('gemerkt')">Gemerkte Rezepte</button>-->
 					<div id="listGemerkteRezepte" class="panel">
-						<ul>
-							<li v-for="rezept in GemerkteRezepte" v-bind:key="rezept.name">
+						<p v-show="GemerkteRezepte.length < 1">Noch keine Rezepte gemerkt!</p>
+						<ul class="list-group">
+							<li class="list-group-item" v-for="rezept in GemerkteRezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
@@ -162,45 +167,41 @@ export default class Nutzerdaten extends Vue {
 		this.EigeneRezeptIds = rezepte;
 		this.GemerkteRezeptIds = fuerSpaeterGemerkt;
 
-		this.showRezepte('eigene')();
-		this.showRezepte('favoriten')();
-		this.showRezepte('gemerkt')();
+		// Load recipes
+		await Promise.all([
+			this.showRezepte(this.EigeneRezeptIds, 'eigene'),
+			this.showRezepte(this.LieblingsrezeptIds, 'favoriten'),
+			this.showRezepte(this.GemerkteRezeptIds, 'gemerkt')
+		]);
 	}
 
-	private showRezepte(type: string) {
-		const rezeptIds: number[] = type === 'favoriten' ? this.LieblingsrezeptIds : type === 'eigene' ? this.EigeneRezeptIds : type === 'gemerkt' ? this.GemerkteRezeptIds : [];
-		return async (event?: MouseEvent) => {
-			if (event) {
-				event.preventDefault();
+	private async showRezepte(rezeptIds: number[], type: string) {
+		for (const rezeptId of rezeptIds) {
+			const response = await fetch(`http://localhost:4000/recipes/${rezeptId}`, {
+				headers: getCommonHeaders(),
+				method: 'GET',
+				mode: 'cors'
+			});
+
+			if (!response.ok) {
+				continue;
 			}
 
-			for (const rezeptId of rezeptIds) {
-				const response = await fetch(`http://localhost:4000/recipes/${rezeptId}`, {
-					headers: getCommonHeaders(),
-					method: 'GET',
-					mode: 'cors'
-				});
+			// output data
+			const rezept = await response.json();
 
-				if (!response.ok) {
-					continue;
-				}
-
-				// output data
-				const { art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review } = await response.json();
-
-				switch (type) {
-					case 'favoriten':
-						this.Lieblingsrezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
-						break;
-					case 'eigene':
-						this.EigeneRezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
-						break;
-					case 'gemerkt':
-						this.GemerkteRezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
-						break;
-				}
+			switch (type) {
+				case 'favoriten':
+					this.Lieblingsrezepte.push(rezept);
+					break;
+				case 'eigene':
+					this.EigeneRezepte.push(rezept);
+					break;
+				case 'gemerkt':
+					this.GemerkteRezepte.push(rezept);
+					break;
 			}
-		};
+		}
 	}
 
 	private async updateUser(event: MouseEvent) {

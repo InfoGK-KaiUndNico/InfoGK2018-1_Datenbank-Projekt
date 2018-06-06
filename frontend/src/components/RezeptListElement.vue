@@ -1,6 +1,6 @@
 <template>
-	<div @click="rezeptOeffnen">
-		<p>{{rezept.name}}</p>
+	<div @click="rezeptOeffnen" style="cursor: pointer">
+		<p style="color: blue">{{rezept.name}}</p>
 		<p>{{rezept.erstelltVon}}</p>
 		<p v-if="isReviewed">reviewed</p>
 		<button @click="createReview" v-if="shouldReview" class="btn btn-primary">
