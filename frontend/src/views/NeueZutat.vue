@@ -14,9 +14,9 @@
 						<textarea class="form-control" v-model="inputNaehrwerte"></textarea> 
 					</div>
 				</div>
-				<div class="row">
+				<div class="row mt-3">
 					<div class="col-6">
-                        <label>Zutat für Rezept</label>
+                        <label>Art der Zutat</label>
                         <select class="form-control" v-model="inputArt">
                             <option v-for="option in ZutatArten" :value="option.value" :key="option.name" >
 								{{ option.name }}
