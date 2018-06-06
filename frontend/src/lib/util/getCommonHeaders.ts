@@ -1,3 +1,4 @@
+// get headers with token to send to backend with fetch to validate request
 export default function getCommonHeaders(noBody: boolean = false) {
 	const token = localStorage.getItem('token');
 
