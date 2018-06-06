@@ -6,7 +6,7 @@
 				<div class="col-6 mt-2">
 					<div id="unueberpruefteRezepte" class="panel">
 						<ul class="list-group">
-							<li class="list-group-name" v-for="rezept in Rezepte" v-bind:key="rezept.id">
+							<li class="list-group-item" v-for="rezept in Rezepte" v-bind:key="rezept.id">
 								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
@@ -38,7 +38,7 @@ import loadZutatenByIds from '../lib/util/loadZutatenByIds';
 
 import validator from 'validator';
 
-@Component({ components: { ZutatListElement } })
+@Component({ components: { ZutatListElement, RezeptListElement } })
 export default class ZuUeberpruefen extends Vue {
 
 	private Rezepte: any[] = [];
