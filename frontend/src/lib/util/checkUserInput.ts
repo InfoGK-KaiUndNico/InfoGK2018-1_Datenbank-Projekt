@@ -9,18 +9,22 @@ export default function checkUserdata(
 		checkAlphanumeric: true
 	}
 ) {
+	// check for whitespace
 	if (checkWhitespace && /\s+/.test(input) === true) {
 		return false;
 	}
 
+	// check for empty field
 	if (checkLength && input.length < 1) {
 		return false;
 	}
 
+	// check for exeding length
 	if (input.length > maxLength) {
 		return false;
 	}
 
+	// check for special characters
 	if (checkAlphanumeric && !validator.isAlphanumeric(input)) {
 		return false;
 	}
