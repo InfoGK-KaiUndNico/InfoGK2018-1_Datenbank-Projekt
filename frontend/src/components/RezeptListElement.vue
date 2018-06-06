@@ -44,6 +44,13 @@ export default class RezeptListElement extends Vue {
 			method: 'POST',
 			mode: 'cors'
 		});
+	
+		if (!response.ok) {
+			// TODO Handle errors
+			return;
+		}
+		// update isReviewed to toggle button
+		this.isReviewed = true;
 	}
 }
 </script>
