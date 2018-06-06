@@ -1,3 +1,5 @@
+<!-- 1. row: links to other views (new recipe, new ingredient, user data)-->
+<!-- 2. row: search options (search by: name, ingredient, type) and search output as a list of RezeptListElements -->
 <template>
     <div class="container">
         <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
@@ -101,6 +103,7 @@ export default class Hauptseite extends Vue {
 	private canReview: boolean = false;
 
 	private async mounted() {
+		// load all ingredients
 		try {
 			const zutaten = await loadZutaten();
 			this.Zutaten = zutaten;
@@ -115,18 +118,19 @@ export default class Hauptseite extends Vue {
 	private clearInputs(event: MouseEvent) {
 		event.preventDefault();
 
+		//clear inputs after search
 		this.selectedArten = [];
 		this.selectedZutaten = [];
 		this.selectedName = '';
 	}
 
-	// suche (check input + ausgabe)
 	private async OutputSearch(event: MouseEvent) {
 		event.preventDefault();
 
 		// search zutat if rezeptsuche and Art empty
 		if (this.selectedName.length < 1 && this.selectedArten.length < 1) {
-
+			
+			// get array with ids of recipes matching search from backend
 			const response = await fetch(`http://localhost:4000/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
 				headers: getCommonHeaders(),
 				method: 'GET',
@@ -138,7 +142,6 @@ export default class Hauptseite extends Vue {
 				return;
 			}
 
-			// TODO output search
 			const { recipes }: { recipes: string[] } = await response.json();
 
 			// Load full recipe data by ids
@@ -148,7 +151,8 @@ export default class Hauptseite extends Vue {
 
 		// search art if Rezeptsuche and Zutat empty
 		if (this.selectedName.length < 1 && this.selectedZutaten.length < 1) {
-			// Load recipeIds
+
+			// get array with ids of recipes matching search from backend
 			const response = await fetch(`http://localhost:4000/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
 				headers: getCommonHeaders(),
 				method: 'GET',
@@ -172,6 +176,8 @@ export default class Hauptseite extends Vue {
 
 			// check input and search
 			if (checkUserdata(this.selectedName, 100, { checkWhitespace: false, checkLength: true }) === true) {
+		
+				// get array with ids of recipes matching search from backend
 				const response = await fetch(`http://localhost:4000/recipes?name=${encodeURIComponent(this.selectedName)}`, {
 					headers: getCommonHeaders(),
 					method: 'GET',

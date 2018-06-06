@@ -1,3 +1,4 @@
+<!-- first page the user sould get to see with login options and link to registration form -->
 <template>
     <div class="container">
                 <h2 class="mt-2">Hallo, willkommen bei unserer Rezepte Datenbank.</h2>
@@ -49,7 +50,7 @@ export default class Login extends Vue {
 		inputPassword.focus();
 	} */
 
-	// Request from Kai button "Registrieren" @click="neuerAccount" Request from Kai Registrierseite
+	// redirect to registration form
 	private neuerAccout() {
 		this.$router.push('/registrieren');
 	}
@@ -57,7 +58,7 @@ export default class Login extends Vue {
 	private async login(event: MouseEvent) {
 		event.preventDefault();
 
-		// Validate username
+		// Validate username input
 		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputUsername = document.querySelector('#labelNutzername')!;
 			inputUsername.innerHTML = 'Bitte Nutzername eingeben';
@@ -65,7 +66,7 @@ export default class Login extends Vue {
 			return;
 		}
 
-		// Validate password
+		// Validate password input
 		if (checkUserdata(this.password, 40, { checkWhitespace: true, checkLength: true }) === false) {
 			const labelPasswort = document.querySelector('#labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
@@ -76,7 +77,7 @@ export default class Login extends Vue {
 		const headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
-		// Send login request to backend
+		// post login request (username, password) to backend
 		const response = await fetch(`http://localhost:4000/auth`, {
 			body: JSON.stringify({ name: this.userName, passwort: this.password }),
 			headers,
@@ -84,7 +85,7 @@ export default class Login extends Vue {
 			mode: 'cors'
 		});
 
-		// Handle errors
+		// Output error if login failed
 		if (!response.ok) {
 			const loginFail = document.querySelector('#loginFail')!;
 			loginFail.innerHTML = 'Anmeldung fehlgeschlagen!';
@@ -94,12 +95,12 @@ export default class Login extends Vue {
 		const { token } = await response.json();
 		const { rang } = jwt_decode(token);
 
-		// Add auth token and userName to localStorage
+		// Add authentification token and username to local Storage
 		localStorage.setItem('token', token);
 		localStorage.setItem('userName', this.userName);
 		localStorage.setItem('userRang', rang);
 
-		// Redirect
+		// Redirect to mainpage
 		this.$router.push('/hauptseite');
 	}
 }
