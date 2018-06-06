@@ -1,40 +1,54 @@
 <template>
 	<div class="container">
-            <h2 class="mt-2">Hier sehen sie das ausgewählte Rezept</h2>
+            <h2 class="mt-2">Rezeptansicht</h2>
             <form id="formRA" action="select.html">
                 <div class="row">
                     <div class="col-3">
                         <label>Name</label>
-                        <p>{{name}}</p>
+                        <p><b>{{name}}</b></p>
                     </div>
                     <div class="col-3">
                         <label>Zeitaufwand</label>
-                        <p>{{laufzeitBerechnen()}}</p>
+                        <p><b>{{laufzeitBerechnen()}}</b></p>
                     </div>
                     <div class="col-3">
                         <label>Art des Rezepts</label>
-                        <p>{{art}}</p>
+                        <p><b>{{art}}</b></p>
                     </div>
+					<div class="col-3">
+						<label>Überprüft?</label>
+						<p v-if="review === null">❌</p>
+						<p v-else>✔️</p>
+					</div>
                 </div>
-                <div class="row">                
+                <div class="row mt-3">                
                     <div class="col-12">
                         <label>Zutaten</label>
-                        <ul>
-							<li v-for="zutat in zutaten" v-bind:key="zutat.zutat">
+                        <ul class="list-group">
+							<li class="list-group-item" v-for="zutat in zutaten" v-bind:key="zutat.zutat">
 								{{zutat.menge}}g {{zutat.zutat}}
 							</li>
 						</ul>
                     </div>
                 </div>
-				<div class="row">
-					<div class="col-6">
+				<div class="row mt-3">
+					<div class="col-8">
                         <label>Anleitung</label>
                         <p>{{anleitung}}</p>
                     </div>
-					<div class="col-6"> 
+					<div class="col-4"> 
                 		<label>Nährwerte</label> 
                         <p>To be added</p> 
                     </div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-12">
+						<router-link to="/hauptseite">
+							<span class="btn btn-outline-secondary">
+								Zurück
+							</span>
+						</router-link>
+					</div>
 				</div>
             </form>
         </div>
@@ -52,6 +66,7 @@ export default class Rezeptanzeige extends Vue {
 	private art: string = '';
 	private zutaten: any[] = [];
 	private anleitung: string = '';
+	private review: any = null;
 
 	private mounted() {
 		this.rezeptId = this.$route.params.id;
@@ -60,7 +75,7 @@ export default class Rezeptanzeige extends Vue {
 
 	private laufzeitBerechnen() {
 		if (this.laufzeit > 60) {
-			return `${this.laufzeit / 60}h`;
+			return `${(this.laufzeit / 60).toFixed(1)}h`;
 		}
 
 		return `${this.laufzeit} min.`;
@@ -73,13 +88,14 @@ export default class Rezeptanzeige extends Vue {
 			mode: 'cors'
 		});
 
-		const { name, laufzeit, art, anleitung, zutaten } = await response.json();
+		const { name, laufzeit, art, anleitung, zutaten, review } = await response.json();
 
 		this.name = name;
 		this.laufzeit = laufzeit;
 		this.art = art;
 		this.anleitung = anleitung;
 		this.zutaten = zutaten;
+		this.review = review;
 	}
 
 	private async loadZutatenData() {
