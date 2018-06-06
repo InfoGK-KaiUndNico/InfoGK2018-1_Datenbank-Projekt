@@ -47,25 +47,25 @@ export default class Registrieren extends Vue {
 	private inputEmail: string = '';
 	private inputUsername: string = '';
 
-	private anzeigeUsername: Element;
-	private anzeigePassword: Element;
-	private anzeigeEmail: Element;
+	private anzeigeUsername: HTMLElement;
+	private anzeigePassword: HTMLElement;
+	private anzeigeEmail: HTMLElement;
 	private registerFail: Element;
 
 	private mounted() {
-		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
+		const anzeigeUsername = document.getElementById('#AnzeigeUsername');
 		if (!anzeigeUsername) {
 			return;
 		}
 		this.anzeigeUsername = anzeigeUsername;
 
-		const anzeigePassword = document.querySelector('#AnzeigePassword');
+		const anzeigePassword = document.getElementById('#AnzeigePassword');
 		if (!anzeigePassword) {
 			return;
 		}
 		this.anzeigePassword = anzeigePassword;
 
-		const anzeigeEmail = document.querySelector('#AnzeigeEmail');
+		const anzeigeEmail = document.getElementById('#AnzeigeEmail');
 		if (!anzeigeEmail) {
 			return;
 		}
@@ -87,19 +87,19 @@ export default class Registrieren extends Vue {
 
 		if (checkUserdata(name, 30, { checkWhitespace: true, checkLength: true }) === false) {
 			this.anzeigeUsername.innerHTML = 'Name muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
-			// this.inputPassword.style.color = 'red';
+			this.anzeigeUsername.style.color = 'red';
 			return;
 		}
 
 		if (checkUserdata(passwort, 40, { checkWhitespace: true, checkLength: true }) === false) {
 			this.anzeigePassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
-			// this.inputPassword.style.color = 'red';
+			this.anzeigePassword.style.color = 'red';
 			return;
 		}
 
 		if (validator.isEmail(email) === false) {
 			this.anzeigeEmail.innerHTML = 'keine gültige Email-Adresse';
-			// this.inputPassword.style.color = 'red';
+			this.anzeigeEmail.style.color = 'red';
 			return;
 		}
 

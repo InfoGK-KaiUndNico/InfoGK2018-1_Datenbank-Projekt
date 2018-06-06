@@ -152,9 +152,9 @@ export default class NewRecipe extends Vue {
 	private async rezeptAnlegen(event: MouseEvent) {
 		event.preventDefault();
 		if (isNaN(parseInt(this.inputLaufzeit))) {
-			const labelLaufzeit = document.querySelector('#labelLaufzeit')!;
+			const labelLaufzeit = document.getElementById('#labelLaufzeit')!;
 			labelLaufzeit.innerHTML = 'Bitte eine Zahl eingeben';
-			// labelLaufzeit.style.color = 'red';
+			labelLaufzeit.style.color = 'red';
 			return;
 		}
 
@@ -164,9 +164,9 @@ export default class NewRecipe extends Vue {
 				checkLength: true
 			}) === false
 		) {
-			const labelName = document.querySelector('#labelName')!;
+			const labelName = document.getElementById('#labelName')!;
 			labelName.innerHTML = 'Bitte Name eingeben (keine Sonderzeichen)';
-			// labelName.style.color = 'red';
+			labelName.style.color = 'red';
 			return;
 		}
 
@@ -176,9 +176,9 @@ export default class NewRecipe extends Vue {
 				checkLength: true
 			}) === false
 		) {
-			const labelName = document.querySelector('#labelAnleitung')!;
-			labelName.innerHTML = 'Bitte Anleitung eingeben';
-			// labelName.style.color = 'red';
+			const labelAnleitung = document.getElementById('#labelAnleitung')!;
+			labelAnleitung.innerHTML = 'Bitte Anleitung eingeben';
+			labelAnleitung.style.color = 'red';
 			return;
 		}
 

@@ -95,9 +95,9 @@ export default class Nutzerdaten extends Vue {
 	private changePassword: string = '';
 	private changeEmail: string = '';
 
-	private anzeigeUsername: Element;
-	private inputPassword: Element;
-	private inputEmail: Element;
+	private anzeigeUsername: HTMLElement;
+	private inputPassword: HTMLElement;
+	private inputEmail: HTMLElement;
 	private updateFail: Element;
 
 	private LieblingsrezeptIds: number[] = [];
@@ -110,25 +110,25 @@ export default class Nutzerdaten extends Vue {
 
 	private mounted() {
 		// define elements
-		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
+		const anzeigeUsername = document.getElementById('#AnzeigeUsername');
 		if (!anzeigeUsername) {
 			return;
 		}
 		this.anzeigeUsername = anzeigeUsername;
 
-		const inputPassword = document.querySelector('#inputChangePassword');
+		const inputPassword = document.getElementById('#inputChangePassword');
 		if (!inputPassword) {
 			return;
 		}
 		this.inputPassword = inputPassword;
 
-		const inputEmail = document.querySelector('#inputChangeEmail');
+		const inputEmail = document.getElementById('#inputChangeEmail');
 		if (!inputEmail) {
 			return;
 		}
 		this.inputEmail = inputEmail;
 
-		const updateFail = document.querySelector('#updateFail');
+		const updateFail = document.getElementById('#updateFail');
 		if (!updateFail) {
 			return;
 		}
@@ -217,6 +217,7 @@ export default class Nutzerdaten extends Vue {
 		if (this.changePassword.length > 0) {
 			if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
 				this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
+				this.inputPassword.style.color = 'red';
 				this.showUserData();
 				return;
 			}
@@ -224,7 +225,8 @@ export default class Nutzerdaten extends Vue {
 
 		if (this.changeEmail.length > 0) {
 			if (validator.isEmail(this.changeEmail) === false) {
-				this.inputPassword.innerHTML = 'keine gültige Email-Adresse';
+				this.inputEmail.innerHTML = 'keine gültige Email-Adresse';
+				this.inputEmail.style.color = 'red';
 				this.showUserData();
 				return;
 			}

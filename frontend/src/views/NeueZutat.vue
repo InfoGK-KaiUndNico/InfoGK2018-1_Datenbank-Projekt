@@ -73,14 +73,16 @@ export default class NeueZutat extends Vue {
 
 	private async addZutat() {
 		if (checkUserdata(this.inputName, 20, { checkWhitespace: true, checkLength: true }) === false) {
-			const inputZutatname = document.querySelector('#inputZutatname')!;
+			const inputZutatname = document.getElementById('#inputZutatname')!;
 			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
+			inputZutatname.style.color = 'red';
 			return;
 		}
 
 		if (checkUserdata(this.inputNaehrwerte, 20, { checkWhitespace: false, checkLength: true }) === false) {
-			const inputNaehrwerteLabel = document.querySelector('#inputNaehrwerteLabel')!;
+			const inputNaehrwerteLabel = document.getElementById('#inputNaehrwerteLabel')!;
 			inputNaehrwerteLabel.innerHTML = 'keine Leer und Sonderzeichen in den Nährwerten';
+			inputNaehrwerteLabel.style.color = 'red';
 			return;
 		}
 
