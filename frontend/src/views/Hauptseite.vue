@@ -56,7 +56,7 @@
                         <span>
                             <ul>
   								<li v-for="rezept in gefundeneRezepte" v-bind:key="rezept.name">
-									<RezeptListElement v-bind="rezept"/>
+									<RezeptListElement v-bind:rezept="rezept"/>
   								</li>
 							</ul>
                         </span>

@@ -6,16 +6,17 @@
 				<div class="col-6 mt-2">
 					<button class="accordion" @click="showRezepte">Unüberprüfte Rezepte</button>
 					<div id="unueberpruefteRezepte" class="panel">
-						<ul display: none;>
+						<ul display="none">
 							<li v-for="rezept in Rezepte" v-bind:key="rezept.name">
-								<RezeptListElement v-bind="rezept"/>
+								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
 					</div>
+				</div>
 				<div class="col-6 mt-2">
 					<button class="accordion" @click="showZutaten">Unüberprüfte Zutaten</button>
 					<div id="unueberpruefteZutaten" class="panel">
-						<ul display: none;>
+						<ul display="none">
 							<li v-for="rezept in Zutaten" v-bind:key="rezept.name">
 								<ZutatListElement v-bind="rezept"/>
 							</li>

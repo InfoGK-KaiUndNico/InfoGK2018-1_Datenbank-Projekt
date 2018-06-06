@@ -1,9 +1,9 @@
 <template>
 	<div @click="rezeptOeffnen">
-		<p>{{name}}</p>
-		<p>{{erstelltVon}}</p>
+		<p>{{rezept.name}}</p>
+		<p>{{rezept.erstelltVon}}</p>
 		<p v-if="isReviewed">reviewed</p>
-		<button @click="review" v-if="shouldReview" class="btn btn-primary">
+		<button @click="createReview" v-if="shouldReview" class="btn btn-primary">
             Rezept bestätigen
         </button>
 	</div>
@@ -15,20 +15,23 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class RezeptListElement extends Vue {
-	@Prop({ default: '' })
-	private name: string;
+	@Prop({ default: {}})
+	private rezept: any;
 
-	@Prop({ default: '' })
-	private erstelltVon: string;
+	private shouldReview: boolean = false;
+	private isReviewed: boolean = true;
 
-	@Prop({ default: null })
-	private review: string;
-
-	private shouldReview: boolean = localStorage.getItem('userRang') === 'Admin' && this.review === null;
-	private isReviewed: boolean = this.review === null;
+	private mounted() {
+		this.isReviewed = this.rezept.review === null;
+		this.shouldReview = localStorage.getItem('userRang') === 'Admin' && this.rezept.review === null;
+	}
 
 	private rezeptOeffnen() {
-		this.$router.push(`/rezept/${this.name}`);
+		this.$router.push(`/rezept/${this.rezept.id}`);
+	}
+
+	private createReview() {
+		// TODO
 	}
 }
 </script>

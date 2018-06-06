@@ -13,7 +13,7 @@
                 </div>
 				<div class="col-3 mt-3">
                     <label>EMail ändern</label>
-                    <input id="inputChangeEmail" class="form-control"  v-model="changeEmail"/>
+                    <input id="inputChangeEmail" class="form-control" v-model="changeEmail"/>
                 </div>
 			</div>
 			<div class="row">  
@@ -37,32 +37,33 @@
 			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
-					<button class="accordion" @click="showEigeneRezepte">EigeneRezepte</button>
+					<!--<button class="btn btn-primary" @click="showRezepte('eigene')">EigeneRezepte</button>-->
 					<div id="listEigeneRezepte" class="panel">
-						<ul display: none;>
-						<li v-for="rezept in EigeneRezepte" v-bind:key="rezept.name">
-							<RezeptListElement v-bind="rezept"/>
-						</li>
-					</ul>
+						<ul>
+							<li v-for="rezept in EigeneRezepte" v-bind:key="rezept.name">
+								<RezeptListElement v-bind:rezept="rezept"/>
+							</li>
+						</ul>
 					</div>
 				</div>
+			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
-					<button class="accordion" @click="showLieblingsrezepte">Lieblingsrezepte</button>
+					<!--<button class="btn btn-primary" @click="showRezepte('favoriten')">Lieblingsrezepte</button>-->
 					<div id="listLieblingsrezepte" class="panel">
-						<ul display: none;>
-						<li v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.name">
-							<RezeptListElement v-bind="rezept"/>
-						</li>
-					</ul>
+						<ul>
+							<li v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.name">
+								<RezeptListElement v-bind:rezept="rezept"/>
+							</li>
+						</ul>
 					</div>
 				</div>
 				<div class="col-6 mt-2">
-					<button class="accordion" @click="showGemerkteRezepte">Gemerkte Rezepte</button>
+					<!--<button class="btn btn-primary" @click="showRezepte('gemerkt')">Gemerkte Rezepte</button>-->
 					<div id="listGemerkteRezepte" class="panel">
-						<ul display: none;>
-							<li v-for="rezept in gefundeneRezepte" v-bind:key="rezept.name">
-								<RezeptListElement v-bind="rezept"/>
+						<ul>
+							<li v-for="rezept in GemerkteRezepte" v-bind:key="rezept.name">
+								<RezeptListElement v-bind:rezept="rezept"/>
 							</li>
 						</ul>
 					</div>
@@ -82,7 +83,7 @@ import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 
 import validator from 'validator';
 
-@Component({})
+@Component({ components: { RezeptListElement }})
 export default class Nutzerdaten extends Vue {
 
 	private showUserName: string = '';
@@ -93,6 +94,10 @@ export default class Nutzerdaten extends Vue {
 	private inputPassword: Element;
 	private inputEmail: Element;
 	private updateFail: Element;
+
+	private LieblingsrezeptIds: number[] = [];
+	private GemerkteRezeptIds: number[] = [];
+	private EigeneRezeptIds: number[] = [];
 
 	private Lieblingsrezepte: any[] = [];
 	private GemerkteRezepte: any[] = [];
@@ -147,10 +152,55 @@ export default class Nutzerdaten extends Vue {
 		}
 
 		// output data
-		const { name, email } = await response.json();
+		const { name, email, fuerSpaeterGemerkt, rezepte, favoriten } = await response.json();
+
 		this.showUserName = name;
 		this.inputPassword.innerHTML = '';
 		this.inputEmail.innerHTML = email;
+
+		this.LieblingsrezeptIds = favoriten;
+		this.EigeneRezeptIds = rezepte;
+		this.GemerkteRezeptIds = fuerSpaeterGemerkt;
+
+		this.showRezepte('eigene')();
+		this.showRezepte('favoriten')();
+		this.showRezepte('gemerkt')();
+	}
+
+	private showRezepte(type: string) {
+		const rezeptIds: number[] = type === 'favoriten' ? this.LieblingsrezeptIds : type === 'eigene' ? this.EigeneRezeptIds : type === 'gemerkt' ? this.GemerkteRezeptIds : [];
+		return async (event?: MouseEvent) => {
+			if (event) {
+				event.preventDefault();
+			}
+
+			for (const rezeptId of rezeptIds) {
+				const response = await fetch(`http://localhost:4000/recipes/${rezeptId}`, {
+					headers: getCommonHeaders(),
+					method: 'GET',
+					mode: 'cors'
+				});
+
+				if (!response.ok) {
+					continue;
+				}
+
+				// output data
+				const { art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review } = await response.json();
+
+				switch (type) {
+					case 'favoriten':
+						this.Lieblingsrezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
+						break;
+					case 'eigene':
+						this.EigeneRezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
+						break;
+					case 'gemerkt':
+						this.GemerkteRezepte.push({ art, anleitung, name, portion, laufzeit, privat, erstellt, erstelltVon, review});
+						break;
+				}
+			}
+		};
 	}
 
 	private async updateUser(event: MouseEvent) {
@@ -200,86 +250,6 @@ export default class Nutzerdaten extends Vue {
 		}
 
 		this.updateFail.innerHTML = 'Daten erfolgreich hochgeladen!';
-	}
-
-	private async showLieblingsrezepte() {
-		const panelLieblingsrezepte = document.getElementById('#listLieblingsrezepte')!;
-		if (panelLieblingsrezepte.style.display === 'block') {
-			panelLieblingsrezepte.style.display = 'none';
-			return;
-		}
-
-		panelLieblingsrezepte.style.display = 'block';
-
-		const response = await fetch(`http://localhost:4000/recipes`, {
-			headers: getCommonHeaders(),
-			method: 'GET',
-			mode: 'cors'
-		});
-
-		if (!response.ok) {
-			this.Lieblingsrezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
-			return;
-		}
-
-		const { recipes }: { recipes: string[] } = await response.json();
-
-		// Load full recipe data by ids
-		this.Lieblingsrezepte = await loadRecipesByIds(recipes);
-		return;
-	}
-
-	private async showGemerkteRezepte() {
-		const panelGemerkteRezepte = document.getElementById('#listGemerkteRezepte')!;
-		if (panelGemerkteRezepte.style.display === 'block') {
-			panelGemerkteRezepte.style.display = 'none';
-			return;
-		}
-
-		panelGemerkteRezepte.style.display = 'block';
-
-		const response = await fetch(`http://localhost:4000/recipes`, {
-			headers: getCommonHeaders(),
-			method: 'GET',
-			mode: 'cors'
-		});
-
-		if (!response.ok) {
-			this.GemerkteRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
-			return;
-		}
-
-		const { recipes }: { recipes: string[] } = await response.json();
-
-		// Load full recipe data by ids
-		this.GemerkteRezepte = await loadRecipesByIds(recipes);
-		return;
-	}
-	private async showEigeneRezepte() {
-		const panelEigeneRezepte = document.getElementById('#listEigeneRezepte')!;
-		if (panelEigeneRezepte.style.display === 'block') {
-			panelEigeneRezepte.style.display = 'none';
-			return;
-		}
-
-		panelEigeneRezepte.style.display = 'block';
-
-		const response = await fetch(`http://localhost:4000/recipes`, {
-			headers: getCommonHeaders(),
-			method: 'GET',
-			mode: 'cors'
-		});
-
-		if (!response.ok) {
-			this.EigeneRezepte[0] = { message: 'Suche fehlgeschlagen', value: 'error' };
-			return;
-		}
-
-		const { recipes }: { recipes: string[] } = await response.json();
-
-		// Load full recipe data by ids
-		this.EigeneRezepte = await loadRecipesByIds(recipes);
-		return;
 	}
 }
 </script>
