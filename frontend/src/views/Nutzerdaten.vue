@@ -1,3 +1,5 @@
+<!-- 1. row: the user can see and alter his personal data -->
+<!-- 2. row: the user can see his own, his favourite and his bookmarked recipes -->
 <template>
     <div class="container">
         <h2 class="mt-2">Hier sehen sie ihre Nutzerdaten und können sie ändern</h2>
@@ -107,6 +109,7 @@ export default class Nutzerdaten extends Vue {
 	private EigeneRezepte: any[] = [];
 
 	private mounted() {
+		// define elements
 		const anzeigeUsername = document.querySelector('#AnzeigeUsername');
 		if (!anzeigeUsername) {
 			return;
@@ -135,6 +138,7 @@ export default class Nutzerdaten extends Vue {
 	}
 
 	private async showUserData() {
+		// show username
 		const userName = localStorage.getItem('userName');
 		if (!userName) {
 			return;
