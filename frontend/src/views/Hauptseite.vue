@@ -112,6 +112,7 @@ export default class Hauptseite extends Vue {
 			return;
 		}
 
+		// determine if user is allowed to review and see review options
 		this.canReview = localStorage.getItem('userRang') === 'Admin';
 	}
 
