@@ -52,6 +52,15 @@
                     </div>
 				</div>
 				<div class="row mt-3">
+					<span class="btn btn-primary" v-show="!Lieblingsrezept" @click="addToFavourites">
+						Zu Lieblingsrezepten hinzufügen
+					</span>
+					<span class="btn btn-primary" v-show="!Bookmarked" @click="addToBookmarks">
+						Für später merken
+					</span>
+					<span class="btn btn-danger" v-show="shouldDelete === true" @click="deleteRecipe">
+						Rezept Löschen
+					</span>
 					<div class="col-12">
 						<router-link to="/hauptseite">
 							<span class="btn btn-outline-secondary">
@@ -79,6 +88,10 @@ export default class Rezeptanzeige extends Vue {
 	private review: any = null;
 	private erstelltVon: string = '';
 	private erstellt: string = new Date().toISOString();
+
+	private Lieblingsrezept = this.loadLieblingsrezepte();
+	private Bookmarked = this.loadBookmarks();
+	private shouldDelete = localStorage.getItem('userRang') === 'Admin' && this.erstelltVon === localStorage.getItem('userName');
 
 	private mounted() {
 		this.rezeptId = this.$route.params.id;
@@ -136,5 +149,53 @@ export default class Rezeptanzeige extends Vue {
 		});
 		for(const of ){}
 	} */
+	private async loadLieblingsrezepte() {
+		const response = await fetch(`http://localhost:4000/`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+		if (!response.ok) {
+			return false;
+		}
+		return true;
+	}
+
+	private async loadBookmarks() {
+		const response = await fetch(`http://localhost:4000/`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+		if (!response.ok) {
+			return false;
+		}
+		return true;
+	}
+
+	private async addToFavourites() {
+		const response = await fetch(`http://localhost:4000/`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+		this.Lieblingsrezept = this.loadLieblingsrezepte();
+	}
+	private async addToBookmarks() {
+		const response = await fetch(`http://localhost:4000/`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+		this.Bookmarked = this.loadBookmarks();
+	}
+	private async deleteRecipe() {
+		const response = await fetch(`http://localhost:4000/`, {
+			headers: getCommonHeaders(),
+			method: 'DELETE',
+			mode: 'cors'
+		});
+		this.$router.push('/hauptseite');
+	}
 }
 </script>
