@@ -209,11 +209,13 @@ export default class Nutzerdaten extends Vue {
 	private async updateUser(event: MouseEvent) {
 		event.preventDefault();
 
+		// get username
 		const userName = localStorage.getItem('userName');
 		if (!userName) {
 			return;
 		}
 
+		// check input password
 		if (this.changePassword.length > 0) {
 			if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
 				this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
@@ -223,6 +225,7 @@ export default class Nutzerdaten extends Vue {
 			}
 		}
 
+		// check input email
 		if (this.changeEmail.length > 0) {
 			if (validator.isEmail(this.changeEmail) === false) {
 				this.inputEmail.innerHTML = 'keine gültige Email-Adresse';
