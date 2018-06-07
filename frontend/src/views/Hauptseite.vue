@@ -23,8 +23,13 @@
                         </span>
                     </router-link>
 					<router-link to="/unbestaetigt">
-						<span v-show="canReview" class="btn btn-primary ml-1">
+						<span v-show="canReview" class="btn btn-primary ml-1 mr-1">
 							Überprüfen
+						</span>
+					</router-link>
+					<router-link to="/anmeldung">
+						<span class="btn btn-primary ml-1">
+							Abmelden
 						</span>
 					</router-link>
                 </div>

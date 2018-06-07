@@ -24,6 +24,11 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<router-link to="/hauptseite">
+					<span class="btn btn-outline-secondary">Zurück</span>
+				</router-link>
+			</div>
         </form>
     </div>
 </template>
