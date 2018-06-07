@@ -12,26 +12,26 @@
 </template>
 
 <script lang="ts">
-
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import getHost from '../lib/util/getHost';
 
 @Component({})
 export default class RezeptListElement extends Vue {
-	@Prop({ default: {}})
+	@Prop({ default: {} })
 	private rezept: any;
 
 	private shouldReview: boolean = false;
 	private isReviewed: boolean = true;
 
 	private mounted() {
-	// determine if user is admin and if recipe is unreviewed
+		// determine if user is admin and if recipe is unreviewed
 		this.isReviewed = this.rezept.review !== null;
 		this.shouldReview = localStorage.getItem('userRang') === 'Admin' && this.rezept.review === null;
 	}
 
 	private rezeptOeffnen() {
-	// go to elements display page
+		// go to elements display page
 		this.$router.push(`/rezept/${this.rezept.id}`);
 	}
 
@@ -39,7 +39,7 @@ export default class RezeptListElement extends Vue {
 		event.preventDefault();
 
 		// post the review to backend
-		const response = await fetch(`http://localhost:4000/reviews`, {
+		const response = await fetch(`${getHost()}/reviews`, {
 			headers: getCommonHeaders(),
 			body: JSON.stringify({ type: 'rezept', subject: this.rezept.id, annotations: '' }),
 			method: 'POST',

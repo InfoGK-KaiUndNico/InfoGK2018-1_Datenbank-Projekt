@@ -104,6 +104,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
+import getHost from '@/lib/util/getHost';
 
 @Component
 export default class NewRecipe extends Vue {
@@ -157,7 +158,7 @@ export default class NewRecipe extends Vue {
 		event.preventDefault();
 		// check input laufzeit
 		if (isNaN(parseInt(this.inputLaufzeit))) {
-			const labelLaufzeit = document.getElementById('#labelLaufzeit')!;
+			const labelLaufzeit = document.getElementById('labelLaufzeit')!;
 			labelLaufzeit.innerHTML = 'Bitte eine Zahl eingeben';
 			labelLaufzeit.style.color = 'red';
 			return;
@@ -170,7 +171,7 @@ export default class NewRecipe extends Vue {
 				checkLength: true
 			}) === false
 		) {
-			const labelName = document.getElementById('#labelName')!;
+			const labelName = document.getElementById('labelName')!;
 			labelName.innerHTML = 'Bitte Name eingeben (keine Sonderzeichen)';
 			labelName.style.color = 'red';
 			return;
@@ -183,14 +184,14 @@ export default class NewRecipe extends Vue {
 				checkLength: true
 			}) === false
 		) {
-			const labelAnleitung = document.getElementById('#labelAnleitung')!;
+			const labelAnleitung = document.getElementById('labelAnleitung')!;
 			labelAnleitung.innerHTML = 'Bitte Anleitung eingeben';
 			labelAnleitung.style.color = 'red';
 			return;
 		}
 
 		// Send token and username to backend to veryfy identity and access, send currentPW and currentUN to update data
-		const response = await fetch('http://localhost:4000/recipes', {
+		const response = await fetch(`${getHost()}/recipes`, {
 			body: JSON.stringify({
 				name: this.inputName,
 				anleitung: this.inputAnleitung,

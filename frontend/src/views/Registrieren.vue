@@ -40,6 +40,7 @@ import jwt_decode from 'jwt-decode';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import getHost from '@/lib/util/getHost';
 
 @Component({})
 export default class Registrieren extends Vue {
@@ -53,25 +54,25 @@ export default class Registrieren extends Vue {
 	private registerFail: Element;
 
 	private mounted() {
-		const anzeigeUsername = document.getElementById('#AnzeigeUsername');
+		const anzeigeUsername = document.getElementById('AnzeigeUsername');
 		if (!anzeigeUsername) {
 			return;
 		}
 		this.anzeigeUsername = anzeigeUsername;
 
-		const anzeigePassword = document.getElementById('#AnzeigePassword');
+		const anzeigePassword = document.getElementById('AnzeigePassword');
 		if (!anzeigePassword) {
 			return;
 		}
 		this.anzeigePassword = anzeigePassword;
 
-		const anzeigeEmail = document.getElementById('#AnzeigeEmail');
+		const anzeigeEmail = document.getElementById('AnzeigeEmail');
 		if (!anzeigeEmail) {
 			return;
 		}
 		this.anzeigeEmail = anzeigeEmail;
 
-		const registerFail = document.querySelector('#RegisterFail');
+		const registerFail = document.querySelector('registerFail');
 		if (!registerFail) {
 			return;
 		}
@@ -104,7 +105,7 @@ export default class Registrieren extends Vue {
 		}
 
 		// send user data to backend
-		const response = await fetch('http://localhost:4000/auth/signup', {
+		const response = await fetch(`${getHost()}/auth/signup`, {
 			body: JSON.stringify({
 				name,
 				email,

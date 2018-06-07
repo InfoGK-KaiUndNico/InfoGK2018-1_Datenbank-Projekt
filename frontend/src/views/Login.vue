@@ -39,6 +39,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import jwt_decode from 'jwt-decode';
+import getHost from '@/lib/util/getHost';
 
 @Component
 export default class Login extends Vue {
@@ -60,15 +61,15 @@ export default class Login extends Vue {
 
 		// Validate username input
 		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true }) === false) {
-			const inputUsername = document.getElementById('#labelNutzername')!;
+			const inputUsername = document.getElementById('labelNutzername')!;
 			inputUsername.innerHTML = 'Bitte Nutzername eingeben';
 			inputUsername.style.color = 'red';
 			return;
 		}
 
 		// Validate password input
-		if (checkUserdata(this.password, 40, { checkWhitespace: true, checkLength: true }) === false) {
-			const labelPasswort = document.getElementById('#labelPasswort')!;
+		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true }) === false) {
+			const labelPasswort = document.getElementById('labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
 			labelPasswort.style.color = 'red';
 			return;
@@ -78,7 +79,7 @@ export default class Login extends Vue {
 		headers.append('Content-Type', 'application/json');
 
 		// post login request (username, password) to backend
-		const response = await fetch(`http://localhost:4000/auth`, {
+		const response = await fetch(`${getHost()}/auth`, {
 			body: JSON.stringify({ name: this.userName, passwort: this.password }),
 			headers,
 			method: 'POST',

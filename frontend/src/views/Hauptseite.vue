@@ -88,6 +88,7 @@ import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import RezeptListElement from '../components/RezeptListElement.vue';
+import getHost from '@/lib/util/getHost';
 
 @Component({ components: { RezeptListElement } })
 export default class Hauptseite extends Vue {
@@ -131,7 +132,7 @@ export default class Hauptseite extends Vue {
 		// search zutat if rezeptsuche and Art empty
 		if (this.selectedName.length < 1 && this.selectedArten.length < 1) {
 			// get array with ids of recipes matching search from backend
-			const response = await fetch(`http://localhost:4000/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
+			const response = await fetch(`${getHost()}/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
 				headers: getCommonHeaders(),
 				method: 'GET',
 				mode: 'cors'
@@ -152,7 +153,7 @@ export default class Hauptseite extends Vue {
 		// search art if Rezeptsuche and Zutat empty
 		if (this.selectedName.length < 1 && this.selectedZutaten.length < 1) {
 			// get array with ids of recipes matching search from backend
-			const response = await fetch(`http://localhost:4000/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
+			const response = await fetch(`${getHost()}/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
 				headers: getCommonHeaders(),
 				method: 'GET',
 				mode: 'cors'
@@ -175,7 +176,7 @@ export default class Hauptseite extends Vue {
 			// check input and search
 			if (checkUserdata(this.selectedName, 100, { checkWhitespace: false, checkLength: true }) === true) {
 				// get array with ids of recipes matching search from backend
-				const response = await fetch(`http://localhost:4000/recipes?name=${encodeURIComponent(this.selectedName)}`, {
+				const response = await fetch(`${getHost()}/recipes?name=${encodeURIComponent(this.selectedName)}`, {
 					headers: getCommonHeaders(),
 					method: 'GET',
 					mode: 'cors'
