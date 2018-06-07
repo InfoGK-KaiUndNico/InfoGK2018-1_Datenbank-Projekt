@@ -24,6 +24,11 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<router-link to="/hauptseite">
+					<span class="btn btn-outline-secondary">Zurück</span>
+				</router-link>
+			</div>
         </form>
     </div>
 </template>
@@ -39,10 +44,10 @@ import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import loadZutatenByIds from '../lib/util/loadZutatenByIds';
 
 import validator from 'validator';
+import getHost from '@/lib/util/getHost';
 
 @Component({ components: { ZutatListElement, RezeptListElement } })
 export default class ZuUeberpruefen extends Vue {
-
 	private Rezepte: any[] = [];
 	private Zutaten: any[] = [];
 
@@ -60,7 +65,7 @@ export default class ZuUeberpruefen extends Vue {
 
 		unueberpruefteRezepte.style.display = 'block';*/
 
-		const response = await fetch(`http://localhost:4000/recipes`, {
+		const response = await fetch(`${getHost()}/recipes`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
@@ -88,7 +93,7 @@ export default class ZuUeberpruefen extends Vue {
 
 		unueberpruefteZutaten.style.display = 'block';*/
 
-		const response = await fetch(`http://localhost:4000/ingredients?nofilter=true`, {
+		const response = await fetch(`${getHost()}/ingredients?nofilter=true`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'

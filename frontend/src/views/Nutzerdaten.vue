@@ -88,6 +88,7 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 
 import validator from 'validator';
+import getHost from '@/lib/util/getHost';
 
 @Component({ components: { RezeptListElement } })
 export default class Nutzerdaten extends Vue {
@@ -110,25 +111,25 @@ export default class Nutzerdaten extends Vue {
 
 	private mounted() {
 		// define elements
-		const anzeigeUsername = document.getElementById('#AnzeigeUsername');
+		const anzeigeUsername = document.getElementById('AnzeigeUsername');
 		if (!anzeigeUsername) {
 			return;
 		}
 		this.anzeigeUsername = anzeigeUsername;
 
-		const inputPassword = document.getElementById('#inputChangePassword');
+		const inputPassword = document.getElementById('inputChangePassword');
 		if (!inputPassword) {
 			return;
 		}
 		this.inputPassword = inputPassword;
 
-		const inputEmail = document.getElementById('#inputChangeEmail');
+		const inputEmail = document.getElementById('inputChangeEmail');
 		if (!inputEmail) {
 			return;
 		}
 		this.inputEmail = inputEmail;
 
-		const updateFail = document.getElementById('#updateFail');
+		const updateFail = document.getElementById('updateFail');
 		if (!updateFail) {
 			return;
 		}
@@ -145,7 +146,7 @@ export default class Nutzerdaten extends Vue {
 		}
 
 		// send token and username to backend to veryfy identity and get data
-		const response = await fetch(`http://localhost:4000/users/${userName}`, {
+		const response = await fetch(`${getHost()}/users/${userName}`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
@@ -179,7 +180,7 @@ export default class Nutzerdaten extends Vue {
 
 	private async showRezepte(rezeptIds: number[], type: string) {
 		for (const rezeptId of rezeptIds) {
-			const response = await fetch(`http://localhost:4000/recipes/${rezeptId}`, {
+			const response = await fetch(`${getHost()}/recipes/${rezeptId}`, {
 				headers: getCommonHeaders(),
 				method: 'GET',
 				mode: 'cors'
@@ -209,11 +210,13 @@ export default class Nutzerdaten extends Vue {
 	private async updateUser(event: MouseEvent) {
 		event.preventDefault();
 
+		// get username
 		const userName = localStorage.getItem('userName');
 		if (!userName) {
 			return;
 		}
 
+		// check input password
 		if (this.changePassword.length > 0) {
 			if (checkUserdata(this.changePassword, 40, { checkWhitespace: true, checkLength: true }) === false) {
 				this.inputPassword.innerHTML = 'Passwort muss min. 1 Zeichen und keine Leer- und Sonderzeichen enthalten';
@@ -223,6 +226,7 @@ export default class Nutzerdaten extends Vue {
 			}
 		}
 
+		// check input email
 		if (this.changeEmail.length > 0) {
 			if (validator.isEmail(this.changeEmail) === false) {
 				this.inputEmail.innerHTML = 'keine gültige Email-Adresse';
@@ -241,7 +245,7 @@ export default class Nutzerdaten extends Vue {
 		const emailChanges = this.changeEmail.length > 0 ? { email: this.changeEmail } : {};
 
 		// send changes to backend
-		const response = await fetch(`http://localhost:4000/users/${userName}`, {
+		const response = await fetch(`${getHost()}/users/${userName}`, {
 			body: JSON.stringify({ ...passwordChanges, ...emailChanges }),
 			headers: getCommonHeaders(),
 			method: 'PATCH',

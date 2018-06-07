@@ -1,8 +1,9 @@
 import getCommonHeaders from './getCommonHeaders';
+import getHost from './getHost';
 
 export default async function loadZutaten() {
 	// get all ingredients
-	const response = await fetch('http://localhost:4000/ingredients', {
+	const response = await fetch(`${getHost()}/ingredients`, {
 		headers: getCommonHeaders(),
 		method: 'GET',
 		mode: 'cors'
@@ -14,5 +15,5 @@ export default async function loadZutaten() {
 
 	// transform and handle response data
 	const { zutaten }: { zutaten: string[] } = await response.json();
-	return zutaten.map((zutat: string) => ({ name: zutat, value: zutat}));
+	return zutaten.map((zutat: string) => ({ name: zutat, value: zutat }));
 }

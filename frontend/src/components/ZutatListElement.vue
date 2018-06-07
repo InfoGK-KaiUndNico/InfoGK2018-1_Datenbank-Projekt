@@ -11,13 +11,13 @@
 </template>
 
 <script lang="ts">
-
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import getHost from '../lib/util/getHost';
 
 @Component({})
 export default class ZutatListElement extends Vue {
-	@Prop({ default: {}})
+	@Prop({ default: {} })
 	private zutat: any;
 
 	private shouldReview: boolean = false;
@@ -33,7 +33,7 @@ export default class ZutatListElement extends Vue {
 		event.preventDefault();
 
 		// post review to backend
-		const response = await fetch(`http://localhost:4000/reviews`, {
+		const response = await fetch(`${getHost()}/reviews`, {
 			headers: getCommonHeaders(),
 			body: JSON.stringify({ type: 'zutat', subject: this.zutat.name, annotations: '' }),
 			method: 'POST',

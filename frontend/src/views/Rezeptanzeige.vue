@@ -76,6 +76,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
+import getHost from '@/lib/util/getHost';
 
 @Component({})
 export default class Rezeptanzeige extends Vue {
@@ -112,7 +113,7 @@ export default class Rezeptanzeige extends Vue {
 	}
 
 	private async loadRezeptData() {
-		const response = await fetch(`http://localhost:4000/recipes/${this.rezeptId}`, {
+		const response = await fetch(`${getHost()}/recipes/${this.rezeptId}`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
@@ -131,7 +132,7 @@ export default class Rezeptanzeige extends Vue {
 	}
 
 	private async loadZutatenData() {
-		const response = await fetch(`http://localhost:4000/recipes/${this.rezeptId}`, {
+		const response = await fetch(`${getHost()}/recipes/${this.rezeptId}`, {
 			headers: getCommonHeaders(),
 			method: 'GET',
 			mode: 'cors'
