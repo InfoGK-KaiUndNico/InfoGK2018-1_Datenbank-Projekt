@@ -1,3 +1,5 @@
+<!-- the user can post a new recipe, inputs for data (name, time needed, type, ingredients and quantitiy, process) -->
+<!-- buttons to post, add to favourites, add to bookmarks, delete recipe. A field giving help to create new recipe -->
 <template>
     <div class="container">
         <h2 class="mt-2"> Sie sind bei der Rezepteingabe.</h2>
@@ -123,6 +125,7 @@ export default class NewRecipe extends Vue {
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
 
 	private async mounted() {
+		// load existing ingredients
 		try {
 			const zutaten = await loadZutaten();
 			this.Zutaten = zutaten;
@@ -135,11 +138,12 @@ export default class NewRecipe extends Vue {
 	private addZutat(event: MouseEvent) {
 		event.preventDefault();
 
-		// Check if menge is valid
+		// check if amount is valid
 		if (isNaN(parseInt(this.inputMenge))) {
 			return;
 		}
 
+		// increase amount if zutat is added twice
 		const existingZutat = this.verwendeteZutaten.find((zutat) => zutat.zutat === this.inputZutat);
 		if (typeof existingZutat !== 'undefined') {
 			existingZutat.menge += parseInt(this.inputMenge);
@@ -151,6 +155,7 @@ export default class NewRecipe extends Vue {
 
 	private async rezeptAnlegen(event: MouseEvent) {
 		event.preventDefault();
+		// check input laufzeit
 		if (isNaN(parseInt(this.inputLaufzeit))) {
 			const labelLaufzeit = document.getElementById('#labelLaufzeit')!;
 			labelLaufzeit.innerHTML = 'Bitte eine Zahl eingeben';
@@ -158,6 +163,7 @@ export default class NewRecipe extends Vue {
 			return;
 		}
 
+		// check input name
 		if (
 			checkUserdata(this.inputName, 100, {
 				checkWhitespace: false,
@@ -170,6 +176,7 @@ export default class NewRecipe extends Vue {
 			return;
 		}
 
+		// check input anleitung
 		if (
 			checkUserdata(this.inputAnleitung, 65538, {
 				checkWhitespace: false,
@@ -198,7 +205,7 @@ export default class NewRecipe extends Vue {
 			mode: 'cors'
 		});
 
-		// Handle Errors, request from Kai <p id="uploadFail"></p>
+		// Handle Errors
 		const uploadFail = document.querySelector('#uploadFail')!;
 		if (!response.ok) {
 			uploadFail.innerHTML = 'Fehler beim Hochladen';
@@ -207,6 +214,7 @@ export default class NewRecipe extends Vue {
 
 		const { id } = await response.json();
 
+		// go to recipe display page
 		this.$router.push(`/rezept/${id}`);
 	}
 }
