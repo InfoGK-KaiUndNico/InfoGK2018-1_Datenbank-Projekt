@@ -1,3 +1,4 @@
+<!-- inputs for data of ingredients, submit button and link back to mainpage -->
 <template>
 	<div class="container"> 
 			<h2 class="mt-2"> Sie sind bei der Zutateingabe.</h2> 
@@ -63,6 +64,7 @@ export default class NeueZutat extends Vue {
 	private ZutatArten = this.erlaubteZutatenArten.map((name: string) => ({ name, value: name }));
 
 	private async mounted() {
+		// get Elements
 		const labelZutatHinzufügen = document.querySelector('#labelZutatHinzufügen');
 		if (!labelZutatHinzufügen) {
 			return;
@@ -72,6 +74,7 @@ export default class NeueZutat extends Vue {
 	}
 
 	private async addZutat() {
+		// check input name
 		if (checkUserdata(this.inputName, 20, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputZutatname = document.getElementById('#inputZutatname')!;
 			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
@@ -79,6 +82,7 @@ export default class NeueZutat extends Vue {
 			return;
 		}
 
+		// check input nährwerte
 		if (checkUserdata(this.inputNaehrwerte, 20, { checkWhitespace: false, checkLength: true }) === false) {
 			const inputNaehrwerteLabel = document.getElementById('#inputNaehrwerteLabel')!;
 			inputNaehrwerteLabel.innerHTML = 'keine Leer und Sonderzeichen in den Nährwerten';
@@ -86,10 +90,12 @@ export default class NeueZutat extends Vue {
 			return;
 		}
 
+		// check if art is valid
 		if (!this.erlaubteZutatenArten.includes(this.inputArt)) {
 			return;
 		}
 
+		// post new ingredient to backend
 		const response = await fetch(`http://localhost:4000/ingredients`, {
 			body: JSON.stringify({ name: this.inputName, naehrwerte: this.inputNaehrwerte, art: this.inputArt }),
 			headers: getCommonHeaders(),
@@ -102,6 +108,7 @@ export default class NeueZutat extends Vue {
 			return;
 		}
 
+		// return to mainpage
 		this.$router.push('/hauptseite');
 	}
 }
