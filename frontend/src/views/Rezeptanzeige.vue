@@ -1,3 +1,4 @@
+<!-- show data of recipes, (disabeled)add to favourites/ bookmarks, delete-->
 <template>
 	<div class="container">
             <h2 class="mt-2">Rezeptansicht</h2>
@@ -76,7 +77,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
-import getHost from '@/lib/util/getHost';
+import getHost from '../lib/util/getHost';
 
 @Component({})
 export default class Rezeptanzeige extends Vue {

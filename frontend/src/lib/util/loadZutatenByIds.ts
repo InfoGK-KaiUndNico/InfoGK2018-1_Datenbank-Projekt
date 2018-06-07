@@ -1,7 +1,7 @@
 import getCommonHeaders from './getCommonHeaders';
 import getHost from './getHost';
 
-export default async function loadRecipesByIds(zutaten: string[]) {
+export default async function loadZutatenByIds(zutaten: string[]) {
 	const fullZutaten: any[] = [];
 	// get zutaten data for all zutaten found in search
 	for (const zutatName of zutaten) {

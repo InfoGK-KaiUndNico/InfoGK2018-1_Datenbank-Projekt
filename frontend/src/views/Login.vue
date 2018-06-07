@@ -60,7 +60,7 @@ export default class Login extends Vue {
 		event.preventDefault();
 
 		// Validate username input
-		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true }) === false) {
+		if (checkUserdata(this.userName, 30, { checkWhitespace: true, checkLength: true, checkAlphanumeric: true }) === false) {
 			const inputUsername = document.getElementById('labelNutzername')!;
 			inputUsername.innerHTML = 'Bitte Nutzername eingeben';
 			inputUsername.style.color = 'red';
@@ -68,7 +68,7 @@ export default class Login extends Vue {
 		}
 
 		// Validate password input
-		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true }) === false) {
+		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true, checkAlphanumeric: true }) === false) {
 			const labelPasswort = document.getElementById('labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
 			labelPasswort.style.color = 'red';
