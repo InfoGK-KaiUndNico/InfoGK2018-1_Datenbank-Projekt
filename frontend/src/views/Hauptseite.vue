@@ -8,26 +8,26 @@
               	<div class="col-12">
 					<span class="mr-3">Shortcuts</span>
                     <router-link to="/neues-rezept">
-                        <span class="btn btn-primary mr-1">
+                        <span class="btn btn-outline-success mr-1">
                             Neues Rezept
                         </span>
                     </router-link>
 					<router-link to="/neue-zutat">
-                        <span class="btn btn-primary ml-1 mr-1"> 
+                        <span class="btn btn-outline-success ml-1 mr-1"> 
                             Neue Zutat 
                         </span> 
 					</router-link>
 					<router-link to="/nutzerdaten">
-                        <span class="btn btn-primary ml-1 mr-1">
+                        <span class="btn btn-outline-primary ml-1 mr-1">
                             Nutzerdaten
                         </span>
                     </router-link>
 					<router-link to="/unbestaetigt">
-						<span v-show="canReview" class="btn btn-primary ml-1 mr-1">
+						<span v-show="canReview" class="btn btn-outline-primary ml-1 mr-1">
 							Überprüfen
 						</span>
 					</router-link>
-					<button class="btn btn-primary ml-1" @click="logout">
+					<button class="btn btn-outline-danger ml-1" @click="logout">
 						Abmelden
 					</button>
                 </div>

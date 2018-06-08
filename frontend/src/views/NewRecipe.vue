@@ -36,10 +36,10 @@
 					<label>Sichtbarkeit</label>
 					<br/>
 					<button v-if="!inputPrivat" id="buttonRecipeVisibility" @click="toggleRecipeVisibility" class="btn btn-success">
-						Öffentlich
+						🌐 Öffentlich
 					</button>
 					<button v-else id="buttonRecipeVisibility" @click="toggleRecipeVisibility" class="btn btn-danger">
-						Privat
+						🔒 Privat
 					</button>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
                         </button>
                     </div>
             </div>
-			<div class="row">
+			<div class="row mt-3">
 				<div class="col-4">
 					<label>Zutaten im Rezept</label>
 					<ul>
