@@ -172,40 +172,9 @@ export default class Nutzerdaten extends Vue {
 		this.GemerkteRezeptIds = fuerSpaeterGemerkt;
 
 		// Load recipes
-		await Promise.all([
-			this.showRezepte(this.EigeneRezeptIds, 'eigene'),
-			this.showRezepte(this.LieblingsrezeptIds, 'favoriten'),
-			this.showRezepte(this.GemerkteRezeptIds, 'gemerkt')
-		]);
-	}
-
-	private async showRezepte(rezeptIds: number[], type: string) {
-		for (const rezeptId of rezeptIds) {
-			const response = await fetch(`${getHost()}/recipes/${rezeptId}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
-
-			if (!response.ok) {
-				continue;
-			}
-
-			// output data
-			const rezept = await response.json();
-
-			switch (type) {
-				case 'favoriten':
-					this.Lieblingsrezepte.push(rezept);
-					break;
-				case 'eigene':
-					this.EigeneRezepte.push(rezept);
-					break;
-				case 'gemerkt':
-					this.GemerkteRezepte.push(rezept);
-					break;
-			}
-		}
+		this.Lieblingsrezepte = await loadRecipesByIds(this.LieblingsrezeptIds);
+		this.GemerkteRezepte = await loadRecipesByIds(this.GemerkteRezeptIds);
+		this.EigeneRezepte = await loadRecipesByIds(this.EigeneRezeptIds);
 	}
 
 	private async updateUser(event: MouseEvent) {
