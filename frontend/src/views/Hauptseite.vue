@@ -75,11 +75,11 @@
 					<p v-show="this.gefundeneRezepte.length < 1">Keine Suchergebnisse gefunden.</p>
                     <p id="paragraphHS1">
                         <span>
-                            <ul class="list-group">
-  								<li class="list-group-item" v-for="rezept in gefundeneRezepte" v-bind:key="rezept.id">
-									<RezeptListElement v-bind:rezept="rezept"/>
-  								</li>
-							</ul>
+                            <div class="row">
+  								<div class="mt-3 col-3" v-for="rezept in gefundeneRezepte" v-bind:key="rezept.id">
+									<RezeptListCardElement v-bind:rezept="rezept"/>
+  								</div>
+							</div>
                         </span>
                     </p>
                 </div>
@@ -97,11 +97,11 @@ import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
-import RezeptListElement from '../components/RezeptListElement.vue';
+import RezeptListCardElement from '../components/RezeptListCardElement.vue';
 import getHost from '@/lib/util/getHost';
 import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
-@Component({ components: { RezeptListElement } })
+@Component({ components: { RezeptListCardElement } })
 export default class Hauptseite extends Vue {
 	private Zutaten: any[] = [];
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));

@@ -39,12 +39,17 @@
 				<div class="col-12 mt-2">
 					<h3>Meine eigenen Rezepte</h3>
 					<div id="listEigeneRezepte" class="panel">
-						<p v-show="EigeneRezepte.length < 1">Noch keine eigenen Rezepte. <router-link to="/neues-rezept"><span>Füge doch eines hinzu!</span></router-link></p>						
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in EigeneRezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<p v-show="EigeneRezepte.length < 1">
+							Noch keine eigenen Rezepte.
+							<router-link to="/neues-rezept">
+								<span>Füge doch eines hinzu!</span>
+							</router-link>
+						</p>
+						<div class="row">
+							<div v-for="rezept in EigeneRezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -53,22 +58,22 @@
 					<h3>Meine Lieblingsrezepte</h3>
 					<div id="listLieblingsrezepte" class="panel">
 						<p v-show="Lieblingsrezepte.length < 1">Noch keine Lieblingsrezepte!</p>						
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<div class="row">
+							<div v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-12 mt-2">
 					<h3>Meine gemerkten Rezepte</h3>
 					<div id="listGemerkteRezepte" class="panel">
 						<p v-show="GemerkteRezepte.length < 1">Noch keine Rezepte gemerkt!</p>
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in GemerkteRezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<div class="row">
+							<div v-for="rezept in GemerkteRezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -82,12 +87,12 @@ import validator from 'validator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
-import RezeptListElement from '../components/RezeptListElement.vue';
+import RezeptListCardElement from '../components/RezeptListCardElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import getHost from '@/lib/util/getHost';
 import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
-@Component({ components: { RezeptListElement } })
+@Component({ components: { RezeptListCardElement } })
 export default class Nutzerdaten extends Vue {
 	private showUserName: string = '';
 	private changePassword: string = '';
