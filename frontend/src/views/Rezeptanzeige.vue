@@ -1,4 +1,4 @@
-<!-- show data of recipes, (disabeled)add to favourites/ bookmarks, delete-->
+<!-- show data of recipes, (disabeled)add to favourites/ bookmarks, delete -->
 <template>
 	<div class="container">
             <h2 class="mt-2">Rezeptansicht</h2>
@@ -93,7 +93,7 @@ export default class Rezeptanzeige extends Vue {
 
 	private Lieblingsrezept = this.loadLieblingsrezepte();
 	private Bookmarked = this.loadBookmarks();
-	private shouldDelete = localStorage.getItem('userRang') === 'Admin' && this.erstelltVon === localStorage.getItem('userName');
+	private shouldDelete = localStorage.getItem('userRang') === 'Admin' || this.erstelltVon === localStorage.getItem('userName');
 
 	private mounted() {
 		this.rezeptId = this.$route.params.id;
@@ -192,7 +192,7 @@ export default class Rezeptanzeige extends Vue {
 		this.Bookmarked = this.loadBookmarks();
 	}
 	private async deleteRecipe() {
-		const response = await fetch(`http://localhost:4000/`, {
+		const response = await fetch(`${getHost()}/recipes/${id}`, {
 			headers: getCommonHeaders(),
 			method: 'DELETE',
 			mode: 'cors'
