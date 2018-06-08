@@ -4,7 +4,7 @@
 <template>
 	<div class="card">
 		<div class="card-body">
-			<p @click="rezeptOeffnen" style="color: blue; cursor: pointer">{{rezept.name}}</p>
+			<p @click="rezeptOeffnen" style="color: #007bff; cursor: pointer">{{rezept.name}}</p>
 			<p>{{rezept.erstelltVon}}</p>
 
 			<!-- admin review indicators -->

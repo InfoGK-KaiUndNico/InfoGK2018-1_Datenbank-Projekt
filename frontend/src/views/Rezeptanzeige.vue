@@ -62,16 +62,16 @@
                     </div>
 				</div>
 				<div class="row mt-3">
-					<span class="btn btn-primary" v-show="!Lieblingsrezept" @click="addToFavourites">
-						Zu Lieblingsrezepten hinzufügen
-					</span>
-					<span class="btn btn-primary" v-show="!Bookmarked" @click="addToBookmarks">
-						Für später merken
-					</span>
-					<span class="btn btn-danger" v-show="shouldDelete === true" @click="deleteRecipe">
-						Rezept Löschen
-					</span>
 					<div class="col-12">
+						<span class="btn btn-primary mr-3" v-show="!Lieblingsrezept" @click="addToFavourites">
+							Zu Lieblingsrezepten hinzufügen
+						</span>
+						<span class="btn btn-primary mr-3" v-show="!Bookmarked" @click="addToBookmarks">
+							Für später merken
+						</span>
+						<span class="btn btn-danger mr-3" v-show="canDelete === true" @click="deleteRecipe">
+							Rezept Löschen
+						</span>
 						<router-link to="/hauptseite">
 							<span class="btn btn-outline-secondary">
 								Zurück
@@ -106,7 +106,7 @@ export default class Rezeptanzeige extends Vue {
 
 	private Lieblingsrezept = this.loadLieblingsrezepte();
 	private Bookmarked = this.loadBookmarks();
-	private shouldDelete = localStorage.getItem('userRang') === 'Admin' || this.erstelltVon === localStorage.getItem('userName');
+	private canDelete: boolean = false;
 
 	private mounted() {
 		if (!checkLoggedIn()) {
@@ -114,6 +114,7 @@ export default class Rezeptanzeige extends Vue {
 		}
 
 		this.rezeptId = this.$route.params.id;
+		this.canDelete = localStorage.getItem('userRang') === 'Admin' || this.erstelltVon === localStorage.getItem('userName');
 		this.loadRezeptData();
 	}
 
@@ -162,14 +163,6 @@ export default class Rezeptanzeige extends Vue {
 		verwendeteZutaten = verwendung.map((verwendet: string) => ({ name: verwendet, menge: verwendet }));
 	}
 
-	/* private async loadNaehrwerteData() {
-		const response = await fetch('http://localhost:4000/recipes/${rezeptId}', {
-		headers: getCommonHeaders(),
-		method: 'GET',
-		mode: 'cors'
-		});
-		for(const of ){}
-	} */
 	private async loadLieblingsrezepte() {
 		const response = await fetch(`http://localhost:4000/`, {
 			headers: getCommonHeaders(),
@@ -202,6 +195,7 @@ export default class Rezeptanzeige extends Vue {
 		});
 		this.Lieblingsrezept = this.loadLieblingsrezepte();
 	}
+
 	private async addToBookmarks() {
 		const response = await fetch(`http://localhost:4000/`, {
 			headers: getCommonHeaders(),
@@ -210,12 +204,19 @@ export default class Rezeptanzeige extends Vue {
 		});
 		this.Bookmarked = this.loadBookmarks();
 	}
+
 	private async deleteRecipe() {
-		const response = await fetch(`${getHost()}/recipes/${id}`, {
+		const response = await fetch(`${getHost()}/recipes/${this.rezeptId}`, {
 			headers: getCommonHeaders(),
 			method: 'DELETE',
 			mode: 'cors'
 		});
+
+		if (!response.ok) {
+			// TODO Show/handle error
+			return;
+		}
+
 		this.$router.push('/hauptseite');
 	}
 }
