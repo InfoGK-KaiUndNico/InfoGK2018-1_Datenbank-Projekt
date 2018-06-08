@@ -4,6 +4,11 @@
     <div class="container">
         <h2 class="mt-2"> Sie sind bei der Rezepteingabe.</h2>
         <form id="formNR" action="select.html">
+			<div class="row">
+				<div class="col-12">
+					<h3>Grundätzliches</h3>
+				</div>
+			</div>
             <div class="row">
 				<div class="col-3">
                     <label id="labelName">Name</label>
@@ -22,7 +27,28 @@
 					</select>
                 </div>
 			</div>
-			<div class="row mt-2">
+			<div class="row mt-3">
+				<div class="col-3">
+					<label id="labelPortionen">Portionen</label>
+                    <input class="form-control" placeholder="Portionen" v-model="inputPortionen"/>
+				</div>
+				<div class="col-3">
+					<label>Sichtbarkeit</label>
+					<br/>
+					<button v-if="!inputPrivat" id="buttonRecipeVisibility" @click="toggleRecipeVisibility" class="btn btn-success">
+						Öffentlich
+					</button>
+					<button v-else id="buttonRecipeVisibility" @click="toggleRecipeVisibility" class="btn btn-danger">
+						Privat
+					</button>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-12">
+					<h3>Zutaten</h3>
+				</div>
+			</div>
+			<div class="row">
                     <div class="col-4">
                         <label>Zutat für Rezept</label>
                         <select class="form-control" v-model="inputZutat">
@@ -109,13 +135,13 @@ import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component
 export default class NewRecipe extends Vue {
-	// TODO request input Name und Label name from kai
-
 	// General recipe information bindings
 	private inputName: string = '';
 	private inputAnleitung: string = '';
 	private inputArt: string = '';
 	private inputLaufzeit: string = '';
+	private inputPrivat: boolean = false;
+	private inputPortionen: string = '';
 
 	// Ingredient addition
 	private inputZutat: string = '';
@@ -139,6 +165,12 @@ export default class NewRecipe extends Vue {
 			// Handle errors
 			return;
 		}
+	}
+
+	private toggleRecipeVisibility(event: MouseEvent) {
+		event.preventDefault();
+
+		this.inputPrivat = !this.inputPrivat;
 	}
 
 	private addZutat(event: MouseEvent) {
@@ -203,8 +235,8 @@ export default class NewRecipe extends Vue {
 				zutaten: this.verwendeteZutaten,
 				art: this.inputArt,
 				laufzeit: parseInt(this.inputLaufzeit),
-				privat: false,
-				portion: 1
+				privat: this.inputPrivat,
+				portion: parseInt(this.inputPortionen)
 			}),
 			headers: getCommonHeaders(),
 			method: 'POST',

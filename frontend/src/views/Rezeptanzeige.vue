@@ -17,9 +17,8 @@
                         <p><b>{{art}}</b></p>
                     </div>
 					<div class="col-3">
-						<label>Überprüft?</label>
-						<p v-if="review === null">❌</p>
-						<p v-else>✔️</p>
+						<label>Portionen</label>
+						<p><b>{{portion}}</b></p>
 					</div>
                 </div>
 				<div class="row">
@@ -30,6 +29,16 @@
 					<div class="col-3">
 						<label>Erstellt</label>
 						<p><b>{{erstellungsDatumBerechnen()}}</b></p>
+					</div>
+					<div class="col-3">
+						<label>Sichtbarkeit</label>
+						<p v-if="privat"><b>🔒 Privat</b></p>
+						<p v-else><b>🌐 Öffentlich</b></p>
+					</div>
+					<div class="col-3">
+						<label>Überprüft?</label>
+						<p v-if="review === null">❌</p>
+						<p v-else>✔️</p>
 					</div>
 				</div>
                 <div class="row mt-3">                
@@ -92,6 +101,8 @@ export default class Rezeptanzeige extends Vue {
 	private review: any = null;
 	private erstelltVon: string = '';
 	private erstellt: string = new Date().toISOString();
+	private privat: boolean = false;
+	private portion: number = 0;
 
 	private Lieblingsrezept = this.loadLieblingsrezepte();
 	private Bookmarked = this.loadBookmarks();
@@ -126,7 +137,7 @@ export default class Rezeptanzeige extends Vue {
 			mode: 'cors'
 		});
 
-		const { name, laufzeit, art, anleitung, zutaten, review, erstelltVon, erstellt } = await response.json();
+		const { name, laufzeit, art, anleitung, zutaten, review, erstelltVon, erstellt, portion, privat } = await response.json();
 
 		this.name = name;
 		this.laufzeit = laufzeit;
@@ -136,6 +147,8 @@ export default class Rezeptanzeige extends Vue {
 		this.review = review;
 		this.erstelltVon = erstelltVon;
 		this.erstellt = erstellt;
+		this.privat = privat;
+		this.portion = portion;
 	}
 
 	private async loadZutatenData() {
