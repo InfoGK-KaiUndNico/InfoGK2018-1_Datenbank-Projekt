@@ -3,9 +3,11 @@
         <h2 class="mt-2">Hier sehen Sie unüberprüfte Zutaten und Rezepte und können sie bestätigen</h2>
         <form id="formND" action="select.html">
 			<div class="row">
-				<router-link to="/hauptseite">
-					<span class="btn btn-outline-secondary">Zurück</span>
-				</router-link>
+				<div class="col-12">
+					<router-link to="/hauptseite">
+						<span class="btn btn-outline-secondary">Zurück</span>
+					</router-link>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-6 mt-2">

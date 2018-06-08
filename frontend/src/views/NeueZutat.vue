@@ -1,11 +1,11 @@
 <!-- inputs for data of ingredients, submit button and link back to mainpage -->
 <template>
 	<div class="container"> 
-			<h2 class="mt-2"> Sie sind bei der Zutateingabe.</h2> 
+			<h2 class="mt-2">Reichen Sie eine Zutat ein!</h2> 
 			<form id="formNZ" action="select.html"> 
 				<div class="row mt-3"> 
 					<div class="col-6 "> 
-						<label id="inputZutatname">Zutatname</label> 
+						<label id="inputZutatname">Name</label> 
 						<input class="form-control" v-model="inputName"/> 
 					</div>
 				</div>
