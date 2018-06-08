@@ -27,16 +27,19 @@
 							Überprüfen
 						</span>
 					</router-link>
-					<router-link to="/anmeldung">
-						<span class="btn btn-primary ml-1">
-							Abmelden
-						</span>
-					</router-link>
+					<button class="btn btn-primary ml-1" @click="logout">
+						Abmelden
+					</button>
                 </div>
             </div>
-            <div class="row mt-3">
+			<div class="row mt-3">
+				<div class="col-12">
+					<h3>Rezeptsuche</h3>
+				</div>
+			</div>
+            <div class="row">
                 <div class="col-3">
-                    <label>Rezeptsuche</label>
+                    <label>Rezeptname</label>
                     <input class="form-control" placeholder="Suche" v-model="selectedName"/>
                 </div>
                 <div class="col-3">
@@ -87,6 +90,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
+import queryString from 'query-string';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
@@ -127,6 +132,18 @@ export default class Hauptseite extends Vue {
 		this.canReview = localStorage.getItem('userRang') === 'Admin';
 	}
 
+	private logout(event: MouseEvent) {
+		event.preventDefault();
+
+		// Clear localStorage
+		localStorage.removeItem('token');
+		localStorage.removeItem('userName');
+		localStorage.removeItem('userRang');
+
+		// Redirect to login page
+		this.$router.push('/anmeldung');
+	}
+
 	private clearInputs(event: MouseEvent) {
 		event.preventDefault();
 
@@ -139,73 +156,40 @@ export default class Hauptseite extends Vue {
 	private async OutputSearch(event: MouseEvent) {
 		event.preventDefault();
 
-		// search zutat if rezeptsuche and Art empty
-		if (this.selectedName.length < 1 && this.selectedArten.length < 1) {
-			// get array with ids of recipes matching search from backend
-			const response = await fetch(`${getHost()}/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
+		const name = this.selectedName;
+		const arten = this.selectedArten;
+		const zutaten = this.selectedZutaten;
 
-			if (!response.ok) {
-				// TODO show error
-				return;
-			}
+		const rawQuery: any = {};
 
-			const { recipes }: { recipes: string[] } = await response.json();
+		if (validator.isLength(name, { min: 1, max: 100 })) {
+			rawQuery.name = name;
+		}
 
-			// Load full recipe data by ids
-			this.gefundeneRezepte = await loadRecipesByIds(recipes);
+		if (this.selectedArten.length > 0) {
+			rawQuery.art = arten.join(',');
+		}
+
+		if (this.selectedZutaten.length > 0) {
+			rawQuery.zutaten = zutaten.join(',');
+		}
+
+		const query = queryString.stringify(rawQuery);
+
+		const response = await fetch(`${getHost()}/recipes?${query}`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			// TODO Show/handle error
 			return;
 		}
 
-		// search art if Rezeptsuche and Zutat empty
-		if (this.selectedName.length < 1 && this.selectedZutaten.length < 1) {
-			// get array with ids of recipes matching search from backend
-			const response = await fetch(`${getHost()}/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
+		const { recipes }: { recipes: number[] } = await response.json();
 
-			if (!response.ok) {
-				// TODO show error
-				return;
-			}
-
-			const { recipes }: { recipes: string[] } = await response.json();
-
-			// Load full recipe data by ids
-			this.gefundeneRezepte = await loadRecipesByIds(recipes);
-			return;
-		}
-
-		// search rezept if Zutat and Art empty
-		if (this.selectedZutaten.length < 1 && this.selectedArten.length < 1) {
-			// check input and search
-			if (checkUserdata(this.selectedName, 100, { checkWhitespace: false, checkLength: true }) === true) {
-				// get array with ids of recipes matching search from backend
-				const response = await fetch(`${getHost()}/recipes?name=${encodeURIComponent(this.selectedName)}`, {
-					headers: getCommonHeaders(),
-					method: 'GET',
-					mode: 'cors'
-				});
-
-				if (!response.ok) {
-					// TODO show error
-					return;
-				}
-
-				const { recipes }: { recipes: string[] } = await response.json();
-
-				// Load full recipe data by ids
-				this.gefundeneRezepte = await loadRecipesByIds(recipes);
-				return;
-			}
-		}
-
-		// TODO show errors
+		this.gefundeneRezepte = await loadRecipesByIds(recipes);
 	}
 }
 </script>

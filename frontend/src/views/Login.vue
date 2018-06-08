@@ -40,11 +40,18 @@ import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import jwt_decode from 'jwt-decode';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component
 export default class Login extends Vue {
 	private userName: string = '';
 	private password: string = '';
+
+	private mounted() {
+		if (checkLoggedIn()) {
+			return this.$router.push('/hauptseite');
+		}
+	}
 
 	private moveFocus() {
 		const inputPassword = document.getElementById('inputPassword')!;
@@ -63,7 +70,7 @@ export default class Login extends Vue {
 		}
 
 		// Validate password input
-		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true, checkAlphanumeric: true }) === false) {
+		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true, checkAlphanumeric: false }) === false) {
 			const labelPasswort = document.getElementById('labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
 			labelPasswort.style.color = 'red';
