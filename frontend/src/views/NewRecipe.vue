@@ -84,11 +84,11 @@
 					<ol>
 						<li class="ml-2">Die Arbeit sollte in Arbeitsschritte geteilt werden. Ein Arbeitsschritt zeichnet sich dadurch aus, dass
 							mit einer oder mehreren Zutaten die gleiche oder eine sehr ähnliche Tätigkeit ausgeführt werden.</li>
-						<li class="ml-2">Die Arbeitsschritte sollten in der Anleitung chronologisch angeordnet sein, wenn mehrere Tätigkeiten
-							parallel ausgeführt werden sollten sie getrennt chronologisch behandelt und mit einer entsprechenden
+						<li class="ml-2">Die Arbeitsschritte sollten in der Anleitung chronologisch angeordnet sein. wenn mehrere Tätigkeiten
+							parallel ausgeführt werden, sollten sie getrennt chronologisch behandelt und mit einer entsprechenden
 							Kennzeichnung (Untertitel) versehen werden.</li>
 						<li class="ml-2">Für jeden Arbeitsschritt sollte ein Absatz verwendet werden, um die Lesbarkeit zu erleichtern</li>
-						<li class="ml-2">Ähnliche oder sich widerholende Tätigkeiten müssen nicht immer vollständig beschrieben, sondern können
+						<li class="ml-2">Ähnliche oder sich wiederholende Tätigkeiten müssen nicht immer vollständig beschrieben, sondern können
 							auch zusammengefasst werden.</li>
 						<li class="ml-2">Grundlegende Fähigkeiten im Kochen werden vorausgesetzt, komplizierte Vorgänge können aber in einem getrennten
 							Absatz näher erläutert werden.</li>

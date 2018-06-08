@@ -1,7 +1,12 @@
 <template>
     <div class="container">
-        <h2 class="mt-2">Hier sehen unüberprüfte Zutaten und Rezepte und können sie bestätigen</h2>
+        <h2 class="mt-2">Hier sehen Sie unüberprüfte Zutaten und Rezepte und können sie bestätigen</h2>
         <form id="formND" action="select.html">
+			<div class="row">
+				<router-link to="/hauptseite">
+					<span class="btn btn-outline-secondary">Zurück</span>
+				</router-link>
+			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
 					<div id="unueberpruefteRezepte" class="panel">
@@ -23,11 +28,6 @@
 						</ul>
 					</div>
 				</div>
-			</div>
-			<div class="row">
-				<router-link to="/hauptseite">
-					<span class="btn btn-outline-secondary">Zurück</span>
-				</router-link>
 			</div>
         </form>
     </div>

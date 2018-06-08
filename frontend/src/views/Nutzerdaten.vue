@@ -2,7 +2,7 @@
 <!-- 2. row: the user can see his own, his favourite and his bookmarked recipes -->
 <template>
     <div class="container">
-        <h2 class="mt-2">Hier sehen sie ihre Nutzerdaten und können sie ändern</h2>
+        <h2 class="mt-2">Hier sehen Sie Ihre Nutzerdaten und können Sie ändern</h2>
         <form id="formND" action="select.html">
             <div class="row">
                 <div class="col-3 mt-3">
@@ -14,7 +14,7 @@
                     <input id="inputChangePassword" class="form-control" type="password" v-model="changePassword"/>
                 </div>
 				<div class="col-3 mt-3">
-                    <label>EMail ändern</label>
+                    <label>E-Mail ändern</label>
                     <input id="inputChangeEmail" class="form-control" v-model="changeEmail"/>
                 </div>
 			</div>
@@ -30,15 +30,14 @@
 					</router-link>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-3">
 				<div class="col-12">
 					<p id="updateFail"></p>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-3">
 				<div class="col-12 mt-2">
-					<p>Meine eigenen Rezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('eigene')">EigeneRezepte</button>-->
+					<h3>Meine eigenen Rezepte</h3>
 					<div id="listEigeneRezepte" class="panel">
 						<p v-show="EigeneRezepte.length < 1">Noch keine eigenen Rezepte. <router-link to="/neues-rezept"><span>Füge doch eines hinzu!</span></router-link></p>						
 						<ul class="list-group">
@@ -51,8 +50,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12 mt-2">
-					<p>Meine Lieblingsrezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('favoriten')">Lieblingsrezepte</button>-->
+					<h3>Meine Lieblingsrezepte</h3>
 					<div id="listLieblingsrezepte" class="panel">
 						<p v-show="Lieblingsrezepte.length < 1">Noch keine Lieblingsrezepte!</p>						
 						<ul class="list-group">
@@ -63,8 +61,7 @@
 					</div>
 				</div>
 				<div class="col-12 mt-2">
-					<p>Meine gemerkten Rezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('gemerkt')">Gemerkte Rezepte</button>-->
+					<h3>Meine gemerkten Rezepte</h3>
 					<div id="listGemerkteRezepte" class="panel">
 						<p v-show="GemerkteRezepte.length < 1">Noch keine Rezepte gemerkt!</p>
 						<ul class="list-group">
@@ -229,7 +226,7 @@ export default class Nutzerdaten extends Vue {
 		// check input email
 		if (this.changeEmail.length > 0) {
 			if (validator.isEmail(this.changeEmail) === false) {
-				this.inputEmail.innerHTML = 'keine gültige Email-Adresse';
+				this.inputEmail.innerHTML = 'keine gültige E-Mail-Adresse';
 				this.inputEmail.style.color = 'red';
 				this.showUserData();
 				return;

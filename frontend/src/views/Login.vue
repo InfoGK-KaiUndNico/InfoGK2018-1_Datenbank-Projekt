@@ -1,8 +1,8 @@
 <!-- first page the user sould get to see with login options and link to registration form -->
 <template>
     <div class="container">
-                <h2 class="mt-2">Hallo, willkommen bei unserer Rezepte Datenbank.</h2>
-                <h3>Bitte melden sie sich an, um sie zu nutzen.</h3>
+                <h2 class="mt-2">Willkommen bei unserer Rezepte-Datenbank.</h2>
+                <h3>Bitte melden Sie sich an, um die Seite zu nutzen.</h3>
                 <form id="formIndex1" action="select.html">
                     <div class="row mt-3">
                         <div class="col-3">

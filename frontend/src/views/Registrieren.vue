@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="container">
-			<h2 class="mt-2">Hier können sie sich einen Nutzeraccount erstellen.</h2>
+			<h2 class="mt-2">Hier können Sie sich einen Nutzeraccount erstellen.</h2>
 			<form id="formReg" action="select.html">
 				<div class="row mt-3">
 					<div class="col-3">
@@ -13,7 +13,7 @@
 						<p id="AnzeigePassword"></p>
 					</div>
 					<div class="col-3">
-						<input class="form-control" placeholder="eMail" v-model="inputEmail"/>
+						<input class="form-control" placeholder="E-Mail" v-model="inputEmail"/>
 						<p id="AnzeigeEmail"></p>
 					</div>
 				</div>
@@ -99,7 +99,7 @@ export default class Registrieren extends Vue {
 		}
 
 		if (validator.isEmail(email) === false) {
-			this.anzeigeEmail.innerHTML = 'keine gültige Email-Adresse';
+			this.anzeigeEmail.innerHTML = 'keine gültige E-Mail-Adresse';
 			this.anzeigeEmail.style.color = 'red';
 			return;
 		}

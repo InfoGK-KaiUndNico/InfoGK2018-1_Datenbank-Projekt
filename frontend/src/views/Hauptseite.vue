@@ -2,7 +2,7 @@
 <!-- 2. row: search options (search by: name, ingredient, type) and search output as a list of RezeptListElements -->
 <template>
     <div class="container">
-        <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
+        <h2 class="mt-1">Hier sehen Sie eine Übersicht aller wichtigen Funktionen</h2>
         <form id="formHS" action="select.html">
             <div class="row mt-3">
               	<div class="col-12">
@@ -68,7 +68,7 @@
 			</div>
             <div class="row mt-3">
                 <div class="col-12">
-					<p>Suchergebnisse</p>
+					<h3>Suchergebnisse</h3>
 					<p v-show="this.gefundeneRezepte.length < 1">Keine Suchergebnisse gefunden.</p>
                     <p id="paragraphHS1">
                         <span>

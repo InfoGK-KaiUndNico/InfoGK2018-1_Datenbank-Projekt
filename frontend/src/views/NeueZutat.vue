@@ -78,7 +78,7 @@ export default class NeueZutat extends Vue {
 		// check input name
 		if (checkUserdata(this.inputName, 20, { checkWhitespace: true, checkLength: true }) === false) {
 			const inputZutatname = document.getElementById('inputZutatname')!;
-			inputZutatname.innerHTML = 'keine Leer und Sonderzeichen im Zutatname';
+			inputZutatname.innerHTML = 'Keine Leer- und Sonderzeichen im Zutatname erlaubt';
 			inputZutatname.style.color = 'red';
 			return;
 		}
@@ -86,7 +86,7 @@ export default class NeueZutat extends Vue {
 		// check input nährwerte
 		if (checkUserdata(this.inputNaehrwerte, 20, { checkWhitespace: false, checkLength: true }) === false) {
 			const inputNaehrwerteLabel = document.getElementById('inputNaehrwerteLabel')!;
-			inputNaehrwerteLabel.innerHTML = 'keine Leer und Sonderzeichen in den Nährwerten';
+			inputNaehrwerteLabel.innerHTML = 'Keine Leer- und Sonderzeichen in den Nährwerten erlaubt';
 			inputNaehrwerteLabel.style.color = 'red';
 			return;
 		}
@@ -105,7 +105,7 @@ export default class NeueZutat extends Vue {
 		});
 
 		if (!response.ok) {
-			this.labelZutatHinzufügen.innerHTML = 'Fehler beim hinzufügen';
+			this.labelZutatHinzufügen.innerHTML = 'Fehler beim Hinzufügen';
 			return;
 		}
 
