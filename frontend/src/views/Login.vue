@@ -51,11 +51,6 @@ export default class Login extends Vue {
 		inputPassword.focus();
 	}
 
-	// redirect to registration form
-	private neuerAccout() {
-		this.$router.push('/registrieren');
-	}
-
 	private async login(event: MouseEvent) {
 		event.preventDefault();
 

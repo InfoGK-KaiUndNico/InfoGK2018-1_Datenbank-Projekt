@@ -52,6 +52,7 @@ import checkUserdata from '../lib/util/checkUserInput';
 import loadZutaten from '../lib/util/loadZutaten';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component({})
 export default class NeueZutat extends Vue {
@@ -65,6 +66,10 @@ export default class NeueZutat extends Vue {
 	private ZutatArten = this.erlaubteZutatenArten.map((name: string) => ({ name, value: name }));
 
 	private async mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// get Elements
 		const labelZutatHinzufügen = document.querySelector('#labelZutatHinzufügen');
 		if (!labelZutatHinzufügen) {

@@ -94,6 +94,7 @@ import loadZutaten from '../lib/util/loadZutaten';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import RezeptListElement from '../components/RezeptListElement.vue';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component({ components: { RezeptListElement } })
 export default class Hauptseite extends Vue {
@@ -109,6 +110,10 @@ export default class Hauptseite extends Vue {
 	private canReview: boolean = false;
 
 	private async mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// load all ingredients
 		try {
 			const zutaten = await loadZutaten();

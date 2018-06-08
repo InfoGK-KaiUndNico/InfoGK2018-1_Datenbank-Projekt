@@ -105,6 +105,7 @@ import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component
 export default class NewRecipe extends Vue {
@@ -126,6 +127,10 @@ export default class NewRecipe extends Vue {
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
 
 	private async mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// load existing ingredients
 		try {
 			const zutaten = await loadZutaten();

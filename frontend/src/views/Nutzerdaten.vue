@@ -78,14 +78,14 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import RezeptListElement from '../components/RezeptListElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
-
-import validator from 'validator';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component({ components: { RezeptListElement } })
 export default class Nutzerdaten extends Vue {
@@ -107,6 +107,10 @@ export default class Nutzerdaten extends Vue {
 	private EigeneRezepte: any[] = [];
 
 	private mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// define elements
 		const anzeigeUsername = document.getElementById('AnzeigeUsername');
 		if (!anzeigeUsername) {

@@ -35,6 +35,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
@@ -42,8 +43,7 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 import ZutatListElement from '../components/ZutatListElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import loadZutatenByIds from '../lib/util/loadZutatenByIds';
-
-import validator from 'validator';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 import getHost from '@/lib/util/getHost';
 
 @Component({ components: { ZutatListElement, RezeptListElement } })
@@ -52,6 +52,10 @@ export default class ZuUeberpruefen extends Vue {
 	private Zutaten: any[] = [];
 
 	private mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		this.showRezepte();
 		this.showZutaten();
 	}

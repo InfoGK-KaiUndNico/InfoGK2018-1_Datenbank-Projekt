@@ -76,8 +76,10 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import getHost from '../lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component({})
 export default class Rezeptanzeige extends Vue {
@@ -96,6 +98,10 @@ export default class Rezeptanzeige extends Vue {
 	private shouldDelete = localStorage.getItem('userRang') === 'Admin' && this.erstelltVon === localStorage.getItem('userName');
 
 	private mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		this.rezeptId = this.$route.params.id;
 		this.loadRezeptData();
 	}
