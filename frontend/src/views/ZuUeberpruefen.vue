@@ -1,7 +1,14 @@
 <template>
     <div class="container">
-        <h2 class="mt-2">Hier sehen unüberprüfte Zutaten und Rezepte und können sie bestätigen</h2>
+        <h2 class="mt-2">Hier sehen Sie unüberprüfte Zutaten und Rezepte und können sie bestätigen</h2>
         <form id="formND" action="select.html">
+			<div class="row">
+				<div class="col-12">
+					<router-link to="/hauptseite">
+						<span class="btn btn-outline-secondary">Zurück</span>
+					</router-link>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-6 mt-2">
 					<div id="unueberpruefteRezepte" class="panel">
@@ -24,17 +31,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<router-link to="/hauptseite">
-					<span class="btn btn-outline-secondary">Zurück</span>
-				</router-link>
-			</div>
         </form>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
@@ -42,8 +45,7 @@ import RezeptListElement from '../components/RezeptListElement.vue';
 import ZutatListElement from '../components/ZutatListElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
 import loadZutatenByIds from '../lib/util/loadZutatenByIds';
-
-import validator from 'validator';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 import getHost from '@/lib/util/getHost';
 
 @Component({ components: { ZutatListElement, RezeptListElement } })
@@ -52,6 +54,10 @@ export default class ZuUeberpruefen extends Vue {
 	private Zutaten: any[] = [];
 
 	private mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		this.showRezepte();
 		this.showZutaten();
 	}

@@ -2,7 +2,7 @@
 <!-- 2. row: the user can see his own, his favourite and his bookmarked recipes -->
 <template>
     <div class="container">
-        <h2 class="mt-2">Hier sehen sie ihre Nutzerdaten und können sie ändern</h2>
+        <h2 class="mt-2">Hier sehen Sie Ihre Nutzerdaten und können Sie ändern</h2>
         <form id="formND" action="select.html">
             <div class="row">
                 <div class="col-3 mt-3">
@@ -14,7 +14,7 @@
                     <input id="inputChangePassword" class="form-control" type="password" v-model="changePassword"/>
                 </div>
 				<div class="col-3 mt-3">
-                    <label>EMail ändern</label>
+                    <label>E-Mail ändern</label>
                     <input id="inputChangeEmail" class="form-control" v-model="changeEmail"/>
                 </div>
 			</div>
@@ -30,48 +30,50 @@
 					</router-link>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-3">
 				<div class="col-12">
 					<p id="updateFail"></p>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-3">
 				<div class="col-12 mt-2">
-					<p>Meine eigenen Rezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('eigene')">EigeneRezepte</button>-->
+					<h3>Meine eigenen Rezepte</h3>
 					<div id="listEigeneRezepte" class="panel">
-						<p v-show="EigeneRezepte.length < 1">Noch keine eigenen Rezepte. <router-link to="/neues-rezept"><span>Füge doch eines hinzu!</span></router-link></p>						
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in EigeneRezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<p v-show="EigeneRezepte.length < 1">
+							Noch keine eigenen Rezepte.
+							<router-link to="/neues-rezept">
+								<span>Füge doch eines hinzu!</span>
+							</router-link>
+						</p>
+						<div class="row">
+							<div v-for="rezept in EigeneRezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-12 mt-2">
-					<p>Meine Lieblingsrezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('favoriten')">Lieblingsrezepte</button>-->
+					<h3>Meine Lieblingsrezepte</h3>
 					<div id="listLieblingsrezepte" class="panel">
 						<p v-show="Lieblingsrezepte.length < 1">Noch keine Lieblingsrezepte!</p>						
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<div class="row">
+							<div v-for="rezept in Lieblingsrezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-12 mt-2">
-					<p>Meine gemerkten Rezepte</p>
-					<!--<button class="btn btn-primary" @click="showRezepte('gemerkt')">Gemerkte Rezepte</button>-->
+					<h3>Meine gemerkten Rezepte</h3>
 					<div id="listGemerkteRezepte" class="panel">
 						<p v-show="GemerkteRezepte.length < 1">Noch keine Rezepte gemerkt!</p>
-						<ul class="list-group">
-							<li class="list-group-item" v-for="rezept in GemerkteRezepte" v-bind:key="rezept.id">
-								<RezeptListElement v-bind:rezept="rezept"/>
-							</li>
-						</ul>
+						<div class="row">
+							<div v-for="rezept in GemerkteRezepte" v-bind:key="rezept.id" class="mt-3 col-3">
+								<RezeptListCardElement v-bind:rezept="rezept"/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -81,16 +83,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
-import RezeptListElement from '../components/RezeptListElement.vue';
+import RezeptListCardElement from '../components/RezeptListCardElement.vue';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
-
-import validator from 'validator';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
-@Component({ components: { RezeptListElement } })
+@Component({ components: { RezeptListCardElement } })
 export default class Nutzerdaten extends Vue {
 	private showUserName: string = '';
 	private changePassword: string = '';
@@ -110,6 +112,10 @@ export default class Nutzerdaten extends Vue {
 	private EigeneRezepte: any[] = [];
 
 	private mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// define elements
 		const anzeigeUsername = document.getElementById('AnzeigeUsername');
 		if (!anzeigeUsername) {
@@ -171,40 +177,9 @@ export default class Nutzerdaten extends Vue {
 		this.GemerkteRezeptIds = fuerSpaeterGemerkt;
 
 		// Load recipes
-		await Promise.all([
-			this.showRezepte(this.EigeneRezeptIds, 'eigene'),
-			this.showRezepte(this.LieblingsrezeptIds, 'favoriten'),
-			this.showRezepte(this.GemerkteRezeptIds, 'gemerkt')
-		]);
-	}
-
-	private async showRezepte(rezeptIds: number[], type: string) {
-		for (const rezeptId of rezeptIds) {
-			const response = await fetch(`${getHost()}/recipes/${rezeptId}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
-
-			if (!response.ok) {
-				continue;
-			}
-
-			// output data
-			const rezept = await response.json();
-
-			switch (type) {
-				case 'favoriten':
-					this.Lieblingsrezepte.push(rezept);
-					break;
-				case 'eigene':
-					this.EigeneRezepte.push(rezept);
-					break;
-				case 'gemerkt':
-					this.GemerkteRezepte.push(rezept);
-					break;
-			}
-		}
+		this.Lieblingsrezepte = await loadRecipesByIds(this.LieblingsrezeptIds);
+		this.GemerkteRezepte = await loadRecipesByIds(this.GemerkteRezeptIds);
+		this.EigeneRezepte = await loadRecipesByIds(this.EigeneRezeptIds);
 	}
 
 	private async updateUser(event: MouseEvent) {
@@ -229,7 +204,7 @@ export default class Nutzerdaten extends Vue {
 		// check input email
 		if (this.changeEmail.length > 0) {
 			if (validator.isEmail(this.changeEmail) === false) {
-				this.inputEmail.innerHTML = 'keine gültige Email-Adresse';
+				this.inputEmail.innerHTML = 'keine gültige E-Mail-Adresse';
 				this.inputEmail.style.color = 'red';
 				this.showUserData();
 				return;

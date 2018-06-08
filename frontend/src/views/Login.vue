@@ -1,8 +1,8 @@
 <!-- first page the user sould get to see with login options and link to registration form -->
 <template>
     <div class="container">
-                <h2 class="mt-2">Hallo, willkommen bei unserer Rezepte Datenbank.</h2>
-                <h3>Bitte melden sie sich an, um sie zu nutzen.</h3>
+                <h2 class="mt-2">Willkommen bei unserer Rezepte-Datenbank.</h2>
+                <h3>Bitte melden Sie sich an, um die Seite zu nutzen.</h3>
                 <form id="formIndex1" action="select.html">
                     <div class="row mt-3">
                         <div class="col-3">
@@ -40,20 +40,22 @@ import { Component, Vue } from 'vue-property-decorator';
 import checkUserdata from '../lib/util/checkUserInput';
 import jwt_decode from 'jwt-decode';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
 @Component
 export default class Login extends Vue {
 	private userName: string = '';
 	private password: string = '';
 
+	private mounted() {
+		if (checkLoggedIn()) {
+			return this.$router.push('/hauptseite');
+		}
+	}
+
 	private moveFocus() {
 		const inputPassword = document.getElementById('inputPassword')!;
 		inputPassword.focus();
-	}
-
-	// redirect to registration form
-	private neuerAccout() {
-		this.$router.push('/registrieren');
 	}
 
 	private async login(event: MouseEvent) {
@@ -68,7 +70,7 @@ export default class Login extends Vue {
 		}
 
 		// Validate password input
-		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true, checkAlphanumeric: true }) === false) {
+		if (checkUserdata(this.password, 120, { checkWhitespace: true, checkLength: true, checkAlphanumeric: false }) === false) {
 			const labelPasswort = document.getElementById('labelPasswort')!;
 			labelPasswort.innerHTML = 'Bitte Passwort eingeben';
 			labelPasswort.style.color = 'red';

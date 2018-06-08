@@ -2,41 +2,44 @@
 <!-- 2. row: search options (search by: name, ingredient, type) and search output as a list of RezeptListElements -->
 <template>
     <div class="container">
-        <h2 class="mt-1">Hier geben sie Rezepte ein, suchen sie und sehen ihre Infos.</h2>
+        <h2 class="mt-1">Hier sehen Sie eine Übersicht aller wichtigen Funktionen</h2>
         <form id="formHS" action="select.html">
             <div class="row mt-3">
               	<div class="col-12">
 					<span class="mr-3">Shortcuts</span>
                     <router-link to="/neues-rezept">
-                        <span class="btn btn-primary mr-1">
+                        <span class="btn btn-outline-success mr-1">
                             Neues Rezept
                         </span>
                     </router-link>
 					<router-link to="/neue-zutat">
-                        <span class="btn btn-primary ml-1 mr-1"> 
+                        <span class="btn btn-outline-success ml-1 mr-1"> 
                             Neue Zutat 
                         </span> 
 					</router-link>
 					<router-link to="/nutzerdaten">
-                        <span class="btn btn-primary ml-1 mr-1">
+                        <span class="btn btn-outline-primary ml-1 mr-1">
                             Nutzerdaten
                         </span>
                     </router-link>
 					<router-link to="/unbestaetigt">
-						<span v-show="canReview" class="btn btn-primary ml-1 mr-1">
+						<span v-show="canReview" class="btn btn-outline-primary ml-1 mr-1">
 							Überprüfen
 						</span>
 					</router-link>
-					<router-link to="/anmeldung">
-						<span class="btn btn-primary ml-1">
-							Abmelden
-						</span>
-					</router-link>
+					<button class="btn btn-outline-danger ml-1" @click="logout">
+						Abmelden
+					</button>
                 </div>
             </div>
-            <div class="row mt-3">
+			<div class="row mt-3">
+				<div class="col-12">
+					<h3>Rezeptsuche</h3>
+				</div>
+			</div>
+            <div class="row">
                 <div class="col-3">
-                    <label>Rezeptsuche</label>
+                    <label>Rezeptname</label>
                     <input class="form-control" placeholder="Suche" v-model="selectedName"/>
                 </div>
                 <div class="col-3">
@@ -68,15 +71,15 @@
 			</div>
             <div class="row mt-3">
                 <div class="col-12">
-					<p>Suchergebnisse</p>
+					<h3>Suchergebnisse</h3>
 					<p v-show="this.gefundeneRezepte.length < 1">Keine Suchergebnisse gefunden.</p>
                     <p id="paragraphHS1">
                         <span>
-                            <ul class="list-group">
-  								<li class="list-group-item" v-for="rezept in gefundeneRezepte" v-bind:key="rezept.id">
-									<RezeptListElement v-bind:rezept="rezept"/>
-  								</li>
-							</ul>
+                            <div class="row">
+  								<div class="mt-3 col-3" v-for="rezept in gefundeneRezepte" v-bind:key="rezept.id">
+									<RezeptListCardElement v-bind:rezept="rezept"/>
+  								</div>
+							</div>
                         </span>
                     </p>
                 </div>
@@ -87,15 +90,18 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import validator from 'validator';
+import queryString from 'query-string';
 
 import checkUserdata from '../lib/util/checkUserInput';
 import getCommonHeaders from '../lib/util/getCommonHeaders';
 import loadZutaten from '../lib/util/loadZutaten';
 import loadRecipesByIds from '../lib/util/loadRecipesByIds';
-import RezeptListElement from '../components/RezeptListElement.vue';
+import RezeptListCardElement from '../components/RezeptListCardElement.vue';
 import getHost from '@/lib/util/getHost';
+import checkLoggedIn from '@/lib/util/checkLoggedIn';
 
-@Component({ components: { RezeptListElement } })
+@Component({ components: { RezeptListCardElement } })
 export default class Hauptseite extends Vue {
 	private Zutaten: any[] = [];
 	private rezeptArten: any[] = ['Salat', 'Vorspeise', 'Hauptspeise', 'Nachtisch', 'Aufstrich', 'süß', 'herzhaft', 'andere'].map((zutat) => ({ name: zutat, value: zutat }));
@@ -109,6 +115,10 @@ export default class Hauptseite extends Vue {
 	private canReview: boolean = false;
 
 	private async mounted() {
+		if (!checkLoggedIn()) {
+			return this.$router.push('/anmeldung');
+		}
+
 		// load all ingredients
 		try {
 			const zutaten = await loadZutaten();
@@ -120,6 +130,18 @@ export default class Hauptseite extends Vue {
 
 		// determine if user is allowed to review and see review options
 		this.canReview = localStorage.getItem('userRang') === 'Admin';
+	}
+
+	private logout(event: MouseEvent) {
+		event.preventDefault();
+
+		// Clear localStorage
+		localStorage.removeItem('token');
+		localStorage.removeItem('userName');
+		localStorage.removeItem('userRang');
+
+		// Redirect to login page
+		this.$router.push('/anmeldung');
 	}
 
 	private clearInputs(event: MouseEvent) {
@@ -134,73 +156,40 @@ export default class Hauptseite extends Vue {
 	private async OutputSearch(event: MouseEvent) {
 		event.preventDefault();
 
-		// search zutat if rezeptsuche and Art empty
-		if (this.selectedName.length < 1 && this.selectedArten.length < 1) {
-			// get array with ids of recipes matching search from backend
-			const response = await fetch(`${getHost()}/recipes?zutaten=${encodeURIComponent(this.selectedZutaten.join(','))}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
+		const name = this.selectedName;
+		const arten = this.selectedArten;
+		const zutaten = this.selectedZutaten;
 
-			if (!response.ok) {
-				// TODO show error
-				return;
-			}
+		const rawQuery: any = {};
 
-			const { recipes }: { recipes: string[] } = await response.json();
+		if (validator.isLength(name, { min: 1, max: 100 })) {
+			rawQuery.name = name;
+		}
 
-			// Load full recipe data by ids
-			this.gefundeneRezepte = await loadRecipesByIds(recipes);
+		if (this.selectedArten.length > 0) {
+			rawQuery.art = arten.join(',');
+		}
+
+		if (this.selectedZutaten.length > 0) {
+			rawQuery.zutaten = zutaten.join(',');
+		}
+
+		const query = queryString.stringify(rawQuery);
+
+		const response = await fetch(`${getHost()}/recipes?${query}`, {
+			headers: getCommonHeaders(),
+			method: 'GET',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			// TODO Show/handle error
 			return;
 		}
 
-		// search art if Rezeptsuche and Zutat empty
-		if (this.selectedName.length < 1 && this.selectedZutaten.length < 1) {
-			// get array with ids of recipes matching search from backend
-			const response = await fetch(`${getHost()}/recipes?art=${encodeURIComponent(this.selectedArten.join(','))}`, {
-				headers: getCommonHeaders(),
-				method: 'GET',
-				mode: 'cors'
-			});
+		const { recipes }: { recipes: number[] } = await response.json();
 
-			if (!response.ok) {
-				// TODO show error
-				return;
-			}
-
-			const { recipes }: { recipes: string[] } = await response.json();
-
-			// Load full recipe data by ids
-			this.gefundeneRezepte = await loadRecipesByIds(recipes);
-			return;
-		}
-
-		// search rezept if Zutat and Art empty
-		if (this.selectedZutaten.length < 1 && this.selectedArten.length < 1) {
-			// check input and search
-			if (checkUserdata(this.selectedName, 100, { checkWhitespace: false, checkLength: true }) === true) {
-				// get array with ids of recipes matching search from backend
-				const response = await fetch(`${getHost()}/recipes?name=${encodeURIComponent(this.selectedName)}`, {
-					headers: getCommonHeaders(),
-					method: 'GET',
-					mode: 'cors'
-				});
-
-				if (!response.ok) {
-					// TODO show error
-					return;
-				}
-
-				const { recipes }: { recipes: string[] } = await response.json();
-
-				// Load full recipe data by ids
-				this.gefundeneRezepte = await loadRecipesByIds(recipes);
-				return;
-			}
-		}
-
-		// TODO show errors
+		this.gefundeneRezepte = await loadRecipesByIds(recipes);
 	}
 }
 </script>
