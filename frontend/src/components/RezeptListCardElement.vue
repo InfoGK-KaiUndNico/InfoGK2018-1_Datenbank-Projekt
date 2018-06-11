@@ -35,7 +35,7 @@ export default class RezeptListElement extends Vue {
 	private canReview: boolean = false;
 	private isReviewed: boolean = true;
 
-	@Prop() private onDelete: Function;
+	@Prop() private onDelete: (id: string) => void;
 
 	private canDelete: boolean = false;
 

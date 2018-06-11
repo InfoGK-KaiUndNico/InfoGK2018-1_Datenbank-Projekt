@@ -29,7 +29,7 @@ export default class ZutatListCardElement extends Vue {
 	@Prop({ default: {} })
 	private zutat: any;
 
-	@Prop() private onDelete: Function;
+	@Prop() private onDelete: (name: string) => void;
 
 	private canReview: boolean = false;
 	private isReviewed: boolean = true;
