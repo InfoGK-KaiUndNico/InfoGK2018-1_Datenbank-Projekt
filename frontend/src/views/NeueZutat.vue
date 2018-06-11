@@ -110,6 +110,11 @@ export default class NeueZutat extends Vue {
 		});
 
 		if (!response.ok) {
+			if (response.status === 429) {
+				this.labelZutatHinzufügen.innerHTML = 'Einreichungslimit erreicht. Bitte warten Sie darauf, dass Ihre Zutaten überprüft werden.';
+				return;
+			}
+
 			this.labelZutatHinzufügen.innerHTML = 'Fehler beim Hinzufügen';
 			return;
 		}

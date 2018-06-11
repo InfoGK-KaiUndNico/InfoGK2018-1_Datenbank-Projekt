@@ -246,6 +246,11 @@ export default class NewRecipe extends Vue {
 		// Handle Errors
 		const uploadFail = document.querySelector('#uploadFail')!;
 		if (!response.ok) {
+			if (response.status === 429) {
+				uploadFail.innerHTML = 'Einreichungslimit erreicht. Bitte warten Sie darauf, dass Ihre Rezepte überprüft werden.';
+				return;
+			}
+
 			uploadFail.innerHTML = 'Fehler beim Hochladen';
 			return;
 		}
