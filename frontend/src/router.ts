@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+
 import NewRecipe from './views/NewRecipe.vue';
 import Login from './views/Login.vue';
 import Nutzerdaten from './views/Nutzerdaten.vue';
@@ -8,6 +9,8 @@ import Registrieren from './views/Registrieren.vue';
 import Rezeptanzeige from './views/Rezeptanzeige.vue';
 import NeueZutat from './views/NeueZutat.vue';
 import ZuUeberpruefen from './views/ZuUeberpruefen.vue';
+import Rezeptliste from './views/Rezeptliste.vue';
+import Zutatenliste from './views/Zutatenliste.vue';
 
 Vue.use(Router);
 
@@ -35,9 +38,19 @@ export default new Router({
 			component: Registrieren
 		},
 		{
+			path: '/rezepte',
+			name: 'recipelist',
+			component: Rezeptliste
+		},
+		{
 			path: '/rezept/:id',
 			name: 'recipe',
 			component: Rezeptanzeige
+		},
+		{
+			path: '/zutaten',
+			name: 'zutatenliste',
+			component: Zutatenliste
 		},
 		{
 			path: '/neues-rezept',

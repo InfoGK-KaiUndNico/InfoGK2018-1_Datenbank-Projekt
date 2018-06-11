@@ -1,15 +1,12 @@
-<!-- One element in any list of recipes, displaying name, author and review status -->
-<!-- Admins can see abutton offering to review said recipe -->
-<!-- ListElement is a button that opens the recipes display page -->
 <template>
 	<div class="card">
 		<div class="card-body">
-			<p @click="rezeptOeffnen" style="color: #007bff; cursor: pointer">{{rezept.name}}</p>
-			<p>{{rezept.erstelltVon}}</p>
+			<p style="color: #007bff">{{zutat.name}}</p>
+			<p>{{zutat.submitter}}</p>
 
 			<!-- admin review indicators -->
 			<button @click="createReview" v-if="!isReviewed && canReview" class="btn btn-primary">
-				Rezept bestätigen
+				Zutat bestätigen
 			</button>
 			<button v-else-if="isReviewed && canReview" disabled class="btn btn-success">Bestätigt!</button>
 			
@@ -17,7 +14,7 @@
 			<span v-if="isReviewed && !canReview">✔️ Bestätigt</span>
 			<span v-else-if="!isReviewed && !canReview">❌ Nicht bestätigt</span>
 
-			<span v-show="canDelete" class="text-danger ml-3" style="cursor: pointer" @click="deleteRezept">❌ Löschen</span>
+			<span v-show="canDelete" class="text-danger ml-3" style="cursor: pointer" @click="deleteZutat">❌ Löschen</span>
 		</div>
 	</div>
 </template>
@@ -28,20 +25,20 @@ import getCommonHeaders from '../lib/util/getCommonHeaders';
 import getHost from '../lib/util/getHost';
 
 @Component({})
-export default class RezeptListElement extends Vue {
+export default class ZutatListCardElement extends Vue {
 	@Prop({ default: {} })
-	private rezept: any;
+	private zutat: any;
+
+	@Prop() private onDelete: Function;
 
 	private canReview: boolean = false;
 	private isReviewed: boolean = true;
-
-	@Prop() private onDelete: Function;
 
 	private canDelete: boolean = false;
 
 	private mounted() {
 		// determine if user is admin and if recipe is unreviewed
-		this.isReviewed = this.rezept.review !== null;
+		this.isReviewed = this.zutat.review !== null;
 
 		const isAdmin = localStorage.getItem('userRang') === 'Admin';
 
@@ -49,9 +46,21 @@ export default class RezeptListElement extends Vue {
 		this.canDelete = isAdmin;
 	}
 
-	private rezeptOeffnen() {
-		// go to elements display page
-		this.$router.push(`/rezept/${this.rezept.id}`);
+	private async deleteZutat(event: MouseEvent) {
+		event.preventDefault();
+
+		const response = await fetch(`${getHost()}/ingredients/${this.zutat.name}`, {
+			headers: getCommonHeaders(),
+			method: 'DELETE',
+			mode: 'cors'
+		});
+
+		if (!response.ok) {
+			// TODO Show/handle error
+			return;
+		}
+
+		this.onDelete(this.zutat.name);
 	}
 
 	private async createReview(event: MouseEvent) {
@@ -60,7 +69,7 @@ export default class RezeptListElement extends Vue {
 		// post the review to backend
 		const response = await fetch(`${getHost()}/reviews`, {
 			headers: getCommonHeaders(),
-			body: JSON.stringify({ type: 'rezept', subject: this.rezept.id, annotations: '' }),
+			body: JSON.stringify({ type: 'zutat', subject: this.zutat.name, annotations: '' }),
 			method: 'POST',
 			mode: 'cors'
 		});
@@ -72,25 +81,6 @@ export default class RezeptListElement extends Vue {
 
 		// update isReviewed to toggle button
 		this.isReviewed = true;
-	}
-
-	private async deleteRezept(event: MouseEvent) {
-		event.preventDefault();
-
-		const { id } = this.rezept;
-
-		const response = await fetch(`${getHost()}/recipes/${id}`, {
-			headers: getCommonHeaders(),
-			method: 'DELETE',
-			mode: 'cors'
-		});
-
-		if (!response.ok) {
-			// TODO Show/handle error
-			return;
-		}
-
-		this.onDelete(id);
 	}
 }
 </script>
