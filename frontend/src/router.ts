@@ -11,6 +11,8 @@ import NeueZutat from './views/NeueZutat.vue';
 import ZuUeberpruefen from './views/ZuUeberpruefen.vue';
 import Rezeptliste from './views/Rezeptliste.vue';
 import Zutatenliste from './views/Zutatenliste.vue';
+import PasswordForget from './views/PasswordForget.vue';
+import PasswordForgetConfirmation from './views/PasswordForgetConfirmation.vue';
 
 Vue.use(Router);
 
@@ -21,6 +23,16 @@ export default new Router({
 			path: '/anmeldung',
 			name: 'login',
 			component: Login
+		},
+		{
+			path: '/password-reset',
+			name: 'passwordreset',
+			component: PasswordForget
+		},
+		{
+			path: '/password-reset/:token',
+			name: 'passwordresetconfirmation',
+			component: PasswordForgetConfirmation
 		},
 		{
 			path: '/hauptseite',

@@ -21,12 +21,12 @@
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
     "@types/query-string": "^5.1.0",
-    "@vue/cli-plugin-babel": "^3.0.0-beta.16",
-    "@vue/cli-plugin-eslint": "^3.0.0-beta.16",
-    "@vue/cli-plugin-typescript": "^3.0.0-beta.16",
-    "@vue/cli-service": "^3.0.0-beta.16",
-    "@vue/eslint-config-airbnb": "^3.0.0-beta.16",
-    "@vue/eslint-config-typescript": "^3.0.0-beta.16",
+    "@vue/cli-plugin-babel": "^3.0.0-rc.3",
+    "@vue/cli-plugin-eslint": "^3.0.0-rc.3",
+    "@vue/cli-plugin-typescript": "^3.0.0-rc.3",
+    "@vue/cli-service": "^3.0.0-rc.3",
+    "@vue/eslint-config-airbnb": "^3.0.0-rc.3",
+    "@vue/eslint-config-typescript": "^3.0.0-rc.3",
     "vue-template-compiler": "^2.5.16"
   },
   "browserslist": [

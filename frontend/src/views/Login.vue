@@ -15,14 +15,17 @@
                         </div>
                     </div>
 					<div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-12">
                             <button @click="login" class="btn btn-primary mr-3">
                               Log In
                             </button>
 							<router-link to="/registrieren">
-								<span class="btn btn-outline-success">
+								<span class="btn btn-outline-success mr-3">
 									Registrieren
 								</span>
+							</router-link>
+							<router-link to="/password-reset">
+								<span class="btn btn-outline-secondary">Passwort Vergessen?</span>
 							</router-link>
                         </div>
 					</div>
