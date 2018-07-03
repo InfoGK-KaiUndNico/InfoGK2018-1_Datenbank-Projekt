@@ -2,11 +2,7 @@
 	<div class="container">
 		<h3>Passwort Vergessen</h3>
 
-		<div class="row">
-			<div class="col-12 mt-3">
-				<button class="btn btn-primary" @click="generateTemporaryCredentials">Temporäre Zugangsdaten generieren</button>
-			</div>
-		</div>
+		<span>Lädt...</span>
 	</div>
 </template>
 
@@ -26,22 +22,21 @@ export default class PasswordForgetConfirmationComponent extends Vue {
 			return this.$router.push('/hauptseite');
 		}
 
-		this.token = this.$route.params.token;
+		const token = this.$route.params.token;
+		this.generateTemporaryCredentials(token);
 	}
 
-	private async generateTemporaryCredentials(event: MouseEvent) {
-		event.preventDefault();
-
-		if (this.token.length < 1) {
+	private async generateTemporaryCredentials(systemToken: string) {
+		if (systemToken.length < 1) {
 			return;
 		}
 
-		const response = await fetch(`${getHost()}/auth/forgot/${this.token}`, {
+		const response = await fetch(`${getHost()}/auth/forgot/${systemToken}`, {
 			method: 'GET'
 		});
 
 		if (!response.ok) {
-			// TODO Handle errors
+			this.$router.push('/anmeldung');
 			return;
 		}
 
