@@ -12,15 +12,15 @@
     "@types/validator": "^9.4.1",
     "jwt-decode": "^2.2.0",
     "query-string": "^6.1.0",
-    "validator": "^10.3.0",
+    "validator": "^10.4.0",
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
-    "vue-property-decorator": "^6.1.0",
+    "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
-    "@types/query-string": "^5.1.0",
+    "@types/query-string": "^6.1.0",
     "@vue/cli-plugin-babel": "^3.0.0-rc.3",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.3",
     "@vue/cli-plugin-typescript": "^3.0.0-rc.3",

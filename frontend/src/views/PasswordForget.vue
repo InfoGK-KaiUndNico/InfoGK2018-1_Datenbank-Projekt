@@ -7,7 +7,15 @@
 					<input class="form-control" type="email" placeholder="E-Mail" v-model="inputEmail" />
 				</div>
 				<div class="col-8">
-					<button class="btn btn-primary" @click="sendForgotRequest">Temporären Zugang anfordern</button>
+					<button class="btn btn-primary mr-3" @click="sendForgotRequest" :disabled="disablePrimaryButton">Temporären Zugang anfordern</button>
+					<router-link to="/anmeldung">
+						<span class="btn btn-outline-secondary">Zurück</span>
+					</router-link>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-12">
+					<span>{{bottomText}}</span>
 				</div>
 			</div>
 		</form>
@@ -24,6 +32,8 @@ import checkLoggedIn from '@/lib/util/checkLoggedIn';
 @Component({})
 export default class PasswordForgetConfirmationComponent extends Vue {
 	private inputEmail: string = '';
+	private disablePrimaryButton: boolean = false;
+	private bottomText: string = '';
 
 	private mounted() {
 		if (checkLoggedIn()) {
@@ -33,6 +43,9 @@ export default class PasswordForgetConfirmationComponent extends Vue {
 
 	private async sendForgotRequest(event: MouseEvent) {
 		event.preventDefault();
+
+		this.bottomText = 'Loading...';
+		this.disablePrimaryButton = true;
 
 		const email = this.inputEmail;
 
@@ -52,11 +65,13 @@ export default class PasswordForgetConfirmationComponent extends Vue {
 		});
 
 		if (!response.ok) {
-			// TODO Handle errors
+			this.bottomText = 'Irgendetwas ist mit Ihrer Anfrage schiefgelaufen, bitte probieren Sie es noch einmal!';
+			this.disablePrimaryButton = false;
 			return;
 		}
 
-		// TODO Show 'head over to your inbox' message
+		this.disablePrimaryButton = false;
+		this.bottomText = 'Super, schauen Sie in ihren Posteingang, um die Ihnen gesendete Bestätigungsmail wahrzunehmen!';
 	}
 }
 </script>
